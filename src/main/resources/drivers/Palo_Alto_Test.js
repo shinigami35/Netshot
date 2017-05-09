@@ -91,8 +91,10 @@ function snapshot(cli, device, config) {
 
     cli.macro("operational");
 
-    var status = cli.command("show system info");
+    var configuration = cli.command("show config running");
+    config.set("configuration", configCleanup(configuration));
 
+    var status = cli.command("show system info");
     var hostname = status.match(/hostname: (.*)$/m);
     if (hostname) {
         hostname = hostname[1];

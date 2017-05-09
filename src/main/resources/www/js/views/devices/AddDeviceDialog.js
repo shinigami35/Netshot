@@ -44,6 +44,7 @@ define([
 				that.model.save({
 					autoDiscover: that.$('#autodiscover').is(":checked"),
 					ipAddress: that.$('#deviceip').val(),
+                    pathConfiguration: that.$('#devicepathconfig').val(),
 					deviceType: that.$('#devicetype').val(),
 					domainId: (that.$('#devicedomain').val() ? that.$('#devicedomain').val() : -1)
 				}).done(function(data) {
@@ -69,9 +70,11 @@ define([
 			that.$('#autodiscover').change(function() {
 				if (that.$('#autodiscover').is(":checked")) {
 					that.$('#devicetype').prev().addBack().hide();
+					that.$('#devicepathconfig').prev().addBack().hide();
 				}
 				else {
 					that.$('#devicetype').prev().addBack().show();
+					that.$('#devicepathconfig').prev().addBack().show();
 				}
 			}).prop('checked', true).trigger('change');
 			_.each(this.deviceTypes.models, function(deviceType) {

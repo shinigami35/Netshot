@@ -19,6 +19,7 @@ define([
 
 		initialize: function() {
 			var that = this;
+            console.log(this);
 			this.credentialSets = new CredentialSetCollection([]);
 			this.domains = new DomainCollection([]);
 			$.when(that.credentialSets.fetch(), that.domains.fetch())
@@ -40,6 +41,7 @@ define([
 				var device = {
 					'ipAddress': that.$('#deviceipaddress').val(),
 					'comments': that.$('#devicecomments').val(),
+					'pathConfiguration': that.$('#devicepathconfig').val(),
 					'autoTryCredentials': that.$('#autotrycredentials').is(":checked"),
 					'credentialSetIds': [],
 					'mgmtDomain': that.$('#devicedomain').val()
@@ -77,6 +79,7 @@ define([
 					.text(domain.get('name')).appendTo(that.$('#devicedomain'));
 			});
 			this.$('#devicedomain').val(this.model.get('mgmtDomain').id);
+			this.$('#devicepathconfig').val(this.model.get('path'));
 		}
 
 	});

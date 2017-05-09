@@ -29,6 +29,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Date;
@@ -1188,6 +1190,12 @@ public class DeviceDriver {
 
 
         String path = Netshot.getConfig("netshot.snapshots.dump");
+        if (device.getPath() != null) {
+            path = path + device.getPath();
+            File tmpDirectory = new File(path);
+            if (!tmpDirectory.exists())
+                tmpDirectory.mkdirs();
+        }
         if (path != null) {
             try {
                 BufferedWriter output = new BufferedWriter(

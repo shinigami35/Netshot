@@ -21,7 +21,7 @@ var Info = {
     name: "Riverbed",
     description: "RiverbedOS",
     author: "Adrien GANDARIAS",
-    version: "0.1"
+    version: "0.3"
 };
 
 var Config = {
@@ -50,6 +50,16 @@ var Config = {
 };
 
 var Device = {
+    "status": {
+        type: "Text",
+        title: "Status",
+        searchable: true
+    },
+    "manageByCMC": {
+        type: "Text",
+        title: "Managed by CMC",
+        searchable: true
+    },
     "usedMemory": {
         type: "Text",
         title: "Used memory size (MB)",
@@ -126,11 +136,6 @@ var CLI = {
                 cmd: "enable",
                 options: ["enable", "disable"],
                 target: "enable"
-            },
-            configure: {
-                cmd: "enable",
-                options: ["enable", "disable"],
-                target: "configure"
             }
         }
     },
@@ -142,13 +147,7 @@ var CLI = {
             match: /^Lines [0-9]+-[0-9]+\s+$/,
             response: " "
         },
-        macros: {
-            configure: {
-                cmd: "configure terminal",
-                options: ["enable", "configure"],
-                target: "configure"
-            }
-        }
+        macros: {}
 
     }
 };
@@ -158,30 +157,57 @@ function snapshot(cli, device, config, debug) {
     cli.macro("enable");
     cli.command("enable");
 
+    var configuration = cli.command("show configuration running");
+    config.set('runningConfig', configuration);
 
-    //var configuration = cli.command("show configuration");
-    //config.set('configuration', configuration);
+    var info = cli.command("show info");
+    var status_riverbed = info.match(/Status: (.*)/);
+    if (status_riverbed) {
+        status_riverbed = status_riverbed[1];
+        device.set("status", status_riverbed);
+    }
+    var serial = info.match(/Serial: (.*)/);
+    device.set("serialNumber", serial[1]);
+
+    var cmc = info.match(/Managed by CMC: (.*)/);
+    if (cmc && (cmc[1].match(/^[ ]*yes[ ]*$/) || cmc[1].match(/^[ ]*no[ ]*$/)))
+        device.set("manageByCMC", cmc[1].replace(/[ ]*/, ""))
 
     var status = cli.command("show version");
-    var hostname = status.match(/^Product name:[ ]*[A-Za-z0-9_\-.]+$/);
+    var hostname = status.match(/Product name: (.*)/);
     if (hostname) {
         hostname = hostname[1];
-        device.set("name", hostname);
+        device.set("name", hostname.replace(/\s/g, ""));
     }
-
-
-    var version = status.match(/^Product release:[ ]*[A-Za-z0-9.]+$/);
+    var version = status.match(/Product release:[\s]*([0-9]+.*)/m);
     version = (version ? version[1] : "Unknown");
     device.set("softwareVersion", version);
     config.set("osVersion", version);
+    var revision = info.match(/Revision: (.*)/);
+    device.set('softwareVersion', version + (revision ? " Revision " + revision[1] : ""))
 
-    // var tmpfamily = status.match(/family: (.*)/);
-    // var family = (tmpfamily ? tmpfamily[1] : "PanOS device");
-    // device.set("family", family);
-    // device.set("softwareVersion", version);
-    // config.set("osVersion", version);
-    //
-    // device.set("networkClass", "FIREWALL");
+    var tmpfamily = status.match(/Product model: (.*)/);
+    var family = (tmpfamily ? tmpfamily[1] : "RIVOS device");
+    device.set("family", family);
+    device.set("softwareVersion", version);
+    config.set("osVersion", version);
+    device.set("networkClass", "UNKNOWN");
+
+    var data = status.match(/System memory: (.*)/);
+    if (data) {
+        var dataTmp = data[1];
+        var arrayData = dataTmp.split('/');
+        for (var i = 0; i < arrayData.length; i++) {
+            arrayData[i] = arrayData[i].replace(/\s\s/g, " ")
+        }
+        var used = arrayData[0].match(/[0-9]+/);
+        var free = arrayData[1].match(/[0-9]+/);
+        var total = arrayData[2].match(/[0-9]+/);
+        device.set("usedMemory", used[0]);
+        device.set("freeMemory", free[0]);
+        device.set("totalMemory", total[0]);
+    }
+
 
 }
 

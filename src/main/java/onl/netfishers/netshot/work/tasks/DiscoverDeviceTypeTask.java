@@ -277,7 +277,7 @@ public class DiscoverDeviceTypeTask extends Task {
 			Device device = null;
 			try {
 				session.beginTransaction();
-				device = new Device(this.discoveredDeviceType, deviceAddress, domain, this.author);
+				device = new Device(this.discoveredDeviceType, deviceAddress, domain, this.author, "/");
 				device.addCredentialSet(successCredentialSet);
 				session.save(device);
 				this.deviceId = device.getId();

@@ -25,6 +25,7 @@ define([
 			attrs = _.pick(attrs, [
 				'id',
 				'ipAddress',
+				'pathConfiguration',
 				'comments',
 				'autoTryCredentials',
 				'credentialSetIds',
