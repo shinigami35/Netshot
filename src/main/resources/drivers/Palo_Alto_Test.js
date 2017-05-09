@@ -1,22 +1,3 @@
-/**
- * Copyright 2013-2017 Sylvain Cadilhac (NetFishers)
- *
- * This file is part of Netshot.
- *
- * Netshot is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Netshot is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Netshot.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 var Info = {
     name: "Palo Alto PAN-OS",
     description: "PAN-OS",
@@ -52,11 +33,7 @@ var CLI = {
             operational: {
                 options: ["username", "password", "operational"],
                 target: "operational"
-            },
-            // configure: {
-            //     options: [ "username", "password", "operational" ],
-            //     target: "configuration"
-            // }
+            }
         }
     },
     ssh: {
@@ -64,11 +41,7 @@ var CLI = {
             operational: {
                 options: ["operational"],
                 target: "operational"
-            },
-            // configure: {
-            //     options: [ "operational" ],
-            //     target: "configuration"
-            // }
+            }
         }
     },
     username: {
@@ -101,33 +74,8 @@ var CLI = {
             match: /lines [0-9]+-[0-9]+$/,
             response: " "
         },
-        macros: {
-            // configure: {
-            //     cmd: "configure",
-            //   //  options: [ "operational", "configuration" ],
-            //     options: [ "operational" ],
-            //     target: "configuration"
-            // }
-        }
-
-    },
-    // configuration: {
-    //     prompt: /^([A-Za-z\-_0-9\.]+@[a-zA-Z0-9\._-]+# )$/,
-    //     error: /^(Unknown command: .*|Invalid syntax.)/m,
-    //     macros: {
-    //         quit: {
-    //             cmd: "quit",
-    //             options: [ "operational", "configuration" ],
-    //             target: "operational"
-    //         },
-    //         commit: {
-    //             cmd: "commit",
-    //             options: [ "configuration" ],
-    //             target: "configuration",
-    //             timeout: 120
-    //         }
-    //     }
-    // }
+        macros: {}
+    }
 };
 
 
@@ -144,11 +92,6 @@ function snapshot(cli, device, config) {
     cli.macro("operational");
 
     var status = cli.command("show system info");
-
-    // var runningConfig = cli.command("show config running");
-    // runningConfig = configCleanup(runningConfig);
-    // config.set("configuration", runningConfig);
-
 
     var hostname = status.match(/hostname: (.*)$/m);
     if (hostname) {
