@@ -1,0 +1,4340 @@
+!! Configuration (taken on Tue May 09 10:24:52 CEST 2017):
+config {
+  mgt-config {
+    users {
+      admin {
+        phash fnRL/G5lXVMug;
+        permissions {
+          role-based {
+            superuser yes;
+          }
+        }
+      }
+    }
+  }
+  shared {
+    application;
+    application-group;
+    service;
+    service-group;
+    botnet {
+      configuration {
+        http {
+          dynamic-dns {
+            enabled yes;
+            threshold 5;
+          }
+          malware-sites {
+            enabled yes;
+            threshold 5;
+          }
+          recent-domains {
+            enabled yes;
+            threshold 5;
+          }
+          ip-domains {
+            enabled yes;
+            threshold 10;
+          }
+          executables-from-unknown-sites {
+            enabled yes;
+            threshold 5;
+          }
+        }
+        other-applications {
+          irc yes;
+        }
+        unknown-applications {
+          unknown-tcp {
+            destinations-per-hour 10;
+            sessions-per-hour 10;
+            session-length {
+              maximum-bytes 100;
+              minimum-bytes 50;
+            }
+          }
+          unknown-udp {
+            destinations-per-hour 10;
+            sessions-per-hour 10;
+            session-length {
+              maximum-bytes 100;
+              minimum-bytes 50;
+            }
+          }
+        }
+      }
+      report {
+        topn 100;
+        scheduled yes;
+      }
+    }
+    certificate {
+      certificattroplong {
+        subject-hash 7d1db19f;
+        issuer-hash 7d1db19f;
+        not-valid-before "Mar 16 14:33:17 2017 GMT";
+        issuer /CN=172.16.3.70;
+        not-valid-after "Mar 16 14:33:17 2018 GMT";
+        common-name 172.16.3.70;
+        expiry-epoch 1521210797;
+        ca yes;
+        subject /CN=172.16.3.70;
+        public-key "-----BEGIN CERTIFICATE-----
+MIICzDCCAbSgAwIBAgIJAPFQXv4tOoL0MA0GCSqGSIb3DQEBCwUAMBYxFDASBgNV
+BAMTCzE3Mi4xNi4zLjcwMB4XDTE3MDMxNjE0MzMxN1oXDTE4MDMxNjE0MzMxN1ow
+FjEUMBIGA1UEAxMLMTcyLjE2LjMuNzAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
+ggEKAoIBAQDLXyOSGX5IP5Q3u42xF3lwttLEe+UmtjRcg5uafj5ZN4qo1hKZaRVH
+ciHmgYuGnjS/9iw4Ah3fVI9jTxbh9vZq2dE7uTTmmAhcUSq3EDf4qVgwlJIYCnAv
+FkUXGUw1pUwbbOSvSK3m+kRxpKuTpgy5NRx8A/zmp/UNTKFJfzGrI8nFzf299fGC
+EgnMTCvL0OYddhCs0GwgQgkvtrbW2gBcPny/6u7vZf3HnVrpDhUbTl5e1SdWYWno
+YtnOC+gHCR+xDvgTjUIGJjyZc2nCBpKtQYNzfOYP/82nLnqLy/lURzPFhHBUM6UT
+x35LTugayuXdko6ht3PVmoPMEhju0B97AgMBAAGjHTAbMAwGA1UdEwQFMAMBAf8w
+CwYDVR0PBAQDAgIEMA0GCSqGSIb3DQEBCwUAA4IBAQCCfgU0Kaikg+CJP9IVurUz
+AiWefQO67WN+vMfUh6zyE/MRKCHSB1vExKOTgFQNX2fGBo07QTynigDycHsyPKP3
+D/2j7fQF4Lp6wPF6v+G+Hf8BJP5/GzsoQa+CCXHWac6e4oCn0MA3/bDh3wwXOTJj
+dCD9N3O7nzbqyz/YSF6DQTDEVLd15LcFMObcX4ea/wcQthjjSJQzMmxNFtjutk89
+wVorBZ+SgHmVL+qg5h/TiM3cpoM4W5vljpegETf0TPsOBC4LSFAeH4dbao8H7xee
+tPO+BVotBfsF4nzD/7pbNzgrSSBS2c+DW+TNQNJlb+GQUVQ4IO8Z+H+5ediqVIcl
+-----END CERTIFICATE-----
+";
+        algorithm RSA;
+        private-key -AQ==WaKRZSiVE2OPPLlCyCsUFaKOJEk=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;
+      }
+      certificatGP {
+        subject-hash a3cbc22b;
+        issuer-hash 7d1db19f;
+        not-valid-before "Mar 16 14:34:15 2017 GMT";
+        issuer /CN=172.16.3.70;
+        not-valid-after "Mar 16 14:34:15 2018 GMT";
+        common-name globalprotect.monvpn.fr;
+        expiry-epoch 1521210855;
+        ca no;
+        subject /CN=globalprotect.monvpn.fr;
+        public-key "-----BEGIN CERTIFICATE-----
+MIIDJDCCAgygAwIBAgIFANPmEoEwDQYJKoZIhvcNAQELBQAwFjEUMBIGA1UEAxML
+MTcyLjE2LjMuNzAwHhcNMTcwMzE2MTQzNDE1WhcNMTgwMzE2MTQzNDE1WjAiMSAw
+HgYDVQQDExdnbG9iYWxwcm90ZWN0Lm1vbnZwbi5mcjCCASIwDQYJKoZIhvcNAQEB
+BQADggEPADCCAQoCggEBAMvNWlj+YUucajN4IzgpaVTtEfmkdmh3A6fWZlUtgTn+
++5ZAR05RQUAcqtWMJviEVQbn1XM/4hzyqCJ0tBqhViPUUtEI/eOecYF+GniIwpMD
+s7o7yZd/RD92HzCSJ9tDl8vrP5loNdZ1nnpeqBgIcgHgGxp3ZjIc4vhA5ecwqkqT
+N3DXEfwQMCUfVpLca0ApeOqh7D+sUMtOkdnKUJBiniY74CyC8NvB55tnGNndzHx0
+i/pF3xBnm6AC2yxNObv4OjZyLsRro50MUC//CWbM3UQJq4Q5YOzIVQypJx3sjF23
+w/WGV1ilaGVoRm9GbUzoZbzhKwGZPEVI5TFQocjcw2cCAwEAAaNtMGswCQYDVR0T
+BAIwADALBgNVHQ8EBAMCA7gwJwYDVR0lBCAwHgYIKwYBBQUHAwEGCCsGAQUFBwMC
+BggrBgEFBQcDBTAJBgNVHSMEAjAAMB0GA1UdDgQWBBRaQbi0jLOTbuV9mGvM09A9
++8jrTzANBgkqhkiG9w0BAQsFAAOCAQEAUMjeBHhCV22sjQa7KtLDR/0/QuRpSGTK
+LbjiqYUNsdkWC16RrJ2k1FsxDL1y0hc2llyZhFFpGOmlFRl4qxxmb8radL+J7lLk
+uB0nXNppnLVL/qMFMLZ/vTzvq1I/AL2XOzHvOVkvGobD3E5WFtuqxfaz6G44YhJR
+3YpHENco+Ark+m2WZtkW9H2iOS0hLx4MZY+0mB88nPv3v4zsVx6WmjJQmFkalvMc
+k2inj6Age3cg5hZ60nfhWsrQzkrMHuOdmbd/APoMN7fi7TL4rsduVToopw+EUavC
+lCox0B0+WtOoZ73S/tVKKuO9AjgXcUH/T6LaoD69KJBRAhmBHZz2Ew==
+-----END CERTIFICATE-----
+";
+        algorithm RSA;
+        private-key -AQ==/+7tgSa8edAknd3lryCIHtAIdzg=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;
+      }
+      inbound_ssl {
+        subject-hash 70441ccf;
+        issuer-hash a4c911bc;
+        not-valid-before "Apr 14 07:11:00 2017 GMT";
+        issuer /C=FR/L=Boulogne/CN=ca-lab-nms/emailAddress=fha@nomios.fr;
+        not-valid-after "Apr 14 07:11:00 2018 GMT";
+        common-name app_ssl;
+        expiry-epoch 1523689860;
+        ca no;
+        subject "/C=FR/ST=IdF/O=Nomios Lab/OU=support/CN=app_ssl";
+        public-key "-----BEGIN CERTIFICATE-----
+MIIDozCCAougAwIBAgIBBjANBgkqhkiG9w0BAQUFADBTMQswCQYDVQQGEwJGUjER
+MA8GA1UEBxMIQm91bG9nbmUxEzARBgNVBAMTCmNhLWxhYi1ubXMxHDAaBgkqhkiG
+9w0BCQEWDWZoYUBub21pb3MuZnIwHhcNMTcwNDE0MDcxMTAwWhcNMTgwNDE0MDcx
+MTAwWjBUMQswCQYDVQQGEwJGUjEMMAoGA1UECBMDSWRGMRMwEQYDVQQKEwpOb21p
+b3MgTGFiMRAwDgYDVQQLEwdzdXBwb3J0MRAwDgYDVQQDDAdhcHBfc3NsMIIBIjAN
+BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3shY4nRvvAGlZbnT87Da+jYX4Zde
+CzgLEpTPl9cpsk86jXQr9uAYJhA261DCq9tfQANCC5e8khcH2xc+fVHB4RtVY3jP
+kkOILMGWvmYfYhhLBt58scHt0ZYeb3kGL0eZJBfFZqONvB6DzryUTJfKUNHDu0fd
+RYrGo/dCwc7HAjEoQnVC5zzCmZN8FWiDb4DMZDmot3T2TI5Xu7WI1f5+NzOsy7mh
+/WFaShMZSzFnSCKVm4EHH/3l7eB3pdMFVwfyIhVZIRhBvjetUVx4sH4Uu4Cpq4sw
+b3jGmT7IQqRKbBSnphkzZRjnsLZswSPoeDZF3LV4kK5YcxV+liMUDmoH/wIDAQAB
+o4GAMH4wDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUDI5XMsEj3PD5HDZKPeDZlI03
+3WEwCwYDVR0PBAQDAgSwMA8GA1UdEQQIMAaHBKwQAwswEQYJYIZIAYb4QgEBBAQD
+AgWgMB4GCWCGSAGG+EIBDQQRFg94Y2EgY2VydGlmaWNhdGUwDQYJKoZIhvcNAQEF
+BQADggEBAGbFdaRra3Z+pmFGTXCTKAdLDu8HKN0anHuFbDx38SqnrZxiIwqj6ltV
+Y9ubR5lOW6aqJm4rE6fRxGnznCl80Snwm5/118mnv5WCEoTPA9EAoogq8fRKL7lG
+3DU0Pm/srryXrsp0sCieH73uppCIeEMWnjZ0qllVqLXe1LDkYhEH3ZOd9O/ZO1Tx
+QP/0dZ0bQTrp5aT9Hy1g/qazQtiAfrar+QP4ji2w+cvzv711k/ar05vhwJjIh722
+bHEzC4mquAatBESiWItr7C4d/eslnk3IKnygiu3xxjn9/EY3MnGK/kEg39nkfbPW
+BYvexm71PzYwZg3qp5OopiKVZ/LiONw=
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+MIIDkzCCAnugAwIBAgIBATANBgkqhkiG9w0BAQUFADBTMQswCQYDVQQGEwJGUjER
+MA8GA1UEBxMIQm91bG9nbmUxEzARBgNVBAMTCmNhLWxhYi1ubXMxHDAaBgkqhkiG
+9w0BCQEWDWZoYUBub21pb3MuZnIwHhcNMTYxMTI4MTgwMDAwWhcNMjYxMTI4MTgw
+MDAwWjBTMQswCQYDVQQGEwJGUjERMA8GA1UEBxMIQm91bG9nbmUxEzARBgNVBAMT
+CmNhLWxhYi1ubXMxHDAaBgkqhkiG9w0BCQEWDWZoYUBub21pb3MuZnIwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCsleQgibwuHlpLGYpTPIRUcXSJqRNv
+59oOVszMqXHvaChvBPM0VxB7xY8pGISqdLWhp1Er6sWjjQo5DIDTyxM4jF7o+ST3
+waj3SyPj04nIwVhbOgyNGOJP554WuCpeRx0jktgr29o1BmL0cniwZe43KVeMSvgl
+Vm5xL+2nFWDBw6f+QblAhh8vsWjMqlhbZPqLvjGb2xILNLPoS22fqDmIgUyQqtqh
+u8TwoUcwLTSb9hh4BkJ0BE/mmR4YzpwSdkCfjI8Q05QDgFE6xds9N+0afzPgY8a2
+9Wm8ITRisYzm3uumxF/IahwlkQ3EixGzvPjqV7oVEiLTvQALDepW+VBvAgMBAAGj
+cjBwMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFBjhGuqKR57Pgxv29rBMl1u3
+pTY4MAsGA1UdDwQEAwIBBjARBglghkgBhvhCAQEEBAMCAAcwHgYJYIZIAYb4QgEN
+BBEWD3hjYSBjZXJ0aWZpY2F0ZTANBgkqhkiG9w0BAQUFAAOCAQEAmGZfMumTlwdp
+reO/zUwneA8Wlq3m94A2VmPrz8vbOu3p7mhu1MJuVy9tnCNRHody+h7UR1uXahD3
+Wjc1bjPuy+1Wpnxp+JdpTSHXetM3NYy3DP5ZFa7uPAIrcE/ItJPd97tKGMW3yetK
+gkww50qKl03+o2KNvLUGQg+8/fCgWq/FvKylrsXt6va6jdhfagoeC9G5tbRRVcK6
+UQH5IWiuaWtzR3PZLBMDjfcVBfDCKeYF3lLbGB5UXGKmnjiU/1B1MhWy7S6vIsy9
+X8wb1Zbl10c+xjl991cqK4z8dU0msvQGmrqD+25FlU5AQz4rrDOmGnh/WK+P4vt/
+JRdld9MoXw==
+-----END CERTIFICATE-----
+";
+        algorithm RSA;
+        private-key -AQ==q78EpRnwXyeZHBD7PVsrve0mz3E=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;
+      }
+      ca_nms_lab_fha {
+        subject-hash a4c911bc;
+        issuer-hash a4c911bc;
+        not-valid-before "Nov 28 18:00:00 2016 GMT";
+        issuer /C=FR/L=Boulogne/CN=ca-lab-nms/emailAddress=fha@nomios.fr;
+        not-valid-after "Nov 28 18:00:00 2026 GMT";
+        common-name ca-lab-nms;
+        expiry-epoch 1795888800;
+        ca yes;
+        subject /C=FR/L=Boulogne/CN=ca-lab-nms/emailAddress=fha@nomios.fr;
+        public-key "-----BEGIN CERTIFICATE-----
+MIIDkzCCAnugAwIBAgIBATANBgkqhkiG9w0BAQUFADBTMQswCQYDVQQGEwJGUjER
+MA8GA1UEBxMIQm91bG9nbmUxEzARBgNVBAMTCmNhLWxhYi1ubXMxHDAaBgkqhkiG
+9w0BCQEWDWZoYUBub21pb3MuZnIwHhcNMTYxMTI4MTgwMDAwWhcNMjYxMTI4MTgw
+MDAwWjBTMQswCQYDVQQGEwJGUjERMA8GA1UEBxMIQm91bG9nbmUxEzARBgNVBAMT
+CmNhLWxhYi1ubXMxHDAaBgkqhkiG9w0BCQEWDWZoYUBub21pb3MuZnIwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCsleQgibwuHlpLGYpTPIRUcXSJqRNv
+59oOVszMqXHvaChvBPM0VxB7xY8pGISqdLWhp1Er6sWjjQo5DIDTyxM4jF7o+ST3
+waj3SyPj04nIwVhbOgyNGOJP554WuCpeRx0jktgr29o1BmL0cniwZe43KVeMSvgl
+Vm5xL+2nFWDBw6f+QblAhh8vsWjMqlhbZPqLvjGb2xILNLPoS22fqDmIgUyQqtqh
+u8TwoUcwLTSb9hh4BkJ0BE/mmR4YzpwSdkCfjI8Q05QDgFE6xds9N+0afzPgY8a2
+9Wm8ITRisYzm3uumxF/IahwlkQ3EixGzvPjqV7oVEiLTvQALDepW+VBvAgMBAAGj
+cjBwMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFBjhGuqKR57Pgxv29rBMl1u3
+pTY4MAsGA1UdDwQEAwIBBjARBglghkgBhvhCAQEEBAMCAAcwHgYJYIZIAYb4QgEN
+BBEWD3hjYSBjZXJ0aWZpY2F0ZTANBgkqhkiG9w0BAQUFAAOCAQEAmGZfMumTlwdp
+reO/zUwneA8Wlq3m94A2VmPrz8vbOu3p7mhu1MJuVy9tnCNRHody+h7UR1uXahD3
+Wjc1bjPuy+1Wpnxp+JdpTSHXetM3NYy3DP5ZFa7uPAIrcE/ItJPd97tKGMW3yetK
+gkww50qKl03+o2KNvLUGQg+8/fCgWq/FvKylrsXt6va6jdhfagoeC9G5tbRRVcK6
+UQH5IWiuaWtzR3PZLBMDjfcVBfDCKeYF3lLbGB5UXGKmnjiU/1B1MhWy7S6vIsy9
+X8wb1Zbl10c+xjl991cqK4z8dU0msvQGmrqD+25FlU5AQz4rrDOmGnh/WK+P4vt/
+JRdld9MoXw==
+-----END CERTIFICATE-----
+";
+        algorithm RSA;
+      }
+    }
+    ssl-tls-service-profile {
+      ProfileGP {
+        protocol-settings {
+          min-version tls1-0;
+          max-version max;
+        }
+        certificate certificatGP;
+      }
+    }
+    authentication-profile {
+      AuthentLocal {
+        multi-factor-auth {
+          mfa-enable no;
+        }
+        method {
+          local-database;
+        }
+        allow-list all;
+      }
+      AuthentRadius {
+        multi-factor-auth {
+          mfa-enable no;
+        }
+        method {
+          radius {
+            server-profile RadiusDMZ;
+            checkgroup yes;
+          }
+        }
+        allow-list all;
+      }
+    }
+    server-profile {
+      radius {
+        RadiusDMZ {
+          server {
+            RadiusDemerde {
+              secret -AQ==AWtLITrftu3jd0IuMXxvzYPXOEY=lzPi5gDJ+uYCRAXWZRCf6g==;
+              port 1812;
+              ip-address 192.20.20.30;
+            }
+          }
+          protocol CHAP;
+        }
+      }
+      ldap {
+        MonLdapProfile {
+          server {
+            MonLdap {
+              address 10.10.10.200;
+              port 389;
+            }
+          }
+          ldap-type active-directory;
+          bind-dn cn=LDAPUsers;
+          bind-timelimit 30;
+          bind-password -AQ==W6ph5Mm5Pz8GgiULbPgzG37mj9g=w2hP4BspAiin+j7uXWkGKA==;
+          ssl yes;
+          base dc=nomios,dc=fr;
+        }
+      }
+    }
+    authentication-sequence {
+      SequenceRadiusPuisLocal {
+        authentication-profiles [ AuthentRadius AuthentLocal];
+      }
+    }
+    content-preview {
+      application {
+        7shifts {
+          category business-systems;
+          subcategory management;
+          technology browser-based;
+          description "7shifts is an employee scheduling app designed for restaurants.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            7shifts {
+              link http://www.7shifts.com;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        accelo {
+          category business-systems;
+          subcategory erp-crm;
+          technology browser-based;
+          description "Accelo is a cloud-based CRM software.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Accelo {
+              link https://www.accelo.com/products/crm/;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        appogee {
+          category business-systems;
+          subcategory management;
+          technology browser-based;
+          description "Appogee Leave is an online absence management system, providing a simple way for staff to submit leave requests and managers to approve.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            "Appogee HR" {
+              link http://www.appogeehr.com/;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ google-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        appointy {
+          category business-systems;
+          subcategory management;
+          technology browser-based;
+          description "Appointy is an all-in-one online scheduling software.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Appointy {
+              link http://www.appointy.com/;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ google-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        apptivo {
+          category business-systems;
+          subcategory erp-crm;
+          technology browser-based;
+          description "Apptivo is a web-based online office suite and enterprise resource planning software consisting of apps-based business solutions.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikepedia {
+              link https://en.wikipedia.org/wiki/Apptivo;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ google-analytics google-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        benchmark {
+          category business-systems;
+          subcategory office-programs;
+          technology browser-based;
+          description "Benchmark Email is an online tool that helps users create, send, and track HTML-based emails.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            website {
+              link http://www.benchmarkemail.com/features/emaildesigner;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing websocket];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        bitrix24 {
+          category business-systems;
+          subcategory erp-crm;
+          technology browser-based;
+          description "Bitrix24 is a CRM software that allows employees to communicate and manage activities.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            website {
+              link https://www.bitrix24.com/features/;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ ssl web-browsing websocket yandex-maps];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        cakehr {
+          category business-systems;
+          subcategory general-business;
+          technology browser-based;
+          description "CakeHR helps companies solve their HR challenges, it has functions that a company needs to handle their HR processes.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://cake.hr/;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing websocket];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        certify {
+          category business-systems;
+          subcategory management;
+          technology browser-based;
+          description "Certify is a cloud-based travel and expense report management solution for companies of all sizes. With mobile receipt capture, automated expense report creation and streamlined workflow, Certify eliminates the need for spreadsheets and paper receipts.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Certify {
+              link https://www.certify.com;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        cisco-spark-audio-video {
+          category collaboration;
+          subcategory voip-video;
+          technology peer-to-peer;
+          description "Cisco Spark is a business collaboration and communication tool developed by Cisco that allows users to message each other, organize meetings, and make calls. This application can be used to identify and control the audio and video calling function for Cisco Spark.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth yes;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          breaks-decryption yes;
+          references {
+            website {
+              link https://www.ciscospark.com/learn/about-us.html;
+            }
+          }
+          default {
+            port [ tcp/5004,33434 udp/5004,33434];
+          }
+          use-applications stun;
+          risk 2;
+          preview yes;
+        }
+        cisco-spark-base {
+          ottawa-name cisco-spark;
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "Cisco Spark is a business collaboration and communication tool developed by Cisco that allows users to message each other, organize meetings, and make calls.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          references {
+            website {
+              link https://www.ciscospark.com/learn/about-us.html;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing webex-base websocket];
+          tunnel-applications cisco-spark-file-transfer;
+          applicable-decoders [ http ssl];
+          risk 1;
+          application-container cisco-spark;
+          preview yes;
+        }
+        cisco-spark {
+          ottawa-name cisco-spark;
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "Cisco Spark is a business collaboration and communication tool developed by Cisco that allows users to message each other, organize meetings, and make calls.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          references {
+            website {
+              link https://www.ciscospark.com/learn/about-us.html;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing webex-base websocket];
+          tunnel-applications cisco-spark-file-transfer;
+          applicable-decoders [ http ssl];
+          risk 1;
+          application-container cisco-spark;
+          preview yes;
+        }
+        cisco-spark-file-transfer {
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "Cisco Spark is a business collaboration and communication tool developed by Cisco that allows users to message each other, organize meetings, and make calls. This application can be used to identify and control the file transfer function for Cisco Spark.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          references {
+            website {
+              link https://www.ciscospark.com/learn/about-us.html;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ cisco-spark-base jungledisk ssl web-browsing];
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        cloudup {
+          category general-internet;
+          subcategory file-sharing;
+          technology browser-based;
+          description "Cloudup is a file storage and synchronization service created by Automattic. It allows users to store files in the cloud, synchronize files across devices, and share files.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Cloudup;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        datadog {
+          category business-systems;
+          subcategory management;
+          technology browser-based;
+          description "Datadog is a monitoring service for cloud-scale applications.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            website {
+              link https://www.datadoghq.com/product/;
+            }
+            wikipedia {
+              link https://en.wikipedia.org/wiki/Datadog;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        dropbox-downloading {
+          category general-internet;
+          subcategory file-sharing;
+          technology client-server;
+          description "This application controls file downloading traffic through of Dropbox App-ID.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://www.dropbox.com/;
+            }
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Dropbox_(service);
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ dropbox-base ssl web-browsing];
+          implicit-use-applications web-browsing;
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        dropbox-base {
+          ottawa-name dropbox;
+          category general-internet;
+          subcategory file-sharing;
+          technology client-server;
+          description "Dropbox is a file hosting service that offers cloud storage, file synchronization, personal cloud, and client software.";
+          icon data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAkFBMVEX///+JxPGDwvF6vfHC4PbM5PeTyfBfsvHi8PuYy/Frt/B+wPF1u/Ghz/COxvA5nOtYqupgsvBFouxPpena7PrS6fpntfBSqu3c7frl8fqk0PDA3/aw2/krlem63Pas0/A8nekTiOghj+mSxeoFgecdjuqz1fBzvvR8u+uize2Oyvabz/eIxfUul+i03fl+wOvH0VXfAAAC4klEQVRIic2V24KjIAyGK4oHQIrWI7Uy7UzV1Wnn/d9ug3ZaUWf3dnJVQz7+kAS62/1yq1q6dFFS/Rzf2q7bmi7CKGu3o3c9sTgPAmM5Y7aNLDZsxRNYsbgbhLOsPMKYTWGftQjNbErRCCgkJ58UZATAHSBkhA/R94obAMH7MUWRZTM3neVFPAJ7PQHZ6LRaEUXZyx3K4DtXmkfGVqFUtUIE4ucACDf8Uwt7nrdYkUo1uPfylbtpvgYtDYS5IuuiTGs79xbuRk6HW26lcFn6DsaSGLWQzVSM3e4usmf9XDeoEx/McZwU84zYr33Qfd6ghwIPcVEUI4BxmtSIPKtkjNmjSojf0yQBhVIrYIyTRFJbA2Fgm522tTYNnDRNk2ICQAE+/DSgiAd8NcY9oagaQ0wg8csj56hfDx9iOHXwUgG+irJc7w93h+RRna4A0CtTq0OrW/QZ0fwW80cWD0B/+X4oRBeiTzO+harm+zjO7olZJb+JYgCgSkZWutMUgMNBcOwn333ABWb7t4MQNvQtnNV1mhkN5EKwxveLUSFN+P70Fh+0QhBIRR8HGcbxJg8Afrm49EvsJCo+n/YToBVglkIdT/NxvNkTYHanyt0uic7ny+k2A1QTWmP8NN4voPuy/vjV7eN8XQL1eE/b6cbNAP7+rvYf18vlMk9JNS6dHXqqUi4i1lnW+9HJ4uv1dJopKEnlayzypwLpYGZr7HhefrrcbvvvKoXUbN1DQWSs6yAeAHhkbjqjSYEvpltPKwAiyhjjNTQNFCJCYp0R9KajW4+lOBz06XldHycgm9KEXrKNcChwz0CBV08AzmVlAHSNuwm0w2ARXlX3mQLlneDN0doEejoMg5SGArXcQCm0+dyPGtDPlwIAyHJDd+O6vURkpQyAu6t6Lk7u1rOUKLI3br9pd1QfATjCSILCT39vhqEQ607DgEX/3X6yCtXJMfKi7XZtWh/gKP+plttG/1HL32Z/Aee+UAWQrFiyAAAAAElFTkSuQmCC;
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior yes;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          is-saas yes;
+          trusted-credential yes;
+          references {
+            Website {
+              link https://www.dropbox.com/;
+            }
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Dropbox_(service);
+            }
+          }
+          default {
+            port [ tcp/17500 tcp/443 tcp/80 udp/17500];
+          }
+          use-applications [ ssl web-browsing];
+          tunnel-applications [ dropbox-downloading dropbox-editing dropbox-paper dropbox-posting dropbox-sharing dropbox-uploading];
+          implicit-use-applications ssl;
+          applicable-decoders [ http ssl];
+          risk 4;
+          application-container dropbox;
+          preview yes;
+        }
+        dropbox-editing {
+          category general-internet;
+          subcategory file-sharing;
+          technology client-server;
+          description "This application controls file editing traffic through of Dropbox App-ID.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://www.dropbox.com/;
+            }
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Dropbox_(service);
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ dropbox-base ssl web-browsing];
+          implicit-use-applications web-browsing;
+          applicable-decoders http;
+          risk 1;
+          preview yes;
+        }
+        dropbox-paper {
+          category collaboration;
+          subcategory web-posting;
+          technology browser-based;
+          description "Dropbox Paper allows teams to collaborate on ideas-share docs, give and get feedback on files, and track tasks all in one place.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            website {
+              link https://www.dropbox.com/paper;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ dropbox-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        dropbox-posting {
+          category general-internet;
+          subcategory file-sharing;
+          technology client-server;
+          description "This application controls posting traffic through of Dropbox App-ID.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://www.dropbox.com/;
+            }
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Dropbox_(service);
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ dropbox-base ssl web-browsing];
+          implicit-use-applications web-browsing;
+          applicable-decoders http;
+          risk 1;
+          preview yes;
+        }
+        dropbox-sharing {
+          category general-internet;
+          subcategory file-sharing;
+          technology client-server;
+          description "This application controls file sharing traffic through of Dropbox App-ID.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Webiste {
+              link https://www.dropbox.com/;
+            }
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Dropbox_(service);
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ dropbox-base ssl web-browsing];
+          implicit-use-applications web-browsing;
+          applicable-decoders http;
+          risk 1;
+          preview yes;
+        }
+        dropbox-uploading {
+          category general-internet;
+          subcategory file-sharing;
+          technology client-server;
+          description "This application controls file uploading traffic through of Dropbox App-ID.";
+          icon data:image/png;base64,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;
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://www.dropbox.com/;
+            }
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Dropbox_(service);
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ dropbox-base ssl web-browsing];
+          implicit-use-applications web-browsing;
+          applicable-decoders http;
+          risk 3;
+          preview yes;
+        }
+        google-docs-downloading {
+          category business-systems;
+          subcategory office-programs;
+          technology browser-based;
+          description "This app identifies document downloading activity of users on Google Docs.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior yes;
+          consume-big-bandwidth yes;
+          used-by-malware yes;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            "Google Docs" {
+              link http://docs.google.com;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ google-base google-docs-base];
+          applicable-decoders http;
+          risk 5;
+          preview yes;
+        }
+        google-docs-posting {
+          category business-systems;
+          subcategory office-programs;
+          technology browser-based;
+          description "This app identifies posting comments activity of users on Google Docs.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior yes;
+          consume-big-bandwidth no;
+          used-by-malware yes;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            "Google Docs" {
+              link http://docs.google.com;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          applicable-decoders http;
+          risk 4;
+          preview yes;
+        }
+        google-docs-sharing {
+          category business-systems;
+          subcategory office-programs;
+          technology browser-based;
+          description "This app identifies document sharing activity of users on Google Docs.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior yes;
+          consume-big-bandwidth no;
+          used-by-malware yes;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            "Google Docs" {
+              link http://docs.google.com;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          applicable-decoders http;
+          risk 4;
+          preview yes;
+        }
+        gotowebinar-downloading {
+          category collaboration;
+          subcategory internet-conferencing;
+          technology client-server;
+          description "GoToWebinar is a Web-hosted service created and marketed by Citrix Online, a division of Citrix Systems. It is an online events software that enables the user to host seminars and presentations to other attendees in real time. This application can be used to identify and control the file downloading feature for GoToWebinar.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            "Product Page" {
+              link https://www.gotomeeting.com/webinar;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications gotowebinar-base;
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        gotowebinar-base {
+          ottawa-name gotowebinar;
+          category collaboration;
+          subcategory internet-conferencing;
+          technology client-server;
+          description "GoToWebinar is a Web-hosted service created and marketed by Citrix Online, a division of Citrix Systems. It is an online events software that enables the user to host seminars and presentations to other attendees in real time.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          is-saas yes;
+          references {
+            "Product Page" {
+              link https://www.gotomeeting.com/webinar;
+            }
+          }
+          default {
+            port [ tcp/80,443 udp/1853];
+          }
+          use-applications [ citrix-jedi gotomeeting ssl web-browsing];
+          tunnel-applications [ gotowebinar-downloading gotowebinar-uploading];
+          applicable-decoders [ http ssl];
+          risk 1;
+          application-container gotowebinar;
+          preview yes;
+        }
+        gotowebinar {
+          ottawa-name gotowebinar;
+          category collaboration;
+          subcategory internet-conferencing;
+          technology client-server;
+          description "GoToWebinar is a Web-hosted service created and marketed by Citrix Online, a division of Citrix Systems. It is an online events software that enables the user to host seminars and presentations to other attendees in real time.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          is-saas yes;
+          references {
+            "Product Page" {
+              link https://www.gotomeeting.com/webinar;
+            }
+          }
+          default {
+            port [ tcp/80,443 udp/1853];
+          }
+          use-applications [ citrix-jedi gotomeeting ssl web-browsing];
+          tunnel-applications [ gotowebinar-downloading gotowebinar-uploading];
+          applicable-decoders [ http ssl];
+          risk 1;
+          application-container gotowebinar;
+          preview yes;
+        }
+        gotowebinar-uploading {
+          category collaboration;
+          subcategory internet-conferencing;
+          technology client-server;
+          description "GoToWebinar is a Web-hosted service created and marketed by Citrix Online, a division of Citrix Systems. It is an online events software that enables the user to host seminars and presentations to other attendees in real time. This application can be used to identify and control the file uploading feature for GoToWebinar.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            "Product Page" {
+              link https://www.gotomeeting.com/webinar;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications gotowebinar-base;
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        goverlan {
+          category networking;
+          subcategory remote-access;
+          technology client-server;
+          description "Goverlan is an on-premises client management software designed for medium to large enterprises for remote control, active directory management, global configuration change management, and reporting within a Windows IT Infrastructure.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Goverlan_Systems_Management;
+            }
+          }
+          default {
+            port tcp/80,443,21158;
+          }
+          use-applications [ ms-ds-smb ms-service-controller msrpc ssl web-browsing];
+          implicit-use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        nice {
+          category business-systems;
+          subcategory general-business;
+          technology client-server;
+          description "NICE provides services for telephone voice recording, data security, and surveillance, as well as systems that analyse this recorded data.";
+          alg no;
+          appident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability no;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/NICE_Systems;
+            }
+          }
+          default {
+            port tcp/62122;
+          }
+          risk 1;
+          preview yes;
+        }
+        sharefile-downloading {
+          category general-internet;
+          subcategory file-sharing;
+          technology browser-based;
+          description "This application identifies file downloading function of ShareFile. ShareFile is a cloud-based file sharing and storage service built for business. In October 2011 ShareFile was acquired by Citrix Systems.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior yes;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/ShareFile;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 4;
+          preview yes;
+        }
+        sharefile-editing {
+          category general-internet;
+          subcategory file-sharing;
+          technology browser-based;
+          description "This application identifies files and folders editing activities of users on ShareFile. ShareFile is a cloud-based file sharing and storage service built for business. In October 2011 ShareFile was acquired by Citrix Systems.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior yes;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/ShareFile;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 3;
+          preview yes;
+        }
+        siemens-s7-status-controller {
+          category networking;
+          subcategory ip-protocol;
+          technology network-protocol;
+          description "This App-ID covers status controller for the Siemens-S7 protocol.";
+          alg yes;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          references {
+            website {
+              link http://gmiru.com/article/s7comm/;
+            }
+          }
+          default {
+            port tcp/102;
+          }
+          use-applications siemens-s7-base;
+          tunnel-applications ctd-dummy;
+          applicable-decoders cotp;
+          risk 1;
+          preview yes;
+        }
+        tidal {
+          category media;
+          subcategory audio-streaming;
+          technology browser-based;
+          description "Tidal is a subscription-based music streaming service that combines lossless audio and high definition music videos with curated editorial.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth yes;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Tidal_(service);
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ rtmp ssl web-browsing];
+          applicable-decoders [ http rtmp ssl];
+          risk 2;
+          preview yes;
+        }
+        zalo-audio-video {
+          category collaboration;
+          subcategory voip-video;
+          technology client-server;
+          description "Zalo is an application for mobile devices that allows its users to send and receive messages including photos, videos, and contact information. It is available in Vietnamese and English. This application can be used to identify and control the video and audio calling feature for Zalo.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth yes;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          references {
+            website {
+              link https://zaloapp.com/;
+            }
+          }
+          default {
+            port udp/dynamic;
+          }
+          risk 2;
+          preview yes;
+        }
+        zalo-base {
+          ottawa-name zalo;
+          category collaboration;
+          subcategory instant-messaging;
+          technology client-server;
+          description "Zalo is an application for mobile devices that allows its users to send and receive messages including photos, videos, and contact information. It is available in Vietnamese and English.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          references {
+            website {
+              link https://zaloapp.com/;
+            }
+          }
+          default {
+            port tcp/dynamic;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 3;
+          application-container zalo;
+          preview yes;
+        }
+        zalo {
+          ottawa-name zalo;
+          category collaboration;
+          subcategory instant-messaging;
+          technology client-server;
+          description "Zalo is an application for mobile devices that allows its users to send and receive messages including photos, videos, and contact information. It is available in Vietnamese and English.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          references {
+            website {
+              link https://zaloapp.com/;
+            }
+          }
+          default {
+            port tcp/dynamic;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 3;
+          application-container zalo;
+          preview yes;
+        }
+        zippyshare {
+          category general-internet;
+          subcategory file-sharing;
+          technology browser-based;
+          description "Zippyshare is a free file hosting service. Users can upload and download  any types of files to the cloud without signing up or paying for using the service.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Zippyshare {
+              link http://www.zippyshare.com/;
+            }
+          }
+          default {
+            port tcp/80;
+          }
+          use-applications web-browsing;
+          implicit-use-applications web-browsing;
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        24sevenoffice {
+          category business-systems;
+          subcategory erp-crm;
+          technology browser-based;
+          description "24SevenOffice is a web-based ERP system. It includes modules for CRM, accounting, invoicing , e-mail, file/document management and project management.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/24SevenOffice;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        boxnet-downloading {
+          category general-internet;
+          subcategory file-sharing;
+          technology browser-based;
+          description "This app identifies file downloading activity of users on Box. Box (formerly Box.net) is an online storage, file hosting, and file sharing service that allows individuals to access and share files online.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Box.net;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ boxnet-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 3;
+          preview yes;
+        }
+        boxnet-sharing {
+          category general-internet;
+          subcategory file-sharing;
+          technology browser-based;
+          description "This app identifies file sharing activity of users on Box. Box (formerly Box.net) is an online storage, file hosting, and file sharing service that allows individuals to access and share files online.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Box.net;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ boxnet-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        celoxis {
+          category business-systems;
+          subcategory management;
+          technology browser-based;
+          description "Celoxis is an integrated and collaborative web-based platform to manage projects, finances, resources and business processes online.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Celoxis {
+              link https://www.celoxis.com;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ ssl web-browsing websocket];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        egnyte-downloading {
+          category business-systems;
+          subcategory storage-backup;
+          technology browser-based;
+          description "Egnyte-downloading identifies file downloading traffic of egnyte application. ";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Egnyte;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications egnyte-base;
+          tunnel-applications egnyte-posting;
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        egnyte-base {
+          ottawa-name egnyte;
+          category business-systems;
+          subcategory storage-backup;
+          technology browser-based;
+          description "Egnyte is a computer technology company providing cloud computing infrastructure and hybrid cloud infrastructure for online file storage, file sharing and computer backup for small, medium, and large business enterprises. Egnyte cloud file server is accessible on Microsoft Windows, Mac OS X, and Linux, as well as versions for mobile and tablet devices, such as iPhone, iPad and Android applications. ";
+          icon data:image/png;base64,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;
+          alg no;
+          appident yes;
+          virus-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior yes;
+          consume-big-bandwidth yes;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          is-saas yes;
+          references {
+            Egnyte {
+              link http://www.egnyte.com/;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          tunnel-applications [ egnyte-downloading egnyte-editing egnyte-posting egnyte-sharing egnyte-uploading];
+          implicit-use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 4;
+          application-container egnyte;
+          preview yes;
+        }
+        egnyte-editing {
+          category business-systems;
+          subcategory storage-backup;
+          technology browser-based;
+          description "Egnyte-editing identifies editing traffic of egnyte application. ";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Egnyte;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications egnyte-base;
+          applicable-decoders http;
+          risk 1;
+          preview yes;
+        }
+        egnyte-posting {
+          category business-systems;
+          subcategory storage-backup;
+          technology browser-based;
+          description "Egnyte-posting identifies posting traffic of egnyte application.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Egnyte;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ egnyte-base egnyte-downloading];
+          applicable-decoders http;
+          risk 1;
+          preview yes;
+        }
+        egnyte-sharing {
+          category business-systems;
+          subcategory storage-backup;
+          technology browser-based;
+          description "Egnyte-sharing identifies sharing traffic of egnyte application. ";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Egnyte;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications egnyte-base;
+          applicable-decoders http;
+          risk 1;
+          preview yes;
+        }
+        egnyte-uploading {
+          category business-systems;
+          subcategory storage-backup;
+          technology browser-based;
+          description "Egnyte-uploading identifies file upload traffic of egnyte application.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Egnyte;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications egnyte-base;
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        gmail-downloading {
+          category collaboration;
+          subcategory email;
+          technology browser-based;
+          description "This App-ID detects the downloading attachments activity by users on Gmail.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Gmail;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ gmail-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        gmail-posting {
+          category collaboration;
+          subcategory email;
+          technology browser-based;
+          description "This App-ID detects the sending emails activity by users on Gmail.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Gmail;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        gmail-uploading {
+          category collaboration;
+          subcategory email;
+          technology browser-based;
+          description "This App-ID detects the uploading attachments activity by users on Gmail.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Gmail;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ gmail-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        bkper {
+          category business-systems;
+          subcategory management;
+          technology browser-based;
+          description "Bkper organizes finances in a simple scheme of Accounts and Transactions with a snapshot overview on your real time Balances.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Bkper {
+              link https://bkper.com/;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ google-analytics google-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        wire {
+          category collaboration;
+          subcategory instant-messaging;
+          technology browser-based;
+          description "Wire is an encrypted instant messaging client.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior yes;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          references {
+            website {
+              link https://wire.com/en/;
+            }
+            wikipedia {
+              link https://en.wikipedia.org/wiki/Wire_(software);
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 3;
+          preview yes;
+        }
+        hipchat-downloading {
+          category collaboration;
+          subcategory instant-messaging;
+          technology client-server;
+          description "This application controls file downloading traffic through of Hipchat App-ID.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/HipChat;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ hipchat-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        hipchat-editing {
+          category collaboration;
+          subcategory instant-messaging;
+          technology client-server;
+          description "This application controls chat group editing traffic by users through of Hipchat App-ID.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/HipChat;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ hipchat-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        hipchat-posting {
+          category collaboration;
+          subcategory instant-messaging;
+          technology client-server;
+          description "This application controls message posting traffic by users through of Hipchat App-ID.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/HipChat;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ hipchat-base ssl web-browsing];
+          tunnel-applications hipchat-uploading;
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        hipchat-sharing {
+          category collaboration;
+          subcategory instant-messaging;
+          technology client-server;
+          description "This application controls chat sharing traffic by users through of Hipchat App-ID.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/HipChat;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ hipchat-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        hipchat-uploading {
+          category collaboration;
+          subcategory instant-messaging;
+          technology client-server;
+          description "This application controls file uploading traffic through of Hipchat App-ID.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/HipChat;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ hipchat-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        malwarebytes {
+          category business-systems;
+          subcategory software-update;
+          technology client-server;
+          description "Malwarebytes is an anti-malware software that finds and removes malware.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Malwarebytes_(software);
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ ssl web-browsing];
+          implicit-use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        smpp {
+          category general-internet;
+          subcategory internet-utility;
+          technology client-server;
+          description "The Short Message Peer-to-Peer (SMPP) in the telecommunications industry is an open, industry standard protocol designed to provide a flexible data communication interface for the transfer of short message data between External Short Messaging Entities (ESMEs), Routing Entities (REs) and Message Centres.";
+          alg no;
+          appident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability no;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer;
+            }
+          }
+          default {
+            port tcp/2775;
+          }
+          risk 1;
+          preview yes;
+        }
+        evernote-downloading {
+          category business-systems;
+          subcategory office-programs;
+          technology client-server;
+          description "This App-ID detects evernote downloading traffic.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://www.evernote.com;
+            }
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Evernote;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ evernote-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        evernote-editing {
+          category business-systems;
+          subcategory office-programs;
+          technology client-server;
+          description "This App-ID detects evernote editing traffic.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://www.evernote.com;
+            }
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Evernote;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ evernote-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        evernote-posting {
+          category business-systems;
+          subcategory office-programs;
+          technology client-server;
+          description "This App-ID detects posting sharing traffic.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://www.evernote.com;
+            }
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Evernote;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ evernote-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        evernote-sharing {
+          category business-systems;
+          subcategory office-programs;
+          technology client-server;
+          description "This App-ID detects evernote sharing traffic.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link https://www.evernote.com;
+            }
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Evernote;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ evernote-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        cloudcherry {
+          category business-systems;
+          subcategory erp-crm;
+          technology browser-based;
+          description "Cloudcherry is a platform that allows companies to manage customer experience.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            website {
+              link https://www.getcloudcherry.com/;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ ssl web-browsing websocket];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        confluence-downloading {
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "This App-ID identifies confluence downloading traffic.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link http://www.atlassian.com/software/confluence/overview/team-collaboration-software;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ confluence-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        confluence-base {
+          ottawa-name confluence;
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "Confluence is team collaboration software. Written in Java and mainly used in corporate environments, it is developed and marketed by Atlassian. Confluence is sold as either on-premises software or as a hosted solution.";
+          icon data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADgElEQVR42u3aX2hWdRzH8a9zOXTCErZ8VLASowTNXWgXksQmmeaNIHihUlNbs0F5obvQArtQh14IKVYSKbvQiiS6sKnzDwTiYgj+SRbzX2XMdChsNmu52Lf3RcLhC+f8vs+e83gIdvE6F7/f73vO78NzDuf3/J5HVPV/bSRA1kSq11lP4CwUHVgKycA8nITiYuw4DtY49EKNH/AupkKKYBrew2mo0Y0yXwCgBZrgCCTG6Jj2koSaI4HrXYDkE2AzNGAZxDgORT+u4mfcQA8Ul2CDlEMDvsk3QDU0oBVitAdqfkepqTkADViXb4Ay9EED3jR1GwLj15rxL0AdoZ/yBLDegQb8hEpT1xYz9gbEuAUN+ALiChC4N70XqEE/1Jhhxu2BBjwAdf4A1lZniA9NXZ3pbzT9q6Deh7eQACW4D3VYbWp34iY+Me2vQB168bwnQEgt1Gmx42XVB3VYD/EE8PgY6vAb5kBgTccDqMMpSJoBxqML6nALNsQM/OGsv4Mn0whgzcrjeehGNQTPoRfqtACSVgBrCfqhDtewHL9AnVZA0g5gNUCLoBlSrADWTmiKdkAKCJBpiGZIugH8dkAL0AYpNEBWIY6iLKsA1ufQPBw039wyD1CCNqjTVkjWAawxOOUM8A9mZxAgqBQn3UsOxmcdYBvuoS7SNgodzhCtWQaw6/raSF8FbnvXPlkEGAV7vw9gZmTMM/jLs/p8nAGm4lXsg8IaxLOR8WugDruwEhVpB6jAepzA31CHH81OxSFoHgZwFI3IDTdAPS5Ch6nBnK+vgHP9ire8AerxJ7RAy81534Cm4P24AKXohKbgMiZBjCvQFHSiyga4k1BwHS14DXXQgEYIrEZH7XYswXZcTRjXg9mQuB2H81gIMV6HBrwEiTEQqN0IMVbEvN2/Qk44dEcaH2IuJMaWwATOBHYU7gXqv0uozZlP5SaahcPdSOMJSILdgQm0BOq/DNQfCy1dzKbBJuHQ5LyH7djBCP3PB4EJbMKQwNQPQbE7oXalmednyD3q/N50nkv4LWwspmBixBSUQxyqMNnU51AVs2SZjmNmfmcxyb4HDkONb7EIlZDHaAJqYH/wG8L+pBdZLdpjFmGHUA0poqfxNdToRzte9i4lXsRedKHPPmRF9FHkWvfRiU+Tttk9m7qr0YpONBU5wHx04TTedqxOR/4rMRKgUP8C5QZIQbsbDQEAAAAASUVORK5CYII=;
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          is-saas yes;
+          references {
+            Confluence {
+              link http://www.atlassian.com/software/confluence/overview/team-collaboration-software;
+            }
+            Wikipedia {
+              link http://en.wikipedia.org/wiki/Confluence_(software);
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          tunnel-applications [ confluence-downloading confluence-editing confluence-posting confluence-sharing confluence-uploading];
+          applicable-decoders http;
+          risk 3;
+          application-container confluence;
+          preview yes;
+        }
+        confluence-editing {
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "This App-ID identifies confluence editing traffic.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link http://www.atlassian.com/software/confluence/overview/team-collaboration-software;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ confluence-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        confluence-posting {
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "This App-ID identifies confluence posting traffic.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link http://www.atlassian.com/software/confluence/overview/team-collaboration-software;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ confluence-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        confluence-sharing {
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "This App-ID identifies confluence sharing traffic.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link http://www.atlassian.com/software/confluence/overview/team-collaboration-software;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ confluence-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 1;
+          preview yes;
+        }
+        confluence-uploading {
+          category collaboration;
+          subcategory social-business;
+          technology browser-based;
+          description "This App-ID identifies confluence uploading traffic.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Website {
+              link http://www.atlassian.com/software/confluence/overview/team-collaboration-software;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ confluence-base ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        dapulse {
+          category business-systems;
+          subcategory management;
+          technology browser-based;
+          description "Dapulse is a smart collaboration and communication app you can use to get your team members working in sync in one place.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Dapulse {
+              link https://dapulse.com/;
+            }
+            "Dapulse Reviews" {
+              link https://reviews.financesonline.com/p/dapulse/;
+            }
+          }
+          default {
+            port tcp/80,443;
+          }
+          use-applications [ ssl web-browsing];
+          applicable-decoders [ http ssl];
+          risk 2;
+          preview yes;
+        }
+        github-downloading {
+          category business-systems;
+          subcategory management;
+          technology client-server;
+          description "This app-id controls downloading activities by Github. GitHub is a web-based hosting service for software development projects that use the Git revision control system.";
+          alg no;
+          appident yes;
+          virus-ident yes;
+          spyware-ident yes;
+          file-type-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward yes;
+          can-disable yes;
+          is-saas yes;
+          references {
+            website {
+              link https://github.com;
+            }
+            wikipedia {
+              link http://en.wikipedia.org/wiki/GitHub;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ github-base ssl web-browsing];
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        github-editing {
+          category business-systems;
+          subcategory management;
+          technology client-server;
+          description "This app-id controls editing activities by Github. GitHub is a web-based hosting service for software development projects that use the Git revision control system.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            website {
+              link https://github.com/;
+            }
+            wikipedia {
+              link http://en.wikipedia.org/wiki/GitHub;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ github-base ssl web-browsing];
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        github-posting {
+          category business-systems;
+          subcategory management;
+          technology client-server;
+          description "This app-id controls posting activities by Github. GitHub is a web-based hosting service for software development projects that use the Git revision control system.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use yes;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            website {
+              link https://github.com/;
+            }
+            wikipedia {
+              link https://en.wikipedia.org/wiki/GitHub;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications [ github-base ssl web-browsing];
+          applicable-decoders http;
+          risk 2;
+          preview yes;
+        }
+        nasuni {
+          category business-systems;
+          subcategory storage-backup;
+          technology browser-based;
+          description "Nasuni is cloud-based storage appliance. The primary storage infrastructure uses public cloud storage platforms, such as Amazon Web Services and Microsoft Azure.";
+          alg no;
+          appident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth no;
+          used-by-malware no;
+          able-to-transfer-file yes;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Wikipedia {
+              link https://en.wikipedia.org/wiki/Nasuni;
+            }
+          }
+          default {
+            port tcp/443;
+          }
+          use-applications ssl;
+          applicable-decoders ssl;
+          risk 2;
+          preview yes;
+        }
+        rabbit {
+          category media;
+          subcategory photo-video;
+          technology browser-based;
+          description "Rabbit makes it simple to sync up anything you're doing online, from catching up on your favorite shows with friends across the globe to playing games and listening to music.";
+          alg no;
+          appident yes;
+          spyware-ident yes;
+          vulnerability-ident yes;
+          evasive-behavior no;
+          consume-big-bandwidth yes;
+          used-by-malware no;
+          able-to-transfer-file no;
+          has-known-vulnerability yes;
+          tunnel-other-application no;
+          prone-to-misuse no;
+          pervasive-use no;
+          per-direction-regex no;
+          deny-action drop-reset;
+          data-ident yes;
+          run-decoder no;
+          cachable no;
+          file-forward no;
+          can-disable yes;
+          is-saas yes;
+          references {
+            Rabbit {
+              link https://www.rabb.it/;
+            }
+          }
+          default {
+            port [ tcp/80,443 udp/dynamic];
+          }
+          use-applications [ ssl stun web-browsing];
+          applicable-decoders [ http ssl stun];
+          risk 2;
+          preview yes;
+        }
+      }
+      application-type {
+        category;
+        technology;
+      }
+    }
+  }
+  devices {
+    localhost.localdomain {
+      network {
+        interface {
+          ethernet {
+            ethernet1/1 {
+              layer3 {
+                ipv6 {
+                  neighbor-discovery {
+                    router-advertisement {
+                      enable no;
+                    }
+                  }
+                }
+                ndp-proxy {
+                  enabled no;
+                }
+                ip {
+                  172.16.1.101/24;
+                }
+                lldp {
+                  enable no;
+                }
+                interface-management-profile allow_ping;
+              }
+            }
+            ethernet1/2 {
+              layer3 {
+                ipv6 {
+                  neighbor-discovery {
+                    router-advertisement {
+                      enable no;
+                    }
+                  }
+                }
+                ndp-proxy {
+                  enabled no;
+                }
+                ip {
+                  10.10.10.1/24;
+                }
+                lldp {
+                  enable no;
+                }
+                interface-management-profile allow_ping;
+              }
+            }
+            ethernet1/3 {
+              layer3 {
+                ipv6 {
+                  neighbor-discovery {
+                    router-advertisement {
+                      enable no;
+                    }
+                  }
+                }
+                ndp-proxy {
+                  enabled no;
+                }
+                ip {
+                  192.20.20.20/24;
+                }
+                lldp {
+                  enable no;
+                }
+              }
+              lacp {
+                port-priority 32768;
+              }
+            }
+          }
+          loopback {
+            units;
+          }
+          vlan {
+            units;
+          }
+          tunnel {
+            units {
+              tunnel.1 {
+                ipv6 {
+                  enabled yes;
+                }
+              }
+            }
+          }
+        }
+        vlan;
+        virtual-wire;
+        profiles {
+          monitor-profile {
+            default {
+              interval 3;
+              threshold 5;
+              action wait-recover;
+            }
+          }
+          interface-management-profile {
+            allow_ping {
+              ping yes;
+            }
+          }
+        }
+        ike {
+          crypto-profiles {
+            ike-crypto-profiles {
+              default {
+                encryption [ aes-128-cbc 3des];
+                hash sha1;
+                dh-group group2;
+                lifetime {
+                  hours 8;
+                }
+              }
+              Suite-B-GCM-128 {
+                encryption aes-128-cbc;
+                hash sha256;
+                dh-group group19;
+                lifetime {
+                  hours 8;
+                }
+              }
+              Suite-B-GCM-256 {
+                encryption aes-256-cbc;
+                hash sha384;
+                dh-group group20;
+                lifetime {
+                  hours 8;
+                }
+              }
+            }
+            ipsec-crypto-profiles {
+              default {
+                esp {
+                  encryption [ aes-128-cbc 3des];
+                  authentication sha1;
+                }
+                dh-group group2;
+                lifetime {
+                  hours 1;
+                }
+              }
+              Suite-B-GCM-128 {
+                esp {
+                  encryption aes-128-gcm;
+                  authentication none;
+                }
+                dh-group group19;
+                lifetime {
+                  hours 1;
+                }
+              }
+              Suite-B-GCM-256 {
+                esp {
+                  encryption aes-256-gcm;
+                  authentication none;
+                }
+                dh-group group20;
+                lifetime {
+                  hours 1;
+                }
+              }
+            }
+            global-protect-app-crypto-profiles {
+              default {
+                encryption aes-128-cbc;
+                authentication sha1;
+              }
+            }
+          }
+        }
+        qos {
+          profile {
+            default {
+              class {
+                class1 {
+                  priority real-time;
+                }
+                class2 {
+                  priority high;
+                }
+                class3 {
+                  priority high;
+                }
+                class4 {
+                  priority medium;
+                }
+                class5 {
+                  priority medium;
+                }
+                class6 {
+                  priority low;
+                }
+                class7 {
+                  priority low;
+                }
+                class8 {
+                  priority low;
+                }
+              }
+            }
+          }
+        }
+        virtual-router {
+          default {
+            protocol {
+              bgp {
+                enable no;
+                dampening-profile {
+                  default {
+                    cutoff 1.25;
+                    reuse 0.5;
+                    max-hold-time 900;
+                    decay-half-life-reachable 300;
+                    decay-half-life-unreachable 900;
+                    enable yes;
+                  }
+                }
+                routing-options {
+                  graceful-restart {
+                    enable yes;
+                  }
+                }
+              }
+            }
+            interface [ ethernet1/1 ethernet1/2 ethernet1/3 tunnel.1];
+            ecmp {
+              algorithm {
+                ip-modulo;
+              }
+            }
+            routing-table {
+              ip {
+                static-route {
+                  default {
+                    path-monitor {
+                      enable no;
+                      failure-condition any;
+                      hold-time 2;
+                    }
+                    nexthop {
+                      ip-address 172.16.1.254;
+                    }
+                    bfd {
+                      profile None;
+                    }
+                    interface ethernet1/1;
+                    metric 10;
+                    destination 0.0.0.0/0;
+                    route-table {
+                      unicast;
+                    }
+                  }
+                  MonVPNquiFonctionne {
+                    bfd {
+                      profile None;
+                    }
+                    path-monitor {
+                      enable no;
+                      failure-condition any;
+                      hold-time 2;
+                    }
+                    interface tunnel.1;
+                    metric 10;
+                    destination 10.20.20.0/24;
+                    route-table {
+                      unicast;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        tunnel {
+          global-protect-gateway {
+            GatewayGP-N {
+              ipsec {
+                third-party-client {
+                  enable no;
+                }
+              }
+              local-address {
+                interface ethernet1/1;
+                ip;
+              }
+              tunnel-interface tunnel.1;
+            }
+          }
+        }
+      }
+      deviceconfig {
+        system {
+          ip-address 172.16.3.70;
+          netmask 255.255.255.0;
+          update-server updates.paloaltonetworks.com;
+          update-schedule {
+            threats {
+              recurring {
+                weekly {
+                  day-of-week wednesday;
+                  at 01:02;
+                  action download-only;
+                }
+              }
+            }
+          }
+          timezone US/Pacific;
+          service {
+            disable-telnet yes;
+            disable-http yes;
+            disable-snmp no;
+          }
+          hostname PA-5020;
+          type {
+            static;
+          }
+          default-gateway 172.16.3.254;
+          dns-setting {
+            servers {
+              primary 8.8.8.8;
+            }
+          }
+          snmp-setting {
+            access-setting {
+              version {
+                v2c;
+              }
+            }
+            snmp-system {
+              location Boulogne;
+              contact agm@nomios.fr;
+            }
+          }
+        }
+        setting {
+          config {
+            rematch yes;
+          }
+          management {
+            hostname-type-in-syslog FQDN;
+          }
+        }
+      }
+      vsys {
+        vsys1 {
+          application;
+          application-group;
+          zone {
+            WAN {
+              network {
+                layer3 ethernet1/1;
+              }
+            }
+            LAN {
+              network {
+                layer3 ethernet1/2;
+              }
+              enable-user-identification yes;
+            }
+            DMZ {
+              network {
+                layer3 ethernet1/3;
+              }
+            }
+            VPNGP {
+              network {
+                layer3 tunnel.1;
+                enable-packet-buffer-protection yes;
+              }
+              enable-user-identification yes;
+            }
+          }
+          service;
+          service-group;
+          schedule;
+          rulebase {
+            security {
+              rules {
+                Browsing {
+                  profile-setting {
+                    profiles {
+                      url-filtering UFDGE;
+                      virus AVDGE;
+                    }
+                  }
+                  to WAN;
+                  from LAN;
+                  source PCFillon;
+                  destination any;
+                  source-user any;
+                  category any;
+                  application [ dns ssl web-browsing];
+                  service application-default;
+                  hip-profiles any;
+                  action allow;
+                }
+                intra-decrypt {
+                  to WAN;
+                  from WAN;
+                  source any;
+                  destination any;
+                  source-user any;
+                  category any;
+                  application any;
+                  service application-default;
+                  hip-profiles any;
+                  action allow;
+                }
+                AccesExterneDeMerdeviaDuNat {
+                  profile-setting {
+                    profiles {
+                      vulnerability VPDGE;
+                    }
+                  }
+                  to DMZ;
+                  from WAN;
+                  source any;
+                  destination 172.16.1.102;
+                  source-user any;
+                  category any;
+                  application [ web-browsing web-crawler];
+                  service application-default;
+                  hip-profiles any;
+                  action allow;
+                }
+                ClientVPN {
+                  profile-setting {
+                    profiles {
+                      virus AVDGE;
+                      vulnerability VPDGE;
+                    }
+                  }
+                  to [ DMZ LAN];
+                  from VPNGP;
+                  source any;
+                  destination any;
+                  source-user any;
+                  category any;
+                  application web-browsing;
+                  service application-default;
+                  hip-profiles any;
+                  action allow;
+                }
+                VersVPN {
+                  profile-setting {
+                    profiles {
+                      vulnerability VPDGE;
+                    }
+                  }
+                  to VPNGP;
+                  from LAN;
+                  source any;
+                  destination any;
+                  source-user any;
+                  category any;
+                  application [ ssl teamviewer vnc];
+                  service application-default;
+                  hip-profiles any;
+                  action allow;
+                }
+                All {
+                  to WAN;
+                  from LAN;
+                  source any;
+                  destination any;
+                  source-user any;
+                  category any;
+                  application any;
+                  service any;
+                  hip-profiles any;
+                  action allow;
+                }
+              }
+            }
+            nat {
+              rules {
+                any-anat {
+                  source-translation {
+                    dynamic-ip-and-port {
+                      interface-address {
+                        ip 172.16.1.101/24;
+                        interface ethernet1/1;
+                      }
+                    }
+                  }
+                  to WAN;
+                  from WAN;
+                  source any;
+                  destination any;
+                  service any;
+                }
+                AccesExterneDMZ {
+                  to WAN;
+                  destination-translation {
+                    translated-port 8080;
+                    translated-address 192.20.20.20;
+                  }
+                  from WAN;
+                  source any;
+                  destination 172.16.1.102;
+                  service service-http;
+                }
+                All {
+                  source-translation {
+                    dynamic-ip-and-port {
+                      interface-address {
+                        ip 172.16.1.101/24;
+                        interface ethernet1/1;
+                      }
+                    }
+                  }
+                  to WAN;
+                  from LAN;
+                  source any;
+                  destination any;
+                  service any;
+                }
+                NAT1 {
+                  source-translation {
+                    static-ip {
+                      bi-directional yes;
+                      translated-address 1.4.2.3;
+                    }
+                  }
+                  to WAN;
+                  from LAN;
+                  source PCFillon;
+                  destination any;
+                  service any;
+                }
+                NAT1-1 {
+                  source-translation {
+                    static-ip {
+                      bi-directional yes;
+                      translated-address 1.4.2.4;
+                    }
+                  }
+                  to WAN;
+                  from LAN;
+                  source PCFillon;
+                  destination any;
+                  service any;
+                }
+              }
+            }
+            decryption {
+              rules {
+                decrypt-ECDHE {
+                  category any;
+                  service any;
+                  type {
+                    ssl-inbound-inspection inbound_ssl;
+                  }
+                  from WAN;
+                  to WAN;
+                  source any;
+                  destination 172.16.3.12;
+                  source-user any;
+                  profile decrypt-profile;
+                  action decrypt;
+                }
+              }
+            }
+          }
+          import {
+            network {
+              interface [ ethernet1/1 ethernet1/2 ethernet1/3 tunnel.1];
+            }
+          }
+          profiles {
+            virus {
+              AVDGE {
+                decoder {
+                  http {
+                    action default;
+                    wildfire-action allow;
+                  }
+                  smtp {
+                    action default;
+                    wildfire-action allow;
+                  }
+                  imap {
+                    action default;
+                    wildfire-action allow;
+                  }
+                  pop3 {
+                    action default;
+                    wildfire-action allow;
+                  }
+                  ftp {
+                    action default;
+                    wildfire-action allow;
+                  }
+                  smb {
+                    action default;
+                    wildfire-action allow;
+                  }
+                }
+              }
+            }
+            spyware {
+              ASDGE {
+                rules {
+                  simple-critical {
+                    action {
+                      default;
+                    }
+                    severity critical;
+                    threat-name any;
+                    category any;
+                    packet-capture disable;
+                  }
+                  simple-high {
+                    action {
+                      default;
+                    }
+                    severity high;
+                    threat-name any;
+                    category any;
+                    packet-capture disable;
+                  }
+                  simple-medium {
+                    action {
+                      default;
+                    }
+                    severity medium;
+                    threat-name any;
+                    category any;
+                    packet-capture disable;
+                  }
+                  simple-low {
+                    action {
+                      default;
+                    }
+                    severity low;
+                    threat-name any;
+                    category any;
+                    packet-capture disable;
+                  }
+                }
+                botnet-domains {
+                  lists {
+                    default-paloalto-dns {
+                      action {
+                        alert;
+                      }
+                    }
+                  }
+                  packet-capture disable;
+                }
+              }
+            }
+            vulnerability {
+              VPDGE {
+                rules {
+                  simple-client-critical {
+                    action {
+                      default;
+                    }
+                    vendor-id any;
+                    severity critical;
+                    cve any;
+                    threat-name any;
+                    host client;
+                    category any;
+                    packet-capture disable;
+                  }
+                  simple-client-high {
+                    action {
+                      default;
+                    }
+                    vendor-id any;
+                    severity high;
+                    cve any;
+                    threat-name any;
+                    host client;
+                    category any;
+                    packet-capture disable;
+                  }
+                  simple-client-medium {
+                    action {
+                      default;
+                    }
+                    vendor-id any;
+                    severity medium;
+                    cve any;
+                    threat-name any;
+                    host client;
+                    category any;
+                    packet-capture disable;
+                  }
+                  simple-server-critical {
+                    action {
+                      default;
+                    }
+                    vendor-id any;
+                    severity critical;
+                    cve any;
+                    threat-name any;
+                    host server;
+                    category any;
+                    packet-capture disable;
+                  }
+                  simple-server-high {
+                    action {
+                      default;
+                    }
+                    vendor-id any;
+                    severity high;
+                    cve any;
+                    threat-name any;
+                    host server;
+                    category any;
+                    packet-capture disable;
+                  }
+                  simple-server-medium {
+                    action {
+                      default;
+                    }
+                    vendor-id any;
+                    severity medium;
+                    cve any;
+                    threat-name any;
+                    host server;
+                    category any;
+                    packet-capture disable;
+                  }
+                }
+              }
+            }
+            url-filtering {
+              UFDGE {
+                credential-enforcement {
+                  mode {
+                    disabled;
+                  }
+                  log-severity medium;
+                  alert [ abortion alcohol-and-tobacco auctions business-and-economy computer-and-internet-info content-delivery-networks copyright-infringement dating dynamic-dns educational-institutions entertainment-and-arts extremism financial-services games government health-and-medicine home-and-garden hunting-and-fishing insufficient-content internet-communications-and-telephony internet-portals job-search legal military motor-vehicles music news not-resolved nudity online-storage-and-backup parked peer-to-peer personal-sites-and-blogs philosophy-and-political-advocacy private-ip-addresses proxy-avoidance-and-anonymizers real-estate recreation-and-hobbies reference-and-research religion search-engines sex-education shareware-and-freeware shopping social-networking society sports stock-advice-and-tools streaming-media swimsuits-and-intimate-apparel training-and-tools translation travel unknown web-advertisements web-based-email web-hosting abused-drugs adult gambling hacking malware phishing questionable weapons];
+                }
+                action block;
+                alert [ abortion alcohol-and-tobacco auctions business-and-economy computer-and-internet-info content-delivery-networks copyright-infringement dating dynamic-dns educational-institutions entertainment-and-arts extremism financial-services games government health-and-medicine home-and-garden hunting-and-fishing insufficient-content internet-communications-and-telephony internet-portals job-search legal military motor-vehicles music news not-resolved nudity online-storage-and-backup parked peer-to-peer personal-sites-and-blogs philosophy-and-political-advocacy private-ip-addresses proxy-avoidance-and-anonymizers real-estate recreation-and-hobbies reference-and-research religion search-engines sex-education shareware-and-freeware shopping social-networking society sports stock-advice-and-tools streaming-media swimsuits-and-intimate-apparel training-and-tools translation travel unknown web-advertisements web-based-email web-hosting abused-drugs adult gambling hacking malware phishing questionable weapons];
+              }
+            }
+            file-blocking {
+              FBDGE {
+                rules {
+                  "Block high risk file types" {
+                    application any;
+                    file-type [ 7z bat chm class cpl dll exe hlp hta jar ocx PE pif rar scr torrent vbe wsf];
+                    direction both;
+                    action block;
+                  }
+                  "Continue prompt encrypted files" {
+                    application any;
+                    file-type [ encrypted-rar encrypted-zip];
+                    direction both;
+                    action continue;
+                  }
+                  "Log all other file types" {
+                    application any;
+                    file-type any;
+                    direction both;
+                    action alert;
+                  }
+                }
+              }
+            }
+            decryption {
+              decrypt-profile {
+                ssl-inbound-proxy {
+                  block-unsupported-version yes;
+                  block-unsupported-cipher yes;
+                }
+                ssl-protocol-settings {
+                  keyxchg-algo-ecdhe yes;
+                }
+              }
+            }
+            custom-url-category;
+          }
+          address {
+            PCFillon {
+              ip-netmask 10.10.10.10;
+            }
+          }
+          global-protect {
+            global-protect-portal {
+              GPportal {
+                portal-config {
+                  local-address {
+                    ip {
+                      ipv4 172.16.1.101/24;
+                    }
+                    interface ethernet1/1;
+                  }
+                  client-auth {
+                    authent1 {
+                      os Any;
+                      authentication-profile SequenceRadiusPuisLocal;
+                      authentication-message "Enter login credentials";
+                    }
+                  }
+                  custom-login-page factory-default;
+                  custom-home-page factory-default;
+                  custom-help-page factory-default;
+                  ssl-tls-service-profile ProfileGP;
+                }
+                client-config {
+                  configs {
+                    AgentGP {
+                      gateways {
+                        external {
+                          list {
+                            GatewayGP {
+                              ip {
+                                ipv4 172.16.1.101;
+                              }
+                              priority-rule {
+                                Any {
+                                  priority 1;
+                                }
+                              }
+                              manual no;
+                            }
+                          }
+                          cutoff-time 5;
+                        }
+                      }
+                      authentication-override {
+                        generate-cookie no;
+                      }
+                      agent-ui {
+                        max-agent-user-overrides 0;
+                        agent-user-override-timeout 0;
+                      }
+                      source-user any;
+                      os any;
+                      hip-collection {
+                        max-wait-time 20;
+                        collect-hip-data yes;
+                      }
+                      gp-app-config {
+                        config {
+                          connect-method {
+                            value user-logon;
+                          }
+                          refresh-config-interval {
+                            value 24;
+                          }
+                          agent-user-override {
+                            value allowed;
+                          }
+                          client-upgrade {
+                            value prompt;
+                          }
+                          use-sso {
+                            value yes;
+                          }
+                          logout-remove-sso {
+                            value yes;
+                          }
+                          krb-auth-fail-fallback {
+                            value yes;
+                          }
+                          enforce-globalprotect {
+                            value no;
+                          }
+                          captive-portal-exception-timeout {
+                            value 0;
+                          }
+                          traffic-blocking-notification-delay {
+                            value 15;
+                          }
+                          display-traffic-blocking-notification-msg {
+                            value yes;
+                          }
+                          traffic-blocking-notification-msg {
+                            value "<div style="font-family:'Helvetica Neue';"><h1 style="color:red;text-align:center; margin: 0; font-size: 30px;">Notice</h1><p style="margin: 0;font-size: 15px; line-height: 1.2em;">To access the network, you must first connect to GlobalProtect.</p></div>";
+                          }
+                          allow-traffic-blocking-notification-dismissal {
+                            value yes;
+                          }
+                          display-captive-portal-detection-msg {
+                            value no;
+                          }
+                          captive-portal-detection-msg {
+                            value "<div style="font-family:'Helvetica Neue';"><h1 style="color:red;text-align:center; margin: 0; font-size: 30px;">Captive Portal Detected</h1><p style="margin: 0; font-size: 15px; line-height: 1.2em;">GlobalProtect has temporarily permitted network access for you to connect to the Internet. Follow instructions from your internet provider.</p><p style="margin: 0; font-size: 15px; line-height: 1.2em;">If you let the connection time out, open GlobalProtect and click Connect to try again.</p></div>";
+                          }
+                          certificate-store-lookup {
+                            value user-and-machine;
+                          }
+                          scep-certificate-renewal-period {
+                            value 7;
+                          }
+                          retain-connection-smartcard-removal {
+                            value yes;
+                          }
+                          enable-advanced-view {
+                            value yes;
+                          }
+                          enable-do-not-display-this-welcome-page-again {
+                            value yes;
+                          }
+                          rediscover-network {
+                            value yes;
+                          }
+                          resubmit-host-info {
+                            value yes;
+                          }
+                          can-change-portal {
+                            value yes;
+                          }
+                          can-continue-if-portal-cert-invalid {
+                            value yes;
+                          }
+                          show-agent-icon {
+                            value yes;
+                          }
+                          user-switch-tunnel-rename-timeout {
+                            value 0;
+                          }
+                          show-system-tray-notifications {
+                            value no;
+                          }
+                          max-internal-gateway-connection-attempts {
+                            value 0;
+                          }
+                          portal-timeout {
+                            value 30;
+                          }
+                          connect-timeout {
+                            value 60;
+                          }
+                          receive-timeout {
+                            value 30;
+                          }
+                          flush-dns {
+                            value no;
+                          }
+                          proxy-multiple-autodetect {
+                            value no;
+                          }
+                          wsc-autodetect {
+                            value yes;
+                          }
+                          mfa-enabled {
+                            value no;
+                          }
+                          mfa-listening-port {
+                            value 4501;
+                          }
+                          mfa-notification-msg {
+                            value "You have attempted to access a protected resource that requires additional authentication. Proceed to authenticate at";
+                          }
+                          ipv6-preferred {
+                            value yes;
+                          }
+                        }
+                      }
+                      save-user-credentials 1;
+                      portal-2fa no;
+                      manual-only-gateway-2fa no;
+                      internal-gateway-2fa no;
+                      auto-discovery-external-gateway-2fa no;
+                      mdm-enrollment-port 443;
+                    }
+                  }
+                  agent-user-override-key -AQ==9EIXqBFzhp4IZxdTxSVTZG/12Vs=iH76LFLerpHJ1S680bBopQ==;
+                }
+                satellite-config {
+                  client-certificate {
+                    local;
+                  }
+                }
+              }
+            }
+            global-protect-gateway {
+              GatewayGP {
+                roles {
+                  default {
+                    login-lifetime {
+                      days 30;
+                    }
+                    inactivity-logout {
+                      hours 3;
+                    }
+                    disconnect-on-idle {
+                      minutes 180;
+                    }
+                  }
+                }
+                client-auth {
+                  AuthentGP {
+                    authentication-profile SequenceRadiusPuisLocal;
+                    os Any;
+                    authentication-message "Enter login credentials";
+                  }
+                }
+                remote-user-tunnel-configs {
+                  Config {
+                    split-tunneling {
+                      access-route 10.10.10.0/24;
+                    }
+                    source-user any;
+                    ip-pool 10.20.20.0/24;
+                    os any;
+                    retrieve-framed-ip-address no;
+                    no-direct-access-to-local-network no;
+                  }
+                }
+                ssl-tls-service-profile ProfileGP;
+                tunnel-mode yes;
+                remote-user-tunnel tunnel.1;
+              }
+            }
+          }
+          group-mapping {
+            MonGroup {
+              group-object group;
+              group-name name;
+              group-member member;
+              user-object person;
+              user-name sAMAccountName;
+              email mail;
+              server-profile MonLdapProfile;
+            }
+          }
+          user-id-collector {
+            ignore-user david;
+            setting;
+          }
+        }
+      }
+    }
+  }
+}
+
+!! End of configuration
