@@ -32,13 +32,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -54,6 +48,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.crypto.Data;
 
 import onl.netfishers.netshot.Database;
 import onl.netfishers.netshot.Netshot;
@@ -75,6 +70,7 @@ import onl.netfishers.netshot.device.attribute.DeviceTextAttribute;
 import onl.netfishers.netshot.device.credentials.DeviceCliAccount;
 import onl.netfishers.netshot.work.Task;
 
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
@@ -1187,7 +1183,6 @@ public class DeviceDriver {
         } else {
             device.logIt("The configuration hasn't changed. Not storing a new one in the DB.", 1);
         }
-
 
         String path = Netshot.getConfig("netshot.snapshots.dump");
         if (device.getPath() != null) {

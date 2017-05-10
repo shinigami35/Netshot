@@ -19,7 +19,6 @@ define([
 
 		initialize: function() {
 			var that = this;
-            console.log(this);
 			this.credentialSets = new CredentialSetCollection([]);
 			this.domains = new DomainCollection([]);
 			$.when(that.credentialSets.fetch(), that.domains.fetch())

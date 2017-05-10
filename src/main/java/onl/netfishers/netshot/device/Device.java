@@ -107,25 +107,39 @@ public class Device {
      */
     public static enum NetworkClass {
 
-        /** The firewall. */
+        /**
+         * The firewall.
+         */
         FIREWALL,
 
-        /** The loadbalancer. */
+        /**
+         * The loadbalancer.
+         */
         LOADBALANCER,
 
-        /** The router. */
+        /**
+         * The router.
+         */
         ROUTER,
 
-        /** The server. */
+        /**
+         * The server.
+         */
         SERVER,
 
-        /** The switch. */
+        /**
+         * The switch.
+         */
         SWITCH,
 
-        /** The switchrouter. */
+        /**
+         * The switchrouter.
+         */
         SWITCHROUTER,
 
-        /** The unknown. */
+        /**
+         * The unknown.
+         */
         UNKNOWN
     }
 
@@ -135,134 +149,216 @@ public class Device {
      */
     public static enum Status {
 
-        /** The disabled. */
+        /**
+         * The disabled.
+         */
         DISABLED,
 
-        /** The inproduction. */
+        /**
+         * The inproduction.
+         */
         INPRODUCTION,
 
-        /** The preproduction. */
+        /**
+         * The preproduction.
+         */
         PREPRODUCTION
     }
 
-    /** The Constant DEFAULTNAME. */
+    /**
+     * The Constant DEFAULTNAME.
+     */
     public static final String DEFAULTNAME = "[NONAME]";
 
-    /** The logger. */
+    /**
+     * The logger.
+     */
     private static Logger logger = LoggerFactory.getLogger(Device.class);
 
-    /** The attributes. */
+    /**
+     * The attributes.
+     */
     private Set<DeviceAttribute> attributes = new HashSet<DeviceAttribute>();
 
-    /** The auto try credentials. */
+    /**
+     * The auto try credentials.
+     */
     protected boolean autoTryCredentials = true;
 
-    /** The change date. */
+    /**
+     * The change date.
+     */
     protected Date changeDate;
 
     private int version;
 
-    /** The check compliance tasks. */
+    /**
+     * The check compliance tasks.
+     */
     protected List<CheckComplianceTask> checkComplianceTasks = new ArrayList<CheckComplianceTask>();
 
     protected List<RunDeviceScriptTask> runDeviceScriptTasks = new ArrayList<RunDeviceScriptTask>();
 
-    /** The comments. */
+    /**
+     * The comments.
+     */
     protected String comments = "";
 
-    /** The compliance check results. */
+    /**
+     * The compliance check results.
+     */
     protected Set<CheckResult> complianceCheckResults = new HashSet<CheckResult>();
 
-    /** The compliance exemptions. */
+    /**
+     * The compliance exemptions.
+     */
     protected Set<Exemption> complianceExemptions = new HashSet<Exemption>();
 
-    /** The configs. */
+    /**
+     * The configs.
+     */
     protected List<Config> configs = new ArrayList<Config>();
 
-    /** The contact. */
+    /**
+     * The contact.
+     */
     protected String contact = "";
 
-    /** The created date. */
+    /**
+     * The created date.
+     */
     protected Date createdDate = new Date();
 
     private String creator;
 
-    /** The credential sets. */
+    /**
+     * The credential sets.
+     */
     protected Set<DeviceCredentialSet> credentialSets = new HashSet<DeviceCredentialSet>();
 
-    /** The device driver name. */
+    /**
+     * The device driver name.
+     */
     protected String driver;
 
-    /** End of Life Date. */
+    /**
+     * End of Life Date.
+     */
     protected Date eolDate = null;
 
-    /** End of Life responsible component. */
+    /**
+     * End of Life responsible component.
+     */
     protected Module eolModule = null;
 
-    /** End of Sale Date. */
+    /**
+     * End of Sale Date.
+     */
     protected Date eosDate = null;
 
-    /** End of Sale responsible component. */
+    /**
+     * End of Sale responsible component.
+     */
     protected Module eosModule = null;
 
-    /** The family. */
+    /**
+     * The family.
+     */
     protected String family = "";
 
-    /** The id. */
+    /**
+     * The id.
+     */
     protected long id;
 
-    /** The last config. */
+    /**
+     * The last config.
+     */
     protected Config lastConfig = null;
 
-    /** The location. */
+    /**
+     * The location.
+     */
     protected String location = "";
 
-    /** The log. */
+    /**
+     * The log.
+     */
     protected transient List<String> log = new ArrayList<String>();
 
-    /** The mgmt address. */
+    /**
+     * The mgmt address.
+     */
     protected Network4Address mgmtAddress;
 
-    /** The mgmt domain. */
+    /**
+     * The mgmt domain.
+     */
     protected Domain mgmtDomain;
 
-    /** The modules. */
+    /**
+     * The modules.
+     */
     protected List<Module> modules = new ArrayList<Module>();
 
-    /** The name. */
+    /**
+     * The name.
+     */
     protected String name = DEFAULTNAME;
 
-    /** The network class. */
+    /**
+     * The network class.
+     */
     protected NetworkClass networkClass = NetworkClass.UNKNOWN;
 
-    /** The network interfaces. */
+    /**
+     * The network interfaces.
+     */
     protected List<NetworkInterface> networkInterfaces = new ArrayList<NetworkInterface>();
 
-    /** The owner groups. */
+    /**
+     * The owner groups.
+     */
     protected Set<DeviceGroup> ownerGroups = new HashSet<DeviceGroup>();
 
-    /** The serial number. */
+    /**
+     * The serial number.
+     */
     protected String serialNumber = "";
 
-    /** The snapshot tasks. */
+    /**
+     * The snapshot tasks.
+     */
     protected List<TakeSnapshotTask> snapshotTasks = new ArrayList<TakeSnapshotTask>();
 
-    /** The software level. */
+    /**
+     * The software level.
+     */
     protected SoftwareRule.ConformanceLevel softwareLevel = ConformanceLevel.UNKNOWN;
 
-    /** The software version. */
+    /**
+     * The software version.
+     */
     protected String softwareVersion = "";
 
-    /** The status. */
+    /**
+     * The status.
+     */
     protected Status status = Status.INPRODUCTION;
 
-    /** The virtual devices. */
+    /**
+     * The virtual devices.
+     */
     protected Set<String> virtualDevices = new HashSet<String>();
 
-    /** The vrf instances. */
+    /**
+     * The vrf instances.
+     */
     protected Set<String> vrfInstances = new HashSet<String>();
 
+    //AGM
     protected String path = "";
+
 
     /**
      * Instantiates a new device.
@@ -275,7 +371,7 @@ public class Device {
      * Instantiates a new device.
      *
      * @param address the address
-     * @param domain the domain
+     * @param domain  the domain
      */
     public Device(String driver, Network4Address address, Domain domain, String creator, String path) {
         this.driver = driver;
@@ -292,7 +388,7 @@ public class Device {
     /**
      * Adds the compliance exception.
      *
-     * @param rule the rule
+     * @param rule       the rule
      * @param expiration the expiration
      */
     public void addComplianceException(Rule rule, Date expiration) {
@@ -871,7 +967,7 @@ public class Device {
     /**
      * Log it.
      *
-     * @param log the log
+     * @param log   the log
      * @param level the level
      */
     protected void logIt(String log, int level) {

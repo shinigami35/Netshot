@@ -1959,9 +1959,10 @@ public class RestService extends Thread {
         private String ipAddress = "";
 
         /**
-         * The Path Configuration.
+         * The Path Configuration. AGM
          */
         private String pathConfiguration = "/";
+        private Integer retention = null;
 
         /**
          * The domain id.
@@ -2104,6 +2105,15 @@ public class RestService extends Thread {
 
         public void setPathConfiguration(String pathConfiguration) {
             this.pathConfiguration = pathConfiguration;
+        }
+
+        @XmlElement
+        public Integer getRetention() {
+            return retention;
+        }
+
+        public void setRetention(Integer retention) {
+            this.retention = retention;
         }
     }
 

@@ -259,13 +259,8 @@ public abstract class Cli {
                 buffer.append(s);
             }
             String sTmp = buffer.toString();
-            // Remove ANSI escape sequences
-            sTmp = Cli.ansiEscapePattern.matcher(sTmp).replaceAll("");
-            System.out.println(sTmp);
-
             for (int i = 0; i < patterns.length; i++) {
-
-                //received = Cli.ansiEscapePattern.matcher(received).replaceAll("");
+                sTmp = Cli.ansiEscapePattern.matcher(sTmp).replaceAll("");
                 Matcher matcher = patterns[i].matcher(sTmp);
                 if (matcher.find()) {
                     this.lastExpectMatch = matcher;

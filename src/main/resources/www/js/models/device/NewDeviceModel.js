@@ -15,7 +15,8 @@ define([
             'autoDiscover': true,
             'deviceType': "",
             'domainId': -1,
-            'autoDiscoveryTask': -1
+            'autoDiscoveryTask': -1,
+            'retention': null
         }
 
     });
