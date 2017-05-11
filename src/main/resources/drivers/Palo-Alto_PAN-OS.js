@@ -81,6 +81,8 @@ var CLI = {
 
 function snapshot(cli, device, config) {
 
+
+
     var configCleanup = function (config) {
         var p = config.search(/^[a-z]/m);
         if (p > 0) {
@@ -115,7 +117,7 @@ function snapshot(cli, device, config) {
     var serial = status.match(/serial: (.*)/);
     if (serial) {
         var module = {
-            slot: "Chassis",
+            slot: (family === "vm"? "VM" : "Chassis"),
             partNumber: family,
             serialNumber: serial[1]
         };
@@ -169,6 +171,7 @@ function snapshot(cli, device, config) {
                     usage: "PRIMARY"
                 });
             }
+
             if (s[0] && s[0] !== " ") {
                 var mac = cli.command("show interface " + s[0] + " | match \"Port MAC\"");
                 var macSplit = mac.split(" ");

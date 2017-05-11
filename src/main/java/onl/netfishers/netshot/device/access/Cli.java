@@ -259,6 +259,7 @@ public abstract class Cli {
                 buffer.append(s);
             }
             String sTmp = buffer.toString();
+            //System.out.println(sTmp);
             for (int i = 0; i < patterns.length; i++) {
                 sTmp = Cli.ansiEscapePattern.matcher(sTmp).replaceAll("");
                 Matcher matcher = patterns[i].matcher(sTmp);

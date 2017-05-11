@@ -115,7 +115,7 @@ public abstract class NetworkAddress {
 	public String toString() {
 		return getPrefix();
 	}
-	
+
 	
 	public static enum AddressUsage {
 		PRIMARY,

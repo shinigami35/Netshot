@@ -1,6 +1,6 @@
 var Info = {
     name: "Riverbed",
-    description: "RiverbedOS",
+    description: "RiOS",
     author: "Adrien GANDARIAS",
     version: "0.3"
 };
@@ -8,12 +8,12 @@ var Info = {
 var Config = {
     "riverbedVersion": {
         type: "Text",
-        title: "Riverbed version",
+        title: "RiOS version",
         comparable: true,
         searchable: true,
         checkable: true,
         dump: {
-            pre: "## RiverbedOS version: ",
+            pre: "## RiOS version: ",
             preLine: "##  "
         }
     },
@@ -40,22 +40,22 @@ var Device = {
         type: "Text",
         title: "Managed by CMC",
         searchable: true
-    },
-    "usedMemory": {
-        type: "Text",
-        title: "Used memory size (MB)",
-        searchable: true
-    },
-    "freeMemory": {
-        type: "Text",
-        title: "Free memory size (MB)",
-        searchable: true
-    },
-    "totalMemory": {
-        type: "Text",
-        title: "Total memory size (MB)",
-        searchable: true
     }
+    // "usedMemory": {
+    //     type: "Text",
+    //     title: "Used memory size (MB)",
+    //     searchable: true
+    // },
+    // "freeMemory": {
+    //     type: "Text",
+    //     title: "Free memory size (MB)",
+    //     searchable: true
+    // },
+    // "totalMemory": {
+    //     type: "Text",
+    //     title: "Total memory size (MB)",
+    //     searchable: true
+    // }
 };
 
 var CLI = {
@@ -135,6 +135,33 @@ var CLI = {
 
 function snapshot(cli, device, config, debug) {
 
+    var arraySubnet = {
+        '255.255.255.254': "31",
+        '255.255.255.252': "30",
+        '255.255.255.248': "29",
+        '255.255.255.240': "28",
+        '255.255.255.224': "27",
+        '255.255.255.192': "26",
+        '255.255.255.128': "25",
+        '255.255.255.0': "24",
+        '255.255.254.0': "23",
+        '255.255.252.0': "22",
+        '255.255.248.0': "21",
+        '255.255.240.0': "20",
+        '255.255.224.0': "19",
+        '255.255.192.0': "18",
+        '255.255.128.0': "17",
+        '255.255.0.0': "16",
+        '255.254.0.0': "15",
+        '255.252.0.0': "14",
+        '255.248.0.0': "13",
+        '255.240.0.0': "12",
+        '255.224.0.0': "11",
+        '255.192.0.0': "10",
+        '255.128.0.0': "9",
+        '255.0.0.0': "8"
+    };
+
     cli.macro("enable");
     cli.command("enable");
 
@@ -147,8 +174,7 @@ function snapshot(cli, device, config, debug) {
         status_riverbed = status_riverbed[1];
         device.set("status", status_riverbed);
     }
-    var serial = info.match(/Serial: (.*)/);
-    device.set("serialNumber", serial[1]);
+
 
     var cmc = info.match(/Managed by CMC: (.*)/);
     if (cmc && (cmc[1].match(/^[ ]*yes[ ]*$/) || cmc[1].match(/^[ ]*no[ ]*$/)))
@@ -174,19 +200,66 @@ function snapshot(cli, device, config, debug) {
     config.set("osVersion", version);
     device.set("networkClass", "UNKNOWN");
 
-    var data = status.match(/System memory: (.*)/);
-    if (data) {
-        var dataTmp = data[1];
-        var arrayData = dataTmp.split('/');
-        for (var i = 0; i < arrayData.length; i++) {
-            arrayData[i] = arrayData[i].replace(/\s\s/g, " ")
+    var serial = info.match(/Serial: (.*)/);
+    if (serial) {
+        var module = {
+            slot: (family === "vm"? "VM" : "Chassis"),
+            partNumber: family,
+            serialNumber: serial[1]
+        };
+        device.add("module", module);
+        device.set("serialNumber", serial[1]);
+    }
+    else {
+        device.set("serialNumber", "");
+    }
+
+
+    // var data = status.match(/System memory: (.*)/);
+    // if (data) {
+    //     var dataTmp = data[1];
+    //     var arrayData = dataTmp.split('/');
+    //     for (var i = 0; i < arrayData.length; i++) {
+    //         arrayData[i] = arrayData[i].replace(/\s\s/g, " ")
+    //     }
+    //     var used = arrayData[0].match(/[0-9]+/);
+    //     var free = arrayData[1].match(/[0-9]+/);
+    //     var total = arrayData[2].match(/[0-9]+/);
+    //     device.set("usedMemory", used[0]);
+    //     device.set("freeMemory", free[0]);
+    //     device.set("totalMemory", total[0]);
+    // }
+
+    var infoStatus = cli.command("show interfaces brief");
+    var tmpListInterfaces = cli.findSections(infoStatus, /Interface (.*) state/);
+    var listInterface = [];
+    for (var elt in tmpListInterfaces)
+        listInterface.push(tmpListInterfaces[elt].match[1]);
+    for (var j in listInterface) {
+        var s = listInterface[j];
+        var tmp = cli.command("show interface " + s);
+        var ip = tmp.match(/IP address: (.*)/m);
+        var netmask = tmp.match(/Netmask: (.*)/);
+        var mac = tmp.match(/HW address: (.*)/);
+        var up = tmp.match(/Up: (.*)/);
+        var networkInterface = {
+            name: s,
+            ip: [],
+            virtualDevice: "",
+            mac: (mac ? mac[1].replace(/[\s]*/, "") : "0000.0000.0000"),
+            disabled: (up ? (up[1].replace(/[\s]*/, "") !== "yes") : false)
+        };
+
+        if (ip && netmask) {
+            var sp = ip[1].replace(/[\s]*/, "").split(' ');
+            var tmpIP = {
+                ip: sp[0],
+                mask: parseInt(arraySubnet[netmask[1].replace(/[\s]*/, "")]),
+                usage: "PRIMARY"
+            };
+            networkInterface.ip.push(tmpIP);
         }
-        var used = arrayData[0].match(/[0-9]+/);
-        var free = arrayData[1].match(/[0-9]+/);
-        var total = arrayData[2].match(/[0-9]+/);
-        device.set("usedMemory", used[0]);
-        device.set("freeMemory", free[0]);
-        device.set("totalMemory", total[0]);
+        device.add("networkInterface", networkInterface);
     }
 
 
