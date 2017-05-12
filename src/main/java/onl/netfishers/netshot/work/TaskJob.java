@@ -20,14 +20,20 @@ package onl.netfishers.netshot.work;
 
 import onl.netfishers.netshot.Database;
 import onl.netfishers.netshot.TaskManager;
+import onl.netfishers.netshot.mail.Mail;
 import onl.netfishers.netshot.work.Task.Status;
 
+import onl.netfishers.netshot.work.tasks.TakeSnapshotTask;
 import org.hibernate.Session;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * A Quartz job which runs a Netshot task.
@@ -91,6 +97,15 @@ public class TaskJob implements Job {
 			logger.error("The task {} exited with a status of RUNNING.", id);
 			task.setStatus(Status.FAILURE);
 		}
+
+		if(task instanceof TakeSnapshotTask){
+			TakeSnapshotTask t = (TakeSnapshotTask) task;
+			Mail m = new Mail("russe35580@gmail.com","russe35580@gmail.com");
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", new Locale("FR", "fr"));
+			m.sendEmail(task.getStatus(), df.format(t.getExecutionDate()), t.getDevice().getName(), t.getLog());
+		}
+
+		//check type of the task
 
 		logger.trace("Updating the task with the result.");
 		session = Database.getSession();
