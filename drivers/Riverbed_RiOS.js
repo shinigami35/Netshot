@@ -41,21 +41,6 @@ var Device = {
         title: "Managed by CMC",
         searchable: true
     }
-    // "usedMemory": {
-    //     type: "Text",
-    //     title: "Used memory size (MB)",
-    //     searchable: true
-    // },
-    // "freeMemory": {
-    //     type: "Text",
-    //     title: "Free memory size (MB)",
-    //     searchable: true
-    // },
-    // "totalMemory": {
-    //     type: "Text",
-    //     title: "Total memory size (MB)",
-    //     searchable: true
-    // }
 };
 
 var CLI = {
@@ -268,8 +253,8 @@ function snapshot(cli, device, config, debug) {
 // No known log message upon configuration change
 
 function analyzeTrap(trap, debug) {
-    return trap["1.3.6.1.6.3.1.1.4.1.0"] == "1.3.6.1.4.1.12356.101.6.0.1003" ||
-        trap["1.3.6.1.6.3.1.1.4.1.0"] == "1.3.6.1.2.1.47.2.0.1";
+    //TODO : Set the trap Riverbed
+    return false;
 }
 
 function snmpAutoDiscover(sysObjectID, sysDesc) {
