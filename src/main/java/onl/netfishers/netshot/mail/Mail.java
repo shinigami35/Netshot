@@ -96,14 +96,31 @@ public class Mail {
     }
 
     private String generateBodyMail(Task.Status s, String date, String device, String log) {
-        if (s == Task.Status.SUCCESS)
-            return "<h2>Snapshot <font color=\"green\">SUCCESS</font></h2>" +
-                    "<p>Le snapshot du " + date + " a été fait sans problème pour : " + device + "</p>";
-        else if (s == Task.Status.FAILURE)
-            return "<h2>Snapshot <font color=\"red\">FAILURE</font></h2>" +
-                    "<p>Le snapshot du " + date + " n'a pas été effectué correctement pour : " + device + "</p>" +
-                    "<p>" + log + "</p>";
-        return "";
+        StringBuilder tmp = new StringBuilder();
+        if (s == Task.Status.SUCCESS) {
+            tmp.append("<h2>Snapshot <font color=\"green\">SUCCESS</font></h2>" + "<p>Le snapshot du ")
+                    .append(date)
+                    .append(" a été fait sans problème pour : ")
+                    .append(device).append("</p>");
+            String[] t = log.split("\n");
+            for (String sTmp : t)
+                tmp.append("<p style=\"font-family: monospace;max-height: 200px;overflow-y: scroll;\">")
+                        .append(sTmp)
+                        .append("</p>");
+        } else if (s == Task.Status.FAILURE) {
+            tmp.append("<h2>Snapshot <font color=\"red\">FAILURE</font></h2>" + "<p>Le snapshot du ")
+                    .append(date)
+                    .append(" n'a pas été effectué correctement pour : ")
+                    .append(device)
+                    .append("</p>");
+            String[] t = log.split("\n");
+            for (String sTmp : t)
+                tmp.append("<p style=\"font-family: monospace;max-height: 200px;overflow-y: scroll;\">").append(sTmp).append("</p>");
+        }
+        try {
+            return new String(tmp.toString().getBytes(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return tmp.toString();
+        }
     }
-
 }
