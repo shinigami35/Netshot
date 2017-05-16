@@ -18,39 +18,6 @@
  */
 package onl.netfishers.netshot.device;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-import javax.script.ScriptException;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import onl.netfishers.netshot.Database;
 import onl.netfishers.netshot.compliance.CheckResult;
 import onl.netfishers.netshot.compliance.Exemption;
@@ -62,21 +29,22 @@ import onl.netfishers.netshot.device.access.Cli;
 import onl.netfishers.netshot.device.access.Ssh;
 import onl.netfishers.netshot.device.access.Telnet;
 import onl.netfishers.netshot.device.attribute.DeviceAttribute;
-import onl.netfishers.netshot.device.credentials.DeviceCliAccount;
-import onl.netfishers.netshot.device.credentials.DeviceCredentialSet;
-import onl.netfishers.netshot.device.credentials.DeviceSshAccount;
-import onl.netfishers.netshot.device.credentials.DeviceSshKeyAccount;
-import onl.netfishers.netshot.device.credentials.DeviceTelnetAccount;
+import onl.netfishers.netshot.device.credentials.*;
 import onl.netfishers.netshot.work.tasks.CheckComplianceTask;
 import onl.netfishers.netshot.work.tasks.RunDeviceScriptTask;
 import onl.netfishers.netshot.work.tasks.TakeSnapshotTask;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import javax.script.ScriptException;
+import javax.xml.bind.annotation.*;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * A device.
@@ -86,279 +54,162 @@ import org.slf4j.LoggerFactory;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class Device {
 
-    public static class InvalidCredentialsException extends Exception {
-        private static final long serialVersionUID = 2762061771246688828L;
-
-        public InvalidCredentialsException(String message) {
-            super(message);
-        }
-    }
-
-    public static class MissingDeviceDriverException extends Exception {
-        private static final long serialVersionUID = -7286042265874166550L;
-
-        public MissingDeviceDriverException(String message) {
-            super(message);
-        }
-    }
-
-    /**
-     * The Enum NetworkClass.
-     */
-    public static enum NetworkClass {
-
-        /**
-         * The firewall.
-         */
-        FIREWALL,
-
-        /**
-         * The loadbalancer.
-         */
-        LOADBALANCER,
-
-        /**
-         * The router.
-         */
-        ROUTER,
-
-        /**
-         * The server.
-         */
-        SERVER,
-
-        /**
-         * The switch.
-         */
-        SWITCH,
-
-        /**
-         * The switchrouter.
-         */
-        SWITCHROUTER,
-
-        /**
-         * The unknown.
-         */
-        UNKNOWN
-    }
-
-
-    /**
-     * The Enum Status.
-     */
-    public static enum Status {
-
-        /**
-         * The disabled.
-         */
-        DISABLED,
-
-        /**
-         * The inproduction.
-         */
-        INPRODUCTION,
-
-        /**
-         * The preproduction.
-         */
-        PREPRODUCTION
-    }
-
     /**
      * The Constant DEFAULTNAME.
      */
     public static final String DEFAULTNAME = "[NONAME]";
-
     /**
      * The logger.
      */
     private static Logger logger = LoggerFactory.getLogger(Device.class);
-
-    /**
-     * The attributes.
-     */
-    private Set<DeviceAttribute> attributes = new HashSet<DeviceAttribute>();
-
     /**
      * The auto try credentials.
      */
     protected boolean autoTryCredentials = true;
-
     /**
      * The change date.
      */
     protected Date changeDate;
-
-    private int version;
-
     /**
      * The check compliance tasks.
      */
     protected List<CheckComplianceTask> checkComplianceTasks = new ArrayList<CheckComplianceTask>();
-
     protected List<RunDeviceScriptTask> runDeviceScriptTasks = new ArrayList<RunDeviceScriptTask>();
-
     /**
      * The comments.
      */
     protected String comments = "";
-
     /**
      * The compliance check results.
      */
     protected Set<CheckResult> complianceCheckResults = new HashSet<CheckResult>();
-
     /**
      * The compliance exemptions.
      */
     protected Set<Exemption> complianceExemptions = new HashSet<Exemption>();
-
     /**
      * The configs.
      */
     protected List<Config> configs = new ArrayList<Config>();
-
     /**
      * The contact.
      */
     protected String contact = "";
-
     /**
      * The created date.
      */
     protected Date createdDate = new Date();
-
-    private String creator;
-
     /**
      * The credential sets.
      */
     protected Set<DeviceCredentialSet> credentialSets = new HashSet<DeviceCredentialSet>();
-
     /**
      * The device driver name.
      */
     protected String driver;
-
     /**
      * End of Life Date.
      */
     protected Date eolDate = null;
-
     /**
      * End of Life responsible component.
      */
     protected Module eolModule = null;
-
     /**
      * End of Sale Date.
      */
     protected Date eosDate = null;
-
     /**
      * End of Sale responsible component.
      */
     protected Module eosModule = null;
-
     /**
      * The family.
      */
     protected String family = "";
-
     /**
      * The id.
      */
     protected long id;
-
     /**
      * The last config.
      */
     protected Config lastConfig = null;
-
     /**
      * The location.
      */
     protected String location = "";
-
     /**
      * The log.
      */
     protected transient List<String> log = new ArrayList<String>();
-
     /**
      * The mgmt address.
      */
     protected Network4Address mgmtAddress;
-
     /**
      * The mgmt domain.
      */
     protected Domain mgmtDomain;
-
     /**
      * The modules.
      */
     protected List<Module> modules = new ArrayList<Module>();
-
     /**
      * The name.
      */
     protected String name = DEFAULTNAME;
-
     /**
      * The network class.
      */
     protected NetworkClass networkClass = NetworkClass.UNKNOWN;
-
     /**
      * The network interfaces.
      */
     protected List<NetworkInterface> networkInterfaces = new ArrayList<NetworkInterface>();
-
     /**
      * The owner groups.
      */
     protected Set<DeviceGroup> ownerGroups = new HashSet<DeviceGroup>();
-
     /**
      * The serial number.
      */
     protected String serialNumber = "";
-
     /**
      * The snapshot tasks.
      */
     protected List<TakeSnapshotTask> snapshotTasks = new ArrayList<TakeSnapshotTask>();
-
     /**
      * The software level.
      */
     protected SoftwareRule.ConformanceLevel softwareLevel = ConformanceLevel.UNKNOWN;
-
     /**
      * The software version.
      */
     protected String softwareVersion = "";
-
     /**
      * The status.
      */
     protected Status status = Status.INPRODUCTION;
-
     /**
      * The virtual devices.
      */
     protected Set<String> virtualDevices = new HashSet<String>();
-
     /**
      * The vrf instances.
      */
     protected Set<String> vrfInstances = new HashSet<String>();
-
     //AGM
     protected String path = "";
-
+    /**
+     * The attributes.
+     */
+    private Set<DeviceAttribute> attributes = new HashSet<DeviceAttribute>();
+    private int version;
+    private String creator;
+    private String emails;
+    private Boolean onSuccess = true;
+    private Boolean onError = true;
 
     /**
      * Instantiates a new device.
@@ -373,12 +224,15 @@ public class Device {
      * @param address the address
      * @param domain  the domain
      */
-    public Device(String driver, Network4Address address, Domain domain, String creator, String path) {
+    public Device(String driver, Network4Address address, Domain domain, String creator, String path, String emails, Boolean onSuccess, Boolean onError) {
         this.driver = driver;
         this.mgmtAddress = address;
         this.mgmtDomain = domain;
         this.creator = creator;
         this.path = path;
+        this.emails = emails;
+        this.onSuccess = onSuccess;
+        this.onError = onError;
     }
 
     public void addAttribute(DeviceAttribute attribute) {
@@ -396,7 +250,6 @@ public class Device {
         complianceExemptions.add(exemption);
     }
 
-
     /**
      * Adds the credential set.
      *
@@ -405,7 +258,6 @@ public class Device {
     public void addCredentialSet(DeviceCredentialSet credentialSet) {
         this.credentialSets.add(credentialSet);
     }
-
 
     /**
      * Adds the virtual device.
@@ -443,7 +295,6 @@ public class Device {
         this.virtualDevices.clear();
     }
 
-
     /**
      * Clear vrf instance.
      */
@@ -474,6 +325,10 @@ public class Device {
         return attributes;
     }
 
+    public void setAttributes(Set<DeviceAttribute> attributes) {
+        this.attributes = attributes;
+    }
+
     @SuppressWarnings("unchecked")
     @Transient
     protected List<DeviceCredentialSet> getAutoCredentialSetList(Session session) throws HibernateException {
@@ -491,6 +346,15 @@ public class Device {
     @XmlElement
     public Date getChangeDate() {
         return changeDate;
+    }
+
+    /**
+     * Sets the change date.
+     *
+     * @param changeDate the new change date
+     */
+    public void setChangeDate(Date changeDate) {
+        this.changeDate = changeDate;
     }
 
     @Version
@@ -512,9 +376,23 @@ public class Device {
         return checkComplianceTasks;
     }
 
+    /**
+     * Sets the check compliance tasks.
+     *
+     * @param checkComplianceTasks the new check compliance tasks
+     */
+    public void setCheckComplianceTasks(
+            List<CheckComplianceTask> checkComplianceTasks) {
+        this.checkComplianceTasks = checkComplianceTasks;
+    }
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "device")
     public List<RunDeviceScriptTask> getRunDeviceScriptTasks() {
         return runDeviceScriptTasks;
+    }
+
+    public void setRunDeviceScriptTasks(List<RunDeviceScriptTask> tasks) {
+        this.runDeviceScriptTasks = tasks;
     }
 
     /**
@@ -528,6 +406,15 @@ public class Device {
     }
 
     /**
+     * Sets the comments.
+     *
+     * @param comments the new comments
+     */
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    /**
      * Gets the compliance check results.
      *
      * @return the compliance check results
@@ -535,6 +422,15 @@ public class Device {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "key.device", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<CheckResult> getComplianceCheckResults() {
         return complianceCheckResults;
+    }
+
+    /**
+     * Sets the compliance check results.
+     *
+     * @param complianceChecks the new compliance check results
+     */
+    protected void setComplianceCheckResults(Set<CheckResult> complianceChecks) {
+        this.complianceCheckResults = complianceChecks;
     }
 
     /**
@@ -548,6 +444,15 @@ public class Device {
     }
 
     /**
+     * Sets the compliance exemptions.
+     *
+     * @param complianceExemptions the new compliance exemptions
+     */
+    protected void setComplianceExemptions(Set<Exemption> complianceExemptions) {
+        this.complianceExemptions = complianceExemptions;
+    }
+
+    /**
      * Gets the configs.
      *
      * @return the configs
@@ -555,6 +460,15 @@ public class Device {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "device")
     public List<Config> getConfigs() {
         return configs;
+    }
+
+    /**
+     * Sets the configs.
+     *
+     * @param configs the new configs
+     */
+    public void setConfigs(List<Config> configs) {
+        this.configs = configs;
     }
 
     /**
@@ -568,6 +482,15 @@ public class Device {
     }
 
     /**
+     * Sets the contact.
+     *
+     * @param contact the new contact
+     */
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    /**
      * Gets the created date.
      *
      * @return the created date
@@ -577,9 +500,22 @@ public class Device {
         return createdDate;
     }
 
+    /**
+     * Sets the created date.
+     *
+     * @param createdDate the new created date
+     */
+    protected void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
     @XmlElement
     public String getCreator() {
         return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     /**
@@ -608,6 +544,15 @@ public class Device {
         return credentialSets;
     }
 
+    /**
+     * Sets the credential sets.
+     *
+     * @param credentialSets the new credential sets
+     */
+    protected void setCredentialSets(Set<DeviceCredentialSet> credentialSets) {
+        this.credentialSets = credentialSets;
+    }
+
     @Transient
     public DeviceDriver getDeviceDriver() throws MissingDeviceDriverException {
         if (driver == null) {
@@ -629,9 +574,17 @@ public class Device {
         return driver;
     }
 
+    public void setDriver(String driver) {
+        this.driver = driver;
+    }
+
     @XmlElement
     public Date getEolDate() {
         return eolDate;
+    }
+
+    public void setEolDate(Date eolDate) {
+        this.eolDate = eolDate;
     }
 
     @XmlElement
@@ -640,15 +593,27 @@ public class Device {
         return eolModule;
     }
 
+    public void setEolModule(Module eolModule) {
+        this.eolModule = eolModule;
+    }
+
     @XmlElement
     public Date getEosDate() {
         return eosDate;
+    }
+
+    public void setEosDate(Date eosDate) {
+        this.eosDate = eosDate;
     }
 
     @XmlElement
     @OneToOne(fetch = FetchType.LAZY)
     public Module getEosModule() {
         return eosModule;
+    }
+
+    public void setEosModule(Module eosModule) {
+        this.eosModule = eosModule;
     }
 
     /**
@@ -659,6 +624,15 @@ public class Device {
     @XmlElement
     public String getFamily() {
         return family;
+    }
+
+    /**
+     * Sets the family.
+     *
+     * @param family the new family
+     */
+    public void setFamily(String family) {
+        this.family = family;
     }
 
     /**
@@ -674,6 +648,15 @@ public class Device {
     }
 
     /**
+     * Sets the id.
+     *
+     * @param id the new id
+     */
+    protected void setId(long id) {
+        this.id = id;
+    }
+
+    /**
      * Gets the last config.
      *
      * @return the last config
@@ -683,6 +666,14 @@ public class Device {
         return lastConfig;
     }
 
+    /**
+     * Sets the last config.
+     *
+     * @param lastConfig the new last config
+     */
+    public void setLastConfig(Config lastConfig) {
+        this.lastConfig = lastConfig;
+    }
 
     /**
      * Gets the location.
@@ -694,6 +685,14 @@ public class Device {
         return location;
     }
 
+    /**
+     * Sets the location.
+     *
+     * @param location the new location
+     */
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     /**
      * Gets the log.
@@ -704,7 +703,6 @@ public class Device {
     public List<String> getLog() {
         return log;
     }
-
 
     /**
      * Gets the mgmt address.
@@ -722,6 +720,14 @@ public class Device {
         return mgmtAddress;
     }
 
+    /**
+     * Sets the mgmt address.
+     *
+     * @param mgmtAddress the new mgmt address
+     */
+    public void setMgmtAddress(Network4Address mgmtAddress) {
+        this.mgmtAddress = mgmtAddress;
+    }
 
     /**
      * Gets the mgmt domain.
@@ -735,6 +741,15 @@ public class Device {
     }
 
     /**
+     * Sets the mgmt domain.
+     *
+     * @param mgmtDomain the new mgmt domain
+     */
+    public void setMgmtDomain(Domain mgmtDomain) {
+        this.mgmtDomain = mgmtDomain;
+    }
+
+    /**
      * Gets the modules.
      *
      * @return the modules
@@ -744,6 +759,14 @@ public class Device {
         return modules;
     }
 
+    /**
+     * Sets the modules.
+     *
+     * @param modules the new modules
+     */
+    public void setModules(List<Module> modules) {
+        this.modules = modules;
+    }
 
     /**
      * Gets the name.
@@ -755,6 +778,14 @@ public class Device {
         return name;
     }
 
+    /**
+     * Sets the name.
+     *
+     * @param name the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * Gets the network class.
@@ -767,6 +798,15 @@ public class Device {
     }
 
     /**
+     * Sets the network class.
+     *
+     * @param networkClass the new network class
+     */
+    public void setNetworkClass(NetworkClass networkClass) {
+        this.networkClass = networkClass;
+    }
+
+    /**
      * Gets the network interfaces.
      *
      * @return the network interfaces
@@ -776,6 +816,14 @@ public class Device {
         return networkInterfaces;
     }
 
+    /**
+     * Sets the network interfaces.
+     *
+     * @param networkInterfaces the new network interfaces
+     */
+    public void setNetworkInterfaces(List<NetworkInterface> networkInterfaces) {
+        this.networkInterfaces = networkInterfaces;
+    }
 
     /**
      * Gets the owner groups.
@@ -788,6 +836,14 @@ public class Device {
         return ownerGroups;
     }
 
+    /**
+     * Sets the owner groups.
+     *
+     * @param ownerGroups the new owner groups
+     */
+    public void setOwnerGroups(Set<DeviceGroup> ownerGroups) {
+        this.ownerGroups = ownerGroups;
+    }
 
     /**
      * Gets the plain log.
@@ -803,7 +859,6 @@ public class Device {
         }
         return buffer.toString();
     }
-
 
     /**
      * Gets the device type - in a non static manner to include it with JAXB.
@@ -822,7 +877,6 @@ public class Device {
         }
     }
 
-
     /**
      * Gets the serial number.
      *
@@ -831,6 +885,15 @@ public class Device {
     @XmlElement
     public String getSerialNumber() {
         return serialNumber;
+    }
+
+    /**
+     * Sets the serial number.
+     *
+     * @param serialNumber the new serial number
+     */
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
     /**
@@ -843,6 +906,14 @@ public class Device {
         return snapshotTasks;
     }
 
+    /**
+     * Sets the snapshot tasks.
+     *
+     * @param snapshotTaks the new snapshot tasks
+     */
+    protected void setSnapshotTasks(List<TakeSnapshotTask> snapshotTaks) {
+        this.snapshotTasks = snapshotTaks;
+    }
 
     /**
      * Gets the software level.
@@ -854,6 +925,14 @@ public class Device {
         return softwareLevel;
     }
 
+    /**
+     * Sets the software level.
+     *
+     * @param softwareLevel the new software level
+     */
+    public void setSoftwareLevel(SoftwareRule.ConformanceLevel softwareLevel) {
+        this.softwareLevel = softwareLevel;
+    }
 
     /**
      * Gets the software version.
@@ -865,6 +944,14 @@ public class Device {
         return softwareVersion;
     }
 
+    /**
+     * Sets the software version.
+     *
+     * @param softwareVersion the new software version
+     */
+    public void setSoftwareVersion(String softwareVersion) {
+        this.softwareVersion = softwareVersion;
+    }
 
     /**
      * Gets the status.
@@ -877,6 +964,14 @@ public class Device {
         return status;
     }
 
+    /**
+     * Sets the status.
+     *
+     * @param status the new status
+     */
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     /**
      * Gets the virtual devices.
@@ -888,6 +983,14 @@ public class Device {
         return virtualDevices;
     }
 
+    /**
+     * Sets the virtual devices.
+     *
+     * @param virtualDevices the new virtual devices
+     */
+    public void setVirtualDevices(Set<String> virtualDevices) {
+        this.virtualDevices = virtualDevices;
+    }
 
     /**
      * Gets the vrf instances.
@@ -897,6 +1000,15 @@ public class Device {
     @ElementCollection
     public Set<String> getVrfInstances() {
         return vrfInstances;
+    }
+
+    /**
+     * Sets the vrf instances.
+     *
+     * @param vrfInstances the new vrf instances
+     */
+    public void setVrfInstances(Set<String> vrfInstances) {
+        this.vrfInstances = vrfInstances;
     }
 
     /* (non-Javadoc)
@@ -918,6 +1030,15 @@ public class Device {
     @XmlElement
     public boolean isAutoTryCredentials() {
         return autoTryCredentials;
+    }
+
+    /**
+     * Sets the auto try credentials.
+     *
+     * @param autoTryCredentials the new auto try credentials
+     */
+    public void setAutoTryCredentials(boolean autoTryCredentials) {
+        this.autoTryCredentials = autoTryCredentials;
     }
 
     /**
@@ -982,294 +1103,6 @@ public class Device {
         this.eosModule = null;
         this.eolDate = null;
         this.eolModule = null;
-    }
-
-    public void setAttributes(Set<DeviceAttribute> attributes) {
-        this.attributes = attributes;
-    }
-
-    /**
-     * Sets the auto try credentials.
-     *
-     * @param autoTryCredentials the new auto try credentials
-     */
-    public void setAutoTryCredentials(boolean autoTryCredentials) {
-        this.autoTryCredentials = autoTryCredentials;
-    }
-
-
-    /**
-     * Sets the change date.
-     *
-     * @param changeDate the new change date
-     */
-    public void setChangeDate(Date changeDate) {
-        this.changeDate = changeDate;
-    }
-
-    /**
-     * Sets the check compliance tasks.
-     *
-     * @param checkComplianceTasks the new check compliance tasks
-     */
-    public void setCheckComplianceTasks(
-            List<CheckComplianceTask> checkComplianceTasks) {
-        this.checkComplianceTasks = checkComplianceTasks;
-    }
-
-    public void setRunDeviceScriptTasks(List<RunDeviceScriptTask> tasks) {
-        this.runDeviceScriptTasks = tasks;
-    }
-
-    /**
-     * Sets the comments.
-     *
-     * @param comments the new comments
-     */
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    /**
-     * Sets the compliance check results.
-     *
-     * @param complianceChecks the new compliance check results
-     */
-    protected void setComplianceCheckResults(Set<CheckResult> complianceChecks) {
-        this.complianceCheckResults = complianceChecks;
-    }
-
-    /**
-     * Sets the compliance exemptions.
-     *
-     * @param complianceExemptions the new compliance exemptions
-     */
-    protected void setComplianceExemptions(Set<Exemption> complianceExemptions) {
-        this.complianceExemptions = complianceExemptions;
-    }
-
-    /**
-     * Sets the configs.
-     *
-     * @param configs the new configs
-     */
-    public void setConfigs(List<Config> configs) {
-        this.configs = configs;
-    }
-
-    /**
-     * Sets the contact.
-     *
-     * @param contact the new contact
-     */
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    /**
-     * Sets the created date.
-     *
-     * @param createdDate the new created date
-     */
-    protected void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
-    }
-
-    /**
-     * Sets the credential sets.
-     *
-     * @param credentialSets the new credential sets
-     */
-    protected void setCredentialSets(Set<DeviceCredentialSet> credentialSets) {
-        this.credentialSets = credentialSets;
-    }
-
-    public void setDriver(String driver) {
-        this.driver = driver;
-    }
-
-    public void setEolDate(Date eolDate) {
-        this.eolDate = eolDate;
-    }
-
-    public void setEolModule(Module eolModule) {
-        this.eolModule = eolModule;
-    }
-
-
-    public void setEosDate(Date eosDate) {
-        this.eosDate = eosDate;
-    }
-
-    public void setEosModule(Module eosModule) {
-        this.eosModule = eosModule;
-    }
-
-    /**
-     * Sets the family.
-     *
-     * @param family the new family
-     */
-    public void setFamily(String family) {
-        this.family = family;
-    }
-
-    /**
-     * Sets the id.
-     *
-     * @param id the new id
-     */
-    protected void setId(long id) {
-        this.id = id;
-    }
-
-    /**
-     * Sets the last config.
-     *
-     * @param lastConfig the new last config
-     */
-    public void setLastConfig(Config lastConfig) {
-        this.lastConfig = lastConfig;
-    }
-
-    /**
-     * Sets the location.
-     *
-     * @param location the new location
-     */
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    /**
-     * Sets the mgmt address.
-     *
-     * @param mgmtAddress the new mgmt address
-     */
-    public void setMgmtAddress(Network4Address mgmtAddress) {
-        this.mgmtAddress = mgmtAddress;
-    }
-
-    /**
-     * Sets the mgmt domain.
-     *
-     * @param mgmtDomain the new mgmt domain
-     */
-    public void setMgmtDomain(Domain mgmtDomain) {
-        this.mgmtDomain = mgmtDomain;
-    }
-
-    /**
-     * Sets the modules.
-     *
-     * @param modules the new modules
-     */
-    public void setModules(List<Module> modules) {
-        this.modules = modules;
-    }
-
-    /**
-     * Sets the name.
-     *
-     * @param name the new name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Sets the network class.
-     *
-     * @param networkClass the new network class
-     */
-    public void setNetworkClass(NetworkClass networkClass) {
-        this.networkClass = networkClass;
-    }
-
-    /**
-     * Sets the network interfaces.
-     *
-     * @param networkInterfaces the new network interfaces
-     */
-    public void setNetworkInterfaces(List<NetworkInterface> networkInterfaces) {
-        this.networkInterfaces = networkInterfaces;
-    }
-
-    /**
-     * Sets the owner groups.
-     *
-     * @param ownerGroups the new owner groups
-     */
-    public void setOwnerGroups(Set<DeviceGroup> ownerGroups) {
-        this.ownerGroups = ownerGroups;
-    }
-
-    /**
-     * Sets the serial number.
-     *
-     * @param serialNumber the new serial number
-     */
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    /**
-     * Sets the snapshot tasks.
-     *
-     * @param snapshotTaks the new snapshot tasks
-     */
-    protected void setSnapshotTasks(List<TakeSnapshotTask> snapshotTaks) {
-        this.snapshotTasks = snapshotTaks;
-    }
-
-    /**
-     * Sets the software level.
-     *
-     * @param softwareLevel the new software level
-     */
-    public void setSoftwareLevel(SoftwareRule.ConformanceLevel softwareLevel) {
-        this.softwareLevel = softwareLevel;
-    }
-
-    /**
-     * Sets the software version.
-     *
-     * @param softwareVersion the new software version
-     */
-    public void setSoftwareVersion(String softwareVersion) {
-        this.softwareVersion = softwareVersion;
-    }
-
-    /**
-     * Sets the status.
-     *
-     * @param status the new status
-     */
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-
-    /**
-     * Sets the virtual devices.
-     *
-     * @param virtualDevices the new virtual devices
-     */
-    public void setVirtualDevices(Set<String> virtualDevices) {
-        this.virtualDevices = virtualDevices;
-    }
-
-    /**
-     * Sets the vrf instances.
-     *
-     * @param vrfInstances the new vrf instances
-     */
-    public void setVrfInstances(Set<String> vrfInstances) {
-        this.vrfInstances = vrfInstances;
     }
 
     public void takeSnapshot() throws IOException, MissingDeviceDriverException, InvalidCredentialsException, ScriptException {
@@ -1447,5 +1280,110 @@ public class Device {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @XmlElement
+    public String getEmails() {
+        return emails;
+    }
+
+    public void setEmails(String emails) {
+        this.emails = emails;
+    }
+
+    @XmlElement
+    public Boolean getOnSuccess() {
+        return onSuccess;
+    }
+
+    public void setOnSuccess(Boolean onSuccess) {
+        this.onSuccess = onSuccess;
+    }
+
+    @XmlElement
+    public Boolean getOnError() {
+        return onError;
+    }
+
+    public void setOnError(Boolean onError) {
+        this.onError = onError;
+    }
+
+    /**
+     * The Enum NetworkClass.
+     */
+    public static enum NetworkClass {
+
+        /**
+         * The firewall.
+         */
+        FIREWALL,
+
+        /**
+         * The loadbalancer.
+         */
+        LOADBALANCER,
+
+        /**
+         * The router.
+         */
+        ROUTER,
+
+        /**
+         * The server.
+         */
+        SERVER,
+
+        /**
+         * The switch.
+         */
+        SWITCH,
+
+        /**
+         * The switchrouter.
+         */
+        SWITCHROUTER,
+
+        /**
+         * The unknown.
+         */
+        UNKNOWN
+    }
+
+    /**
+     * The Enum Status.
+     */
+    public static enum Status {
+
+        /**
+         * The disabled.
+         */
+        DISABLED,
+
+        /**
+         * The inproduction.
+         */
+        INPRODUCTION,
+
+        /**
+         * The preproduction.
+         */
+        PREPRODUCTION
+    }
+
+    public static class InvalidCredentialsException extends Exception {
+        private static final long serialVersionUID = 2762061771246688828L;
+
+        public InvalidCredentialsException(String message) {
+            super(message);
+        }
+    }
+
+    public static class MissingDeviceDriverException extends Exception {
+        private static final long serialVersionUID = -7286042265874166550L;
+
+        public MissingDeviceDriverException(String message) {
+            super(message);
+        }
     }
 }

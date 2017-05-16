@@ -31,6 +31,24 @@
                 name="devicetype" id="devicetype"
                 class="text ui-widget-content ui-corner-all"></select>
         </fieldset>
+        <fieldset>
+            <label for="deviceemails">Emails (separeted by ';') : </label>
+            <input type="text"
+                   name="deviceemails" id="deviceemails" autofocus="autofocus"
+                   class="text ui-widget-content ui-corner-all" value="/"/>
+        </fieldset>
+        <fieldset>
+            <label for="deviceonsuccess">Email notification success : </label>
+            <input type="checkbox"
+                   name="deviceonsuccess" id="deviceonsuccess" autofocus="autofocus"
+                   class="text ui-widget-content ui-corner-all" value="true"/>
+        </fieldset>
+        <fieldset>
+            <label for="deviceonerror">Email notification error : </label>
+            <input type="checkbox"
+                   name="deviceonerror" id="deviceonerror" autofocus="autofocus"
+                   class="text ui-widget-content ui-corner-all" value="true"/>
+        </fieldset>
         <div class="nserror" id="error">
             <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
             <span id="errormsg"></span>

@@ -178,7 +178,7 @@ public class Tester {
 				Domain domain = (Domain) session.load(Domain.class, 1L);
 				Network4Address deviceAddress = new Network4Address(
 				    Network4Address.intToIP((10 << 24) + (16 << 16) + i), 32);
-				Device device = new Device("CiscoIOS12", deviceAddress, domain, "Tester", "/");
+				Device device = new Device("CiscoIOS12", deviceAddress, domain, "Tester", "/", "", true, true);
 				device.setName(String.format("TEST%05d", i));
 				device.setLocation("Fake location");
 				device.setContact("Fake contact");

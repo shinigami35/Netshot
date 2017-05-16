@@ -189,7 +189,6 @@ public abstract class Task implements Cloneable {
 		this.comments = comments;
 		this.target = target;
 		this.author = author;
-
 	}
 
 

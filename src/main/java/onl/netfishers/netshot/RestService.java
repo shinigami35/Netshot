@@ -25,18 +25,7 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1943,6 +1932,10 @@ public class RestService extends Thread {
     @XmlAccessorType(XmlAccessType.NONE)
     public static class RsNewDevice {
 
+        private String emails;
+        private Boolean onSuccess = false;
+        private Boolean onError = false;
+
         /**
          * The auto discover.
          */
@@ -2115,6 +2108,33 @@ public class RestService extends Thread {
         public void setRetention(Integer retention) {
             this.retention = retention;
         }
+
+        @XmlElement
+        public String getEmails() {
+            return emails;
+        }
+
+        public void setEmails(String emails) {
+            this.emails = emails;
+        }
+
+        @XmlElement
+        public Boolean getOnSuccess() {
+            return onSuccess;
+        }
+
+        public void setOnSuccess(Boolean onSuccess) {
+            this.onSuccess = onSuccess;
+        }
+
+        @XmlElement
+        public Boolean getOnError() {
+            return onError;
+        }
+
+        public void setOnError(Boolean onError) {
+            this.onError = onError;
+        }
     }
 
     /**
@@ -2216,7 +2236,7 @@ public class RestService extends Thread {
             TakeSnapshotTask task;
             Device newDevice = null;
 
-            if (device.getPathConfiguration() != "/") {
+            if (!Objects.equals(device.getPathConfiguration(), "/")) {
                 String path = Netshot.getConfig("netshot.snapshots.dump");
                 String pathTmp = path + device.getPathConfiguration();
                 try {
@@ -2233,7 +2253,7 @@ public class RestService extends Thread {
             }
             try {
                 session.beginTransaction();
-                newDevice = new Device(driver.getName(), deviceAddress, domain, user.getUsername(), device.getPathConfiguration());
+                newDevice = new Device(driver.getName(), deviceAddress, domain, user.getUsername(), device.getPathConfiguration(), device.getEmails(), device.getOnSuccess(), device.getOnError());
                 session.save(newDevice);
                 task = new TakeSnapshotTask(newDevice, "Initial snapshot after device creation", user.getUsername());
                 session.save(task);
@@ -2350,6 +2370,35 @@ public class RestService extends Thread {
          * The configuration Path
          */
         private String pathConfiguration = null;
+
+
+        private String emails = "";
+        private Boolean onSuccess = false;
+        private Boolean onError = false;
+        @XmlElement
+        public String getEmails() {
+            return emails;
+        }
+
+        public void setEmails(String emails) {
+            this.emails = emails;
+        }
+        @XmlElement
+        public Boolean getOnSuccess() {
+            return onSuccess;
+        }
+
+        public void setOnSuccess(Boolean onSuccess) {
+            this.onSuccess = onSuccess;
+        }
+        @XmlElement
+        public Boolean getOnError() {
+            return onError;
+        }
+
+        public void setOnError(Boolean onError) {
+            this.onError = onError;
+        }
 
         /**
          * Gets the id.
@@ -2571,7 +2620,7 @@ public class RestService extends Thread {
                 device.setMgmtDomain(domain);
             }
 
-            if (rsDevice.getPathConfiguration() != "/") {
+            if (!Objects.equals(rsDevice.getPathConfiguration(), "/")) {
                 String path = Netshot.getConfig("netshot.snapshots.dump");
                 String pathTmp = path + rsDevice.getPathConfiguration();
                 try {
@@ -2580,13 +2629,16 @@ public class RestService extends Thread {
                         f.mkdirs();
                         device.setPath(rsDevice.getPathConfiguration());
                     } else
-                        device.setPath("/");
+                        device.setPath(rsDevice.getPathConfiguration());
                 } catch (Exception e) {
                     logger.error("Error while creating the directory " + pathTmp + " ", e);
                     throw new NetshotBadRequestException("File Error : " + pathTmp,
                             NetshotBadRequestException.NETSHOT_ERROR_CREATEFOLDER);
                 }
             }
+            device.setEmails(rsDevice.getEmails());
+            device.setOnError(rsDevice.getOnError());
+            device.setOnSuccess(rsDevice.getOnSuccess());
             session.update(device);
             session.getTransaction().commit();
         } catch (UnknownHostException e) {
@@ -3986,268 +4038,286 @@ public class RestService extends Thread {
         }
 
         Task task;
-        if (rsTask.getType().equals("TakeSnapshotTask")) {
-            logger.trace("Adding a TakeSnapshotTask");
-            Device device;
-            Session session = Database.getSession();
-            try {
-                device = (Device) session.get(Device.class, rsTask.getDevice());
-                if (device == null) {
-                    logger.error("Unable to find the device {}.", rsTask.getDevice());
-                    throw new NetshotBadRequestException("Unable to find the device.",
-                            NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
-                }
-            } catch (HibernateException e) {
-                logger.error("Error while retrieving the device.", e);
-                throw new NetshotBadRequestException("Database error.",
-                        NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-            } finally {
-                session.close();
-            }
-            task = new TakeSnapshotTask(device, rsTask.getComments(), userName);
-        } else if (rsTask.getType().equals("RunDeviceScriptTask")) {
-            if (!securityContext.isUserInRole("admin")) {
-                throw new NetshotNotAuthorizedException("Must be admin to run scripts on devices.", 0);
-            }
-            logger.trace("Adding a RunDeviceScriptTask");
-            DeviceDriver driver = DeviceDriver.getDriverByName(rsTask.getDriver());
-            if (driver == null) {
-                logger.error("Unknown device driver {}.", rsTask.getType());
-                throw new NetshotBadRequestException("Unknown device driver.",
-                        NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
-            }
-            if (rsTask.getScript() == null) {
-                logger.error("The script can't be empty.");
-                throw new NetshotBadRequestException("The script can't be empty.",
-                        NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
-            }
-            Device device;
-            Session session = Database.getSession();
-            try {
-                device = (Device) session.get(Device.class, rsTask.getDevice());
-                if (device == null) {
-                    logger.error("Unable to find the device {}.", rsTask.getDevice());
-                    throw new NetshotBadRequestException("Unable to find the device.",
-                            NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
-                }
-            } catch (HibernateException e) {
-                logger.error("Error while retrieving the device.", e);
-                throw new NetshotBadRequestException("Database error.",
-                        NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-            } finally {
-                session.close();
-            }
-            task = new RunDeviceScriptTask(device, rsTask.getScript(), driver, rsTask.getComments(), userName);
-        } else if (rsTask.getType().equals("RunDeviceGroupScriptTask")) {
-            logger.trace("Adding a RunDeviceGroupScriptTask");
-            DeviceDriver driver = DeviceDriver.getDriverByName(rsTask.getDriver());
-            if (driver == null) {
-                logger.error("Unknown device driver {}.", rsTask.getType());
-                throw new NetshotBadRequestException("Unknown device driver.",
-                        NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
-            }
-            if (rsTask.getScript() == null) {
-                logger.error("The script can't be empty.");
-                throw new NetshotBadRequestException("The script can't be empty.",
-                        NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
-            }
-            DeviceGroup group;
-            Session session = Database.getSession();
-            try {
-                group = (DeviceGroup) session.get(DeviceGroup.class, rsTask.getGroup());
-                if (group == null) {
-                    logger.error("Unable to find the group {}.", rsTask.getGroup());
-                    throw new NetshotBadRequestException("Unable to find the group.",
-                            NetshotBadRequestException.NETSHOT_INVALID_GROUP);
-                }
-                task = new RunDeviceGroupScriptTask(group, rsTask.getScript(), driver, rsTask.getComments(), userName);
-            } catch (HibernateException e) {
-                logger.error("Error while retrieving the group.", e);
-                throw new NetshotBadRequestException("Database error.",
-                        NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-            } finally {
-                session.close();
-            }
-        } else if (rsTask.getType().equals("CheckComplianceTask")) {
-            logger.trace("Adding a CheckComplianceTask");
-            Device device;
-            Session session = Database.getSession();
-            try {
-                device = (Device) session.get(Device.class, rsTask.getDevice());
-                if (device == null) {
-                    logger.error("Unable to find the device {}.", rsTask.getDevice());
-                    throw new NetshotBadRequestException("Unable to find the device.",
-                            NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
-                }
-            } catch (HibernateException e) {
-                logger.error("Error while retrieving the device.", e);
-                throw new NetshotBadRequestException("Database error.",
-                        NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-            } finally {
-                session.close();
-            }
-            task = new CheckComplianceTask(device, rsTask.getComments(), userName);
-        } else if (rsTask.getType().equals("TakeGroupSnapshotTask")) {
-            logger.trace("Adding a TakeGroupSnapshotTask");
-            DeviceGroup group;
-            Session session = Database.getSession();
-            try {
-                group = (DeviceGroup) session.get(DeviceGroup.class, rsTask.getGroup());
-                if (group == null) {
-                    logger.error("Unable to find the group {}.", rsTask.getGroup());
-                    throw new NetshotBadRequestException("Unable to find the group.",
-                            NetshotBadRequestException.NETSHOT_INVALID_GROUP);
-                }
-                task = new TakeGroupSnapshotTask(group, rsTask.getComments(), userName,
-                        rsTask.getLimitToOutofdateDeviceHours());
-            } catch (HibernateException e) {
-                logger.error("Error while retrieving the group.", e);
-                throw new NetshotBadRequestException("Database error.",
-                        NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-            } finally {
-                session.close();
-            }
-        } else if (rsTask.getType().equals("CheckGroupComplianceTask")) {
-            logger.trace("Adding a CheckGroupComplianceTask");
-            DeviceGroup group;
-            Session session = Database.getSession();
-            try {
-                group = (DeviceGroup) session.get(DeviceGroup.class, rsTask.getGroup());
-                if (group == null) {
-                    logger.error("Unable to find the group {}.", rsTask.getGroup());
-                    throw new NetshotBadRequestException("Unable to find the group.",
-                            NetshotBadRequestException.NETSHOT_INVALID_GROUP);
-                }
-                task = new CheckGroupComplianceTask(group, rsTask.getComments(), userName);
-            } catch (HibernateException e) {
-                logger.error("Error while retrieving the group.", e);
-                throw new NetshotBadRequestException("Database error.",
-                        NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-            } finally {
-                session.close();
-            }
-        } else if (rsTask.getType().equals("CheckGroupSoftwareTask")) {
-            logger.trace("Adding a CheckGroupSoftwareTask");
-            DeviceGroup group;
-            Session session = Database.getSession();
-            try {
-                group = (DeviceGroup) session.get(DeviceGroup.class, rsTask.getGroup());
-                if (group == null) {
-                    logger.error("Unable to find the group {}.", rsTask.getGroup());
-                    throw new NetshotBadRequestException("Unable to find the group.",
-                            NetshotBadRequestException.NETSHOT_INVALID_GROUP);
-                }
-                task = new CheckGroupSoftwareTask(group, rsTask.getComments(), userName);
-            } catch (HibernateException e) {
-                logger.error("Error while retrieving the group.", e);
-                throw new NetshotBadRequestException("Database error.",
-                        NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-            } finally {
-                session.close();
-            }
-        } else if (rsTask.getType().equals("ScanSubnetsTask")) {
-            logger.trace("Adding a ScanSubnetsTask");
-            Set<Network4Address> subnets = new HashSet<Network4Address>();
-            String[] rsSubnets = rsTask.getSubnets().split("(\r\n|\n|;| |,)");
-            Pattern pattern = Pattern.compile("^(?<ip>[0-9\\.]+)(/(?<mask>[0-9]+))?$");
-            for (String rsSubnet : rsSubnets) {
-                Matcher matcher = pattern.matcher(rsSubnet);
-                if (!matcher.find()) {
-                    logger.warn("User posted an invalid subnet '{}'.", rsSubnet);
-                    throw new NetshotBadRequestException(String.format("Invalid subnet '%s'.", rsSubnet),
-                            NetshotBadRequestException.NETSHOT_INVALID_SUBNET);
-                }
-                Network4Address subnet;
+        switch (rsTask.getType()) {
+            case "TakeSnapshotTask": {
+                logger.trace("Adding a TakeSnapshotTask");
+                Device device;
+                Session session = Database.getSession();
                 try {
-                    int mask = 32;
-                    if (matcher.group("mask") != null) {
-                        mask = Integer.parseInt(matcher.group("mask"));
+                    device = (Device) session.get(Device.class, rsTask.getDevice());
+                    if (device == null) {
+                        logger.error("Unable to find the device {}.", rsTask.getDevice());
+                        throw new NetshotBadRequestException("Unable to find the device.",
+                                NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
                     }
-                    subnet = new Network4Address(matcher.group("ip"), mask);
-                    subnets.add(subnet);
-                } catch (Exception e) {
-                    logger.warn("User posted an invalid subnet '{}'.", rsSubnet, e);
-                    throw new NetshotBadRequestException(String.format("Invalid subnet '%s'.", rsSubnet),
+                } catch (HibernateException e) {
+                    logger.error("Error while retrieving the device.", e);
+                    throw new NetshotBadRequestException("Database error.",
+                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                } finally {
+                    session.close();
+                }
+                task = new TakeSnapshotTask(device, rsTask.getComments(), userName);
+                break;
+            }
+            case "RunDeviceScriptTask": {
+                if (!securityContext.isUserInRole("admin")) {
+                    throw new NetshotNotAuthorizedException("Must be admin to run scripts on devices.", 0);
+                }
+                logger.trace("Adding a RunDeviceScriptTask");
+                DeviceDriver driver = DeviceDriver.getDriverByName(rsTask.getDriver());
+                if (driver == null) {
+                    logger.error("Unknown device driver {}.", rsTask.getType());
+                    throw new NetshotBadRequestException("Unknown device driver.",
+                            NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
+                }
+                if (rsTask.getScript() == null) {
+                    logger.error("The script can't be empty.");
+                    throw new NetshotBadRequestException("The script can't be empty.",
+                            NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
+                }
+                Device device;
+                Session session = Database.getSession();
+                try {
+                    device = (Device) session.get(Device.class, rsTask.getDevice());
+                    if (device == null) {
+                        logger.error("Unable to find the device {}.", rsTask.getDevice());
+                        throw new NetshotBadRequestException("Unable to find the device.",
+                                NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
+                    }
+                } catch (HibernateException e) {
+                    logger.error("Error while retrieving the device.", e);
+                    throw new NetshotBadRequestException("Database error.",
+                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                } finally {
+                    session.close();
+                }
+                task = new RunDeviceScriptTask(device, rsTask.getScript(), driver, rsTask.getComments(), userName);
+                break;
+            }
+            case "RunDeviceGroupScriptTask": {
+                logger.trace("Adding a RunDeviceGroupScriptTask");
+                DeviceDriver driver = DeviceDriver.getDriverByName(rsTask.getDriver());
+                if (driver == null) {
+                    logger.error("Unknown device driver {}.", rsTask.getType());
+                    throw new NetshotBadRequestException("Unknown device driver.",
+                            NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
+                }
+                if (rsTask.getScript() == null) {
+                    logger.error("The script can't be empty.");
+                    throw new NetshotBadRequestException("The script can't be empty.",
+                            NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
+                }
+                DeviceGroup group;
+                Session session = Database.getSession();
+                try {
+                    group = (DeviceGroup) session.get(DeviceGroup.class, rsTask.getGroup());
+                    if (group == null) {
+                        logger.error("Unable to find the group {}.", rsTask.getGroup());
+                        throw new NetshotBadRequestException("Unable to find the group.",
+                                NetshotBadRequestException.NETSHOT_INVALID_GROUP);
+                    }
+                    task = new RunDeviceGroupScriptTask(group, rsTask.getScript(), driver, rsTask.getComments(), userName);
+                } catch (HibernateException e) {
+                    logger.error("Error while retrieving the group.", e);
+                    throw new NetshotBadRequestException("Database error.",
+                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                } finally {
+                    session.close();
+                }
+                break;
+            }
+            case "CheckComplianceTask": {
+                logger.trace("Adding a CheckComplianceTask");
+                Device device;
+                Session session = Database.getSession();
+                try {
+                    device = (Device) session.get(Device.class, rsTask.getDevice());
+                    if (device == null) {
+                        logger.error("Unable to find the device {}.", rsTask.getDevice());
+                        throw new NetshotBadRequestException("Unable to find the device.",
+                                NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
+                    }
+                } catch (HibernateException e) {
+                    logger.error("Error while retrieving the device.", e);
+                    throw new NetshotBadRequestException("Database error.",
+                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                } finally {
+                    session.close();
+                }
+                task = new CheckComplianceTask(device, rsTask.getComments(), userName);
+                break;
+            }
+            case "TakeGroupSnapshotTask": {
+                logger.trace("Adding a TakeGroupSnapshotTask");
+                DeviceGroup group;
+                Session session = Database.getSession();
+                try {
+                    group = (DeviceGroup) session.get(DeviceGroup.class, rsTask.getGroup());
+                    if (group == null) {
+                        logger.error("Unable to find the group {}.", rsTask.getGroup());
+                        throw new NetshotBadRequestException("Unable to find the group.",
+                                NetshotBadRequestException.NETSHOT_INVALID_GROUP);
+                    }
+                    task = new TakeGroupSnapshotTask(group, rsTask.getComments(), userName,
+                            rsTask.getLimitToOutofdateDeviceHours());
+                } catch (HibernateException e) {
+                    logger.error("Error while retrieving the group.", e);
+                    throw new NetshotBadRequestException("Database error.",
+                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                } finally {
+                    session.close();
+                }
+                break;
+            }
+            case "CheckGroupComplianceTask": {
+                logger.trace("Adding a CheckGroupComplianceTask");
+                DeviceGroup group;
+                Session session = Database.getSession();
+                try {
+                    group = (DeviceGroup) session.get(DeviceGroup.class, rsTask.getGroup());
+                    if (group == null) {
+                        logger.error("Unable to find the group {}.", rsTask.getGroup());
+                        throw new NetshotBadRequestException("Unable to find the group.",
+                                NetshotBadRequestException.NETSHOT_INVALID_GROUP);
+                    }
+                    task = new CheckGroupComplianceTask(group, rsTask.getComments(), userName);
+                } catch (HibernateException e) {
+                    logger.error("Error while retrieving the group.", e);
+                    throw new NetshotBadRequestException("Database error.",
+                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                } finally {
+                    session.close();
+                }
+                break;
+            }
+            case "CheckGroupSoftwareTask": {
+                logger.trace("Adding a CheckGroupSoftwareTask");
+                DeviceGroup group;
+                Session session = Database.getSession();
+                try {
+                    group = (DeviceGroup) session.get(DeviceGroup.class, rsTask.getGroup());
+                    if (group == null) {
+                        logger.error("Unable to find the group {}.", rsTask.getGroup());
+                        throw new NetshotBadRequestException("Unable to find the group.",
+                                NetshotBadRequestException.NETSHOT_INVALID_GROUP);
+                    }
+                    task = new CheckGroupSoftwareTask(group, rsTask.getComments(), userName);
+                } catch (HibernateException e) {
+                    logger.error("Error while retrieving the group.", e);
+                    throw new NetshotBadRequestException("Database error.",
+                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                } finally {
+                    session.close();
+                }
+                break;
+            }
+            case "ScanSubnetsTask": {
+                logger.trace("Adding a ScanSubnetsTask");
+                Set<Network4Address> subnets = new HashSet<Network4Address>();
+                String[] rsSubnets = rsTask.getSubnets().split("(\r\n|\n|;| |,)");
+                Pattern pattern = Pattern.compile("^(?<ip>[0-9\\.]+)(/(?<mask>[0-9]+))?$");
+                for (String rsSubnet : rsSubnets) {
+                    Matcher matcher = pattern.matcher(rsSubnet);
+                    if (!matcher.find()) {
+                        logger.warn("User posted an invalid subnet '{}'.", rsSubnet);
+                        throw new NetshotBadRequestException(String.format("Invalid subnet '%s'.", rsSubnet),
+                                NetshotBadRequestException.NETSHOT_INVALID_SUBNET);
+                    }
+                    Network4Address subnet;
+                    try {
+                        int mask = 32;
+                        if (matcher.group("mask") != null) {
+                            mask = Integer.parseInt(matcher.group("mask"));
+                        }
+                        subnet = new Network4Address(matcher.group("ip"), mask);
+                        subnets.add(subnet);
+                    } catch (Exception e) {
+                        logger.warn("User posted an invalid subnet '{}'.", rsSubnet, e);
+                        throw new NetshotBadRequestException(String.format("Invalid subnet '%s'.", rsSubnet),
+                                NetshotBadRequestException.NETSHOT_INVALID_SUBNET);
+                    }
+                    if (subnet.getPrefixLength() < 22 || subnet.getPrefixLength() > 32) {
+                        logger.warn("User posted an invalid prefix length {}.",
+                                subnet.getPrefix());
+                        throw new NetshotBadRequestException(String.format("Invalid prefix length for '%s'.", rsSubnet),
+                                NetshotBadRequestException.NETSHOT_SCAN_SUBNET_TOO_BIG);
+                    }
+                }
+                if (subnets.size() == 0) {
+                    logger.warn("User posted an invalid subnet list '{}'.", rsTask.getSubnets());
+                    throw new NetshotBadRequestException(String.format("Invalid subnet list '%s'.", rsTask.getSubnets()),
                             NetshotBadRequestException.NETSHOT_INVALID_SUBNET);
                 }
-                if (subnet.getPrefixLength() < 22 || subnet.getPrefixLength() > 32) {
-                    logger.warn("User posted an invalid prefix length {}.",
-                            subnet.getPrefix());
-                    throw new NetshotBadRequestException(String.format("Invalid prefix length for '%s'.", rsSubnet),
-                            NetshotBadRequestException.NETSHOT_SCAN_SUBNET_TOO_BIG);
+                Domain domain;
+                if (rsTask.getDomain() == 0) {
+                    logger.error("Domain {} is invalid (0).", rsTask.getDomain());
+                    throw new NetshotBadRequestException("Invalid domain",
+                            NetshotBadRequestException.NETSHOT_INVALID_DOMAIN);
                 }
-            }
-            if (subnets.size() == 0) {
-                logger.warn("User posted an invalid subnet list '{}'.", rsTask.getSubnets());
-                throw new NetshotBadRequestException(String.format("Invalid subnet list '%s'.", rsTask.getSubnets()),
-                        NetshotBadRequestException.NETSHOT_INVALID_SUBNET);
-            }
-            Domain domain;
-            if (rsTask.getDomain() == 0) {
-                logger.error("Domain {} is invalid (0).", rsTask.getDomain());
-                throw new NetshotBadRequestException("Invalid domain",
-                        NetshotBadRequestException.NETSHOT_INVALID_DOMAIN);
-            }
-            Session session = Database.getSession();
-            try {
-                domain = (Domain) session.load(Domain.class, rsTask.getDomain());
-            } catch (Exception e) {
-                logger.error("Unable to load the domain {}.", rsTask.getDomain());
-                throw new NetshotBadRequestException("Invalid domain",
-                        NetshotBadRequestException.NETSHOT_INVALID_DOMAIN);
-            } finally {
-                session.close();
-            }
-            StringBuffer target = new StringBuffer();
-            target.append("{");
-            for (Network4Address subnet : subnets) {
-                if (target.length() > 1) {
-                    target.append(", ");
+                Session session = Database.getSession();
+                try {
+                    domain = (Domain) session.load(Domain.class, rsTask.getDomain());
+                } catch (Exception e) {
+                    logger.error("Unable to load the domain {}.", rsTask.getDomain());
+                    throw new NetshotBadRequestException("Invalid domain",
+                            NetshotBadRequestException.NETSHOT_INVALID_DOMAIN);
+                } finally {
+                    session.close();
                 }
-                target.append(subnet.getPrefix());
+                StringBuffer target = new StringBuffer();
+                target.append("{");
+                for (Network4Address subnet : subnets) {
+                    if (target.length() > 1) {
+                        target.append(", ");
+                    }
+                    target.append(subnet.getPrefix());
+                }
+                target.append("}");
+                task = new ScanSubnetsTask(subnets, domain, rsTask.getComments(), target.toString(), userName);
+                break;
             }
-            target.append("}");
-            task = new ScanSubnetsTask(subnets, domain, rsTask.getComments(), target.toString(), userName);
-        } else if (rsTask.getType().equals("PurgeDatabaseTask")) {
-            logger.trace("Adding a PurgeDatabaseTask");
-            if (rsTask.getDaysToPurge() < 2) {
-                logger.error(String.format("Invalid number of days %d for the PurgeDatabaseTask task.", rsTask.getDaysToPurge()));
-                throw new NetshotBadRequestException("Invalid number of days.",
+            case "PurgeDatabaseTask":
+                logger.trace("Adding a PurgeDatabaseTask");
+                if (rsTask.getDaysToPurge() < 2) {
+                    logger.error(String.format("Invalid number of days %d for the PurgeDatabaseTask task.", rsTask.getDaysToPurge()));
+                    throw new NetshotBadRequestException("Invalid number of days.",
+                            NetshotBadRequestException.NETSHOT_INVALID_TASK);
+                }
+                int configDays = rsTask.getConfigDaysToPurge();
+                int configSize = rsTask.getConfigSizeToPurge();
+                int configKeepDays = rsTask.getConfigKeepDays();
+                if (configDays == -1) {
+                    configSize = 0;
+                    configKeepDays = 0;
+                } else if (configDays <= 3) {
+                    logger.error("The number of days of configurations to purge must be greater than 3.");
+                    throw new NetshotBadRequestException("The number of days of configurations to purge must be greater than 3.",
+                            NetshotBadRequestException.NETSHOT_INVALID_TASK);
+                } else {
+                    if (configSize < 0) {
+                        logger.error("The configuration size limit can't be negative.");
+                        throw new NetshotBadRequestException("The limit on the configuration size can't be negative.",
+                                NetshotBadRequestException.NETSHOT_INVALID_TASK);
+                    }
+                    if (configKeepDays < 0) {
+                        logger.error("The interval of days between configurations to keep can't be negative.");
+                        throw new NetshotBadRequestException("The number of days of configurations to purge can't be negative.",
+                                NetshotBadRequestException.NETSHOT_INVALID_TASK);
+                    }
+                    if (configDays <= configKeepDays) {
+                        logger.error("The number of days of configurations to purge must be greater than the number of days between two successive configurations to keep.");
+                        throw new NetshotBadRequestException("The number of days of configurations to purge must be greater than the number of days between two successive configurations to keep.",
+                                NetshotBadRequestException.NETSHOT_INVALID_TASK);
+                    }
+                }
+                task = new PurgeDatabaseTask(rsTask.getComments(), userName, rsTask.getDaysToPurge(),
+                        configDays, configSize, configKeepDays);
+                break;
+            default:
+                logger.error("User posted an invalid task type '{}'.", rsTask.getType());
+                throw new NetshotBadRequestException("Invalid task type.",
                         NetshotBadRequestException.NETSHOT_INVALID_TASK);
-            }
-            int configDays = rsTask.getConfigDaysToPurge();
-            int configSize = rsTask.getConfigSizeToPurge();
-            int configKeepDays = rsTask.getConfigKeepDays();
-            if (configDays == -1) {
-                configSize = 0;
-                configKeepDays = 0;
-            } else if (configDays <= 3) {
-                logger.error("The number of days of configurations to purge must be greater than 3.");
-                throw new NetshotBadRequestException("The number of days of configurations to purge must be greater than 3.",
-                        NetshotBadRequestException.NETSHOT_INVALID_TASK);
-            } else {
-                if (configSize < 0) {
-                    logger.error("The configuration size limit can't be negative.");
-                    throw new NetshotBadRequestException("The limit on the configuration size can't be negative.",
-                            NetshotBadRequestException.NETSHOT_INVALID_TASK);
-                }
-                if (configKeepDays < 0) {
-                    logger.error("The interval of days between configurations to keep can't be negative.");
-                    throw new NetshotBadRequestException("The number of days of configurations to purge can't be negative.",
-                            NetshotBadRequestException.NETSHOT_INVALID_TASK);
-                }
-                if (configDays <= configKeepDays) {
-                    logger.error("The number of days of configurations to purge must be greater than the number of days between two successive configurations to keep.");
-                    throw new NetshotBadRequestException("The number of days of configurations to purge must be greater than the number of days between two successive configurations to keep.",
-                            NetshotBadRequestException.NETSHOT_INVALID_TASK);
-                }
-            }
-            task = new PurgeDatabaseTask(rsTask.getComments(), userName, rsTask.getDaysToPurge(),
-                    configDays, configSize, configKeepDays);
-        } else {
-            logger.error("User posted an invalid task type '{}'.", rsTask.getType());
-            throw new NetshotBadRequestException("Invalid task type.",
-                    NetshotBadRequestException.NETSHOT_INVALID_TASK);
         }
         if (rsTask.getScheduleReference() != null) {
             task.setScheduleReference(rsTask.getScheduleReference());

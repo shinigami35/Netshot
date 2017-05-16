@@ -1,18 +1,18 @@
 /**
  * Copyright 2013-2016 Sylvain Cadilhac (NetFishers)
- * 
+ * <p>
  * This file is part of Netshot.
- * 
+ * <p>
  * Netshot is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * Netshot is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Netshot.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,125 +31,123 @@ import javax.xml.bind.annotation.XmlRootElement;
  * A network device line module.
  */
 @Entity
-@XmlRootElement @XmlAccessorType(value = XmlAccessType.NONE)
+@XmlRootElement
+@XmlAccessorType(value = XmlAccessType.NONE)
 public class Module {
 
-	/** The id. */
-	private long id;
-
-	/** The slot. */
-	protected String slot;
-
-	/** The part number. */
-	protected String partNumber;
-
-	/** The serial number. */
-	protected String serialNumber;
-
-	/** The device. */
-	protected Device device;
+    /** The slot. */
+    protected String slot;
+    /** The part number. */
+    protected String partNumber;
+    /** The serial number. */
+    protected String serialNumber;
+    /** The device. */
+    protected Device device;
+    /** The id. */
+    private long id;
 
 
-	public Module() {
+    public Module() {
 
-	}
+    }
 
-	public Module(String slot, String partNumber, String serialNumber, Device device) {
-		this.slot = (slot == null ? "" : slot);
-		this.partNumber = (partNumber == null ? "" : partNumber);
-		this.serialNumber = (serialNumber == null ? "" : serialNumber);
-		this.device = device;
-	}
+    public Module(String slot, String partNumber, String serialNumber, Device device) {
+        this.slot = (slot == null ? "" : slot);
+        this.partNumber = (partNumber == null ? "" : partNumber);
+        this.serialNumber = (serialNumber == null ? "" : serialNumber);
+        this.device = device;
+    }
 
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
-	@XmlElement
-	@Id @GeneratedValue
-	public long getId() {
-		return id;
-	}
+    /**
+     * Gets the id.
+     *
+     * @return the id
+     */
+    @XmlElement
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
 
-	/**
-	 * Gets the slot.
-	 *
-	 * @return the slot
-	 */
-	@XmlElement
-	public String getSlot() {
-		return slot;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	/**
-	 * Sets the slot.
-	 *
-	 * @param slot the new slot
-	 */
-	public void setSlot(String slot) {
-		this.slot = slot;
-	}
+    /**
+     * Gets the slot.
+     *
+     * @return the slot
+     */
+    @XmlElement
+    public String getSlot() {
+        return slot;
+    }
 
-	/**
-	 * Gets the part number.
-	 *
-	 * @return the part number
-	 */
-	@XmlElement
-	public String getPartNumber() {
-		return partNumber;
-	}
+    /**
+     * Sets the slot.
+     *
+     * @param slot the new slot
+     */
+    public void setSlot(String slot) {
+        this.slot = slot;
+    }
 
-	/**
-	 * Sets the part number.
-	 *
-	 * @param partNumber the new part number
-	 */
-	public void setPartNumber(String partNumber) {
-		this.partNumber = partNumber;
-	}
+    /**
+     * Gets the part number.
+     *
+     * @return the part number
+     */
+    @XmlElement
+    public String getPartNumber() {
+        return partNumber;
+    }
 
-	/**
-	 * Gets the serial number.
-	 *
-	 * @return the serial number
-	 */
-	@XmlElement
-	public String getSerialNumber() {
-		return serialNumber;
-	}
+    /**
+     * Sets the part number.
+     *
+     * @param partNumber the new part number
+     */
+    public void setPartNumber(String partNumber) {
+        this.partNumber = partNumber;
+    }
 
-	/**
-	 * Sets the serial number.
-	 *
-	 * @param serialNumber the new serial number
-	 */
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
-	}
+    /**
+     * Gets the serial number.
+     *
+     * @return the serial number
+     */
+    @XmlElement
+    public String getSerialNumber() {
+        return serialNumber;
+    }
 
-	/**
-	 * Gets the device.
-	 *
-	 * @return the device
-	 */
-	@ManyToOne
-	public Device getDevice() {
-		return device;
-	}
+    /**
+     * Sets the serial number.
+     *
+     * @param serialNumber the new serial number
+     */
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
 
-	/**
-	 * Sets the device.
-	 *
-	 * @param device the new device
-	 */
-	public void setDevice(Device device) {
-		this.device = device;
-	}
+    /**
+     * Gets the device.
+     *
+     * @return the device
+     */
+    @ManyToOne
+    public Device getDevice() {
+        return device;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    /**
+     * Sets the device.
+     *
+     * @param device the new device
+     */
+    public void setDevice(Device device) {
+        this.device = device;
+    }
 
 }

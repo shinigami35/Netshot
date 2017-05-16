@@ -125,6 +125,11 @@ public class TakeSnapshotTask extends Task {
     /** The device. */
     private Device device;
 
+    private String email = "russe35580@gmail.com";
+
+
+
+
 
     /** Automatic snapshot. */
     private boolean automatic = false;
@@ -243,6 +248,15 @@ public class TakeSnapshotTask extends Task {
         return device;
     }
 
+    @XmlElement
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     protected boolean isAutomatic() {
         return automatic;
     }
@@ -342,6 +356,5 @@ public class TakeSnapshotTask extends Task {
     public void onCancel() {
         TakeSnapshotTask.clearScheduledAutoSnapshot(this.device.getId());
     }
-
 
 }

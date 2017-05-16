@@ -16,7 +16,10 @@ define([
             'deviceType': "",
             'domainId': -1,
             'autoDiscoveryTask': -1,
-            'retention': null
+            'retention': null,
+            'emails': [],
+            'onSuccess': true,
+            'onError': true
         }
 
     });

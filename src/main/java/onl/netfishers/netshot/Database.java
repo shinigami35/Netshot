@@ -238,7 +238,7 @@ public class Database {
 					"org.hibernate.transaction.JDBCTransactionFactory")
 				.setProperty("current_session_context_class", "thread")
 				.setProperty("hibernate.hbm2ddl.auto", "update")
-				//.setProperty("hibernate.show_sql", "true")
+				.setProperty("hibernate.show_sql", "true")
 				.addAnnotatedClass(Device.class).addAnnotatedClass(DeviceGroup.class)
 				.addAnnotatedClass(Config.class)
 				.addAnnotatedClass(DeviceAttribute.class)

@@ -1,37 +1,62 @@
 package onl.netfishers.netshot.mail;
 
+import onl.netfishers.netshot.Netshot;
+import onl.netfishers.netshot.device.Device;
 import onl.netfishers.netshot.work.Task;
+import onl.netfishers.netshot.work.tasks.TakeSnapshotTask;
 
-import java.util.*;
 import javax.mail.*;
-import javax.mail.internet.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
+import java.util.Properties;
 
 public class Mail {
 
-    private String sender = "";
-    private String receiver = "";
-    //private String smtp = "";
-    private String password = "russe35580";
-    private String username = "russe35580@gmail.com";
+    private static Mail INSTANCE = null;
 
-    public Mail(String sender, String receiver) {
-        this.sender = sender;
-        this.receiver = receiver;
-        //this.smtp = smtp;
+    private String sender = null;
+    private String receiver = null;
+    private String username = null;
+    private String password = null;
+    private String smtp = null;
+    private String port = null;
+    private Boolean tls = false;
+
+    private Mail() {
+        this.sender = Netshot.getConfig("netshot.mail.from");
+        this.receiver = Netshot.getConfig("netshot.mail.contact");
+        this.username = Netshot.getConfig("netshot.mail.username");
+        this.password = Netshot.getConfig("netshot.mail.password");
+        this.smtp = Netshot.getConfig("netshot.mail.smtp");
+        this.port = Netshot.getConfig("netshot.mail.port");
+        this.tls = (Netshot.getConfig("netshot.mail.tls").toLowerCase().equals("true"));
     }
 
-    public void sendEmail(Task.Status type, String date, String device, String log) {
+    public static Mail getInstance() {
+        if (INSTANCE == null)
+            INSTANCE = new Mail();
+        return INSTANCE;
+    }
 
-        String to = this.receiver;
+    public void sendEmail(TakeSnapshotTask t, String date) {
+
+        Task.Status type = t.getStatus();
+        Device device = t.getDevice();
+        String log = t.getLog();
+        String[] tmpEmails = device.getEmails().replaceAll("\\s+", "").split(";");
+
         String from = this.sender;
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class",
-                "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.host", this.smtp.replaceAll("\\s+", ""));
+        if (this.tls) {
+            props.put("mail.smtp.socketFactory.port", String.valueOf(this.port));
+            props.put("mail.smtp.socketFactory.class",
+                    "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.auth", (this.tls ? "true" : "false"));
+        }
+        props.put("mail.smtp.port", String.valueOf(this.port));
 
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
@@ -39,26 +64,32 @@ public class Mail {
                         return new PasswordAuthentication(username, password);
                     }
                 });
-
         try {
-            // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
+            for (String s : tmpEmails) {
 
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
+                MimeMessage message = new MimeMessage(session);
+                message.setHeader("Content-Type", "text/plain; charset=UTF-8");
+                message.setFrom(new InternetAddress(from));
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(s));
 
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            if (type == Task.Status.SUCCESS) {
-                message.setSubject("Le snapshot du " + date + " a été fait sans problème : " + device);
-                message.setContent(generateBodyMail(type, date, device, log), "text/html");
-                Transport.send(message);
-            } else if (type == Task.Status.FAILURE) {
-                message.setSubject("Le snapshot du " + date + " n'a pas été effectué correctement pour : " + device);
-                message.setContent(generateBodyMail(type, date, device, log), "text/html");
-                Transport.send(message);
+                if (type == Task.Status.SUCCESS && device.getOnSuccess()) {
+                    message.setSubject("[" + device.getName() + "] Le snapshot du " + date + " a été fait sans problème");
+                    try {
+                        message.setContent(new String(generateBodyMail(type, date, device.getName(), log).getBytes(), "UTF-8"), "text/html");
+                    } catch (UnsupportedEncodingException e) {
+                        message.setContent(generateBodyMail(type, date, device.getName(), log), "text/html");
+                    }
+                    Transport.send(message);
+                } else if (type == Task.Status.FAILURE && device.getOnError()) {
+                    message.setSubject("[" + device.getName() + "] Le snapshot du " + date + " n'a pas été effectué correctement");
+                    try {
+                        message.setContent(new String(generateBodyMail(type, date, device.getName(), log).getBytes(), "UTF-8"), "text/html");
+                    } catch (UnsupportedEncodingException e) {
+                        message.setContent(generateBodyMail(type, date, device.getName(), log), "text/html");
+                    }
+                    Transport.send(message);
+                }
             }
-
         } catch (MessagingException mex) {
             mex.printStackTrace();
         }

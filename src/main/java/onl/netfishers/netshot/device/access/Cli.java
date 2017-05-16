@@ -18,16 +18,15 @@
  */
 package onl.netfishers.netshot.device.access;
 
+import onl.netfishers.netshot.device.NetworkAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import onl.netfishers.netshot.device.NetworkAddress;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A CLI object to access a device through command line.
@@ -43,6 +42,59 @@ public abstract class Cli {
      * The connection timeout.
      */
     protected int connectionTimeout = 5000;
+    /**
+     * The receive timeout.
+     */
+    protected int receiveTimeout = 60000;
+    /**
+     * The command timeout.
+     */
+    protected int commandTimeout = 120000;
+    /**
+     * The prompt.
+     */
+    protected String prompt;
+    /**
+     * The host.
+     */
+    protected NetworkAddress host;
+    /**
+     * The last command.
+     */
+    protected String lastCommand;
+    /**
+     * The last expect match.
+     */
+    protected Matcher lastExpectMatch;
+    /**
+     * The last expect match pattern.
+     */
+    protected String lastExpectMatchPattern;
+    /**
+     * The last expect match index.
+     */
+    protected int lastExpectMatchIndex = -1;
+    /**
+     * The last full output.
+     */
+    protected String lastFullOutput;
+    /**
+     * The in stream.
+     */
+    protected InputStream inStream;
+    /**
+     * The out stream.
+     */
+    protected PrintStream outStream;
+
+    /**
+     * Instantiates a new cli.
+     *
+     * @param host the host
+     */
+    public Cli(NetworkAddress host) {
+        this.host = host;
+    }
 
     /**
      * Gets the connection timeout.
@@ -63,11 +115,6 @@ public abstract class Cli {
     }
 
     /**
-     * The receive timeout.
-     */
-    protected int receiveTimeout = 60000;
-
-    /**
      * Gets the receive timeout.
      *
      * @return the receive timeout
@@ -86,11 +133,6 @@ public abstract class Cli {
     }
 
     /**
-     * The command timeout.
-     */
-    protected int commandTimeout = 120000;
-
-    /**
      * Gets the command timeout.
      *
      * @return the command timeout
@@ -107,61 +149,6 @@ public abstract class Cli {
     public void setCommandTimeout(int commandTimeout) {
         this.commandTimeout = commandTimeout;
     }
-
-
-    /**
-     * The prompt.
-     */
-    protected String prompt;
-
-    /**
-     * The host.
-     */
-    protected NetworkAddress host;
-
-    /**
-     * Instantiates a new cli.
-     *
-     * @param host the host
-     */
-    public Cli(NetworkAddress host) {
-        this.host = host;
-    }
-
-    /**
-     * The last command.
-     */
-    protected String lastCommand;
-
-    /**
-     * The last expect match.
-     */
-    protected Matcher lastExpectMatch;
-
-    /**
-     * The last expect match pattern.
-     */
-    protected String lastExpectMatchPattern;
-
-    /**
-     * The last expect match index.
-     */
-    protected int lastExpectMatchIndex = -1;
-
-    /**
-     * The last full output.
-     */
-    protected String lastFullOutput;
-
-    /**
-     * The in stream.
-     */
-    protected InputStream inStream;
-
-    /**
-     * The out stream.
-     */
-    protected PrintStream outStream;
 
     /**
      * Gets the last command.

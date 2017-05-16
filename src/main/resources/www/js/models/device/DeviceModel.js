@@ -31,7 +31,10 @@ define([
 				'credentialSetIds',
 				'clearCredentialSetIds',
 				'enabled',
-				'mgmtDomain'
+				'mgmtDomain',
+				'emails',
+				'onSuccess',
+				'onError'
 			]);
 			options.attrs = attrs;
 			return Backbone.Model.prototype.save.call(this, attrs, options);

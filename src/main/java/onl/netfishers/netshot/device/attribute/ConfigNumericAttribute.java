@@ -1,91 +1,91 @@
 /**
  * Copyright 2013-2016 Sylvain Cadilhac (NetFishers)
- * 
+ * <p>
  * This file is part of Netshot.
- * 
+ * <p>
  * Netshot is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * Netshot is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Netshot.  If not, see <http://www.gnu.org/licenses/>.
  */
 package onl.netfishers.netshot.device.attribute;
+
+import onl.netfishers.netshot.device.Config;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 
-import onl.netfishers.netshot.device.Config;
-
-@Entity @DiscriminatorValue("N")
+@Entity
+@DiscriminatorValue("N")
 public class ConfigNumericAttribute extends ConfigAttribute {
 
-	private Double number;
+    private Double number;
 
-	protected ConfigNumericAttribute() {
-	}
-	
-	public ConfigNumericAttribute(Config config, String name, double value) {
-		super(config, name);
-		this.number = value;
-	}
-	
-	@XmlElement
-	public Double getNumber() {
-		return number;
-	}
+    protected ConfigNumericAttribute() {
+    }
 
-	public void setNumber(Double value) {
-		this.number = value;
-	}
+    public ConfigNumericAttribute(Config config, String name, double value) {
+        super(config, name);
+        this.number = value;
+    }
 
-	@Override
-	@Transient
-	public String getAsText() {
-		if (number == null) {
-			return "";
-		}
-		return number.toString();
-	}
-	
-	@Override
-	@Transient
-	public Object getData() {
-		return getNumber();
-	}
+    @XmlElement
+    public Double getNumber() {
+        return number;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((number == null) ? 0 : number.hashCode());
-		return result;
-	}
+    public void setNumber(Double value) {
+        this.number = value;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof ConfigNumericAttribute))
-			return false;
-		ConfigNumericAttribute other = (ConfigNumericAttribute) obj;
-		if (number == null) {
-			if (other.number != null)
-				return false;
-		}
-		else if (!number.equals(other.number))
-			return false;
-		return true;
-	}
-	
+    @Override
+    @Transient
+    public String getAsText() {
+        if (number == null) {
+            return "";
+        }
+        return number.toString();
+    }
+
+    @Override
+    @Transient
+    public Object getData() {
+        return getNumber();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((number == null) ? 0 : number.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof ConfigNumericAttribute))
+            return false;
+        ConfigNumericAttribute other = (ConfigNumericAttribute) obj;
+        if (number == null) {
+            if (other.number != null)
+                return false;
+        } else if (!number.equals(other.number))
+            return false;
+        return true;
+    }
+
 }

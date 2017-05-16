@@ -20,6 +20,7 @@ package onl.netfishers.netshot.work.tasks;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,28 +61,42 @@ import org.slf4j.LoggerFactory;
 @Entity
 public class DiscoverDeviceTypeTask extends Task {
 
-    /** The logger. */
+    /**
+     * The logger.
+     */
     private static Logger logger = LoggerFactory
             .getLogger(DiscoverDeviceTypeTask.class);
 
-    /** The credential sets. */
+    /**
+     * The credential sets.
+     */
     private Set<DeviceCredentialSet> credentialSets = new HashSet<DeviceCredentialSet>();
 
-    /** The device address. */
+    /**
+     * The device address.
+     */
     private Network4Address deviceAddress;
 
-    /** The success credential set. */
+    /**
+     * The success credential set.
+     */
     private DeviceCredentialSet successCredentialSet = null;
 
     private String discoveredDeviceType = null;
 
-    /** The domain. */
+    /**
+     * The domain.
+     */
     private Domain domain;
 
-    /** The device id. */
+    /**
+     * The device id.
+     */
     private long deviceId = 0;
 
-    /** The snapshot task id. */
+    /**
+     * The snapshot task id.
+     */
     private long snapshotTaskId = 0;
 
     /**
@@ -93,12 +108,9 @@ public class DiscoverDeviceTypeTask extends Task {
     /**
      * Instantiates a new discover device type task.
      *
-     * @param deviceAddress
-     *          the device address
-     * @param domain
-     *          the domain
-     * @param comments
-     *          the comments
+     * @param deviceAddress the device address
+     * @param domain        the domain
+     * @param comments      the comments
      */
     public DiscoverDeviceTypeTask(Network4Address deviceAddress, Domain domain,
                                   String comments, String author) {
@@ -137,8 +149,7 @@ public class DiscoverDeviceTypeTask extends Task {
     /**
      * Adds the credential set.
      *
-     * @param credentialSet
-     *          the credential set
+     * @param credentialSet the credential set
      */
     public void addCredentialSet(DeviceCredentialSet credentialSet) {
         credentialSets.add(credentialSet);
@@ -268,7 +279,7 @@ public class DiscoverDeviceTypeTask extends Task {
             Device device = null;
             try {
                 session.beginTransaction();
-                device = new Device(this.discoveredDeviceType, deviceAddress, domain, this.author, "/");
+                device = new Device(this.discoveredDeviceType, deviceAddress, domain, this.author, "/", "", true, true);
                 device.addCredentialSet(successCredentialSet);
                 session.save(device);
                 this.deviceId = device.getId();
@@ -373,8 +384,7 @@ public class DiscoverDeviceTypeTask extends Task {
     /**
      * Sets the domain.
      *
-     * @param domain
-     *          the new domain
+     * @param domain the new domain
      */
     public void setDomain(Domain domain) {
         this.domain = domain;
@@ -440,8 +450,7 @@ public class DiscoverDeviceTypeTask extends Task {
     /**
      * Sets the credential sets.
      *
-     * @param credentialSets
-     *          the new credential sets
+     * @param credentialSets the new credential sets
      */
     protected void setCredentialSets(Set<DeviceCredentialSet> credentialSets) {
         this.credentialSets = credentialSets;
@@ -450,8 +459,7 @@ public class DiscoverDeviceTypeTask extends Task {
     /**
      * Sets the device address.
      *
-     * @param deviceAddress
-     *          the new device address
+     * @param deviceAddress the new device address
      */
     protected void setDeviceAddress(Network4Address deviceAddress) {
         this.deviceAddress = deviceAddress;
@@ -460,8 +468,7 @@ public class DiscoverDeviceTypeTask extends Task {
     /**
      * Sets the success credential set.
      *
-     * @param successCredentialSet
-     *          the new success credential set
+     * @param successCredentialSet the new success credential set
      */
     protected void setSuccessCredentialSet(
             DeviceCredentialSet successCredentialSet) {
@@ -472,8 +479,7 @@ public class DiscoverDeviceTypeTask extends Task {
     /**
      * Sets the device id.
      *
-     * @param deviceId
-     *          the new device id
+     * @param deviceId the new device id
      */
     protected void setDeviceId(long deviceId) {
         this.deviceId = deviceId;
@@ -482,8 +488,7 @@ public class DiscoverDeviceTypeTask extends Task {
     /**
      * Sets the snapshot task id.
      *
-     * @param snapshotTaskId
-     *          the new snapshot task id
+     * @param snapshotTaskId the new snapshot task id
      */
     protected void setSnapshotTaskId(long snapshotTaskId) {
         this.snapshotTaskId = snapshotTaskId;
