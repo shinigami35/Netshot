@@ -33,6 +33,9 @@ define([
 			this.$('#nstoolbar-tasks').click(function() {
 				window.location = "#/tasks";
 			});
+			this.$('#nstoolbar-scp').click(function() {
+				window.location = "#/scp";
+			});
 			this.$('#nstoolbar-reports').click(function() {
 				window.location = "#/reports";
 			});

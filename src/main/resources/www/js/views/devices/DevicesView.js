@@ -503,7 +503,7 @@ function($, _, Backbone, devicesTemplate, devicesToolbarTemplate,
 				this.highlightDevice(id);
 			}
 		},
-		
+
 		highlightDevice: function(id) {
 			var item = this.getDeviceListItem(id);
 			if (item.length > 0) {
@@ -518,7 +518,7 @@ function($, _, Backbone, devicesTemplate, devicesToolbarTemplate,
 				this.renderDevice();
 			}
 		},
-		
+
 		renderDevice: function() {
 			var that = this;
 			if (this.deviceView != null) this.deviceView.destroy();

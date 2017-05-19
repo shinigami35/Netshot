@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import onl.netfishers.netshot.collector.SnmpTrapReceiver;
 import onl.netfishers.netshot.collector.SyslogServer;
 import onl.netfishers.netshot.device.DeviceDriver;
+import onl.netfishers.netshot.scp.Watcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
@@ -326,6 +327,8 @@ public class Netshot extends Thread {
 			RestService.init();
 			logger.info("Scheduling the existing tasks.");
 			TaskManager.rescheduleAll();
+			logger.info("Launch Watcher function");
+			Watcher.init();
 
 		}
 		catch (Exception e) {

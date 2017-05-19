@@ -10,9 +10,10 @@ define([
 	'views/reports/ReportsView',
 	'views/compliance/ComplianceView',
 	'models/user/CurrentUserModel',
-	'views/users/ReAuthDialog'
+	'views/users/ReAuthDialog',
+	'views/scp/ScpView'
 ], function($, _, Backbone, HeaderView, DevicesView, AdminView, TasksView,
-		ReportsView, ComplianceView, CurrentUserModel, ReAuthDialog) {
+		ReportsView, ComplianceView, CurrentUserModel, ReAuthDialog, ScpView) {
 
 	makeLoadProgress(100);
 
@@ -39,6 +40,7 @@ define([
 			'reports': 'showReports',
 			'tasks': 'showTasks',
 			'compliance': 'showCompliance',
+			'scp(/:id)' : 'showScp',
 			// Default
 			'*actions': 'showReports'
 		};
@@ -90,6 +92,11 @@ define([
 			this.currentView = new ComplianceView();
 			this.currentView.render();
 		});
+
+        app_router.on('route:showScp', function() {
+            this.currentView = new ScpView();
+            this.currentView.render();
+        });
 
 		var headerView = new HeaderView();
 		headerView.render();
