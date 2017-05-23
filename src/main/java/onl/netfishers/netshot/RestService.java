@@ -41,6 +41,7 @@ import onl.netfishers.netshot.device.credentials.DeviceCredentialSet;
 import onl.netfishers.netshot.device.credentials.DeviceSnmpCommunity;
 import onl.netfishers.netshot.device.credentials.DeviceSshKeyAccount;
 import onl.netfishers.netshot.scp.Company;
+import onl.netfishers.netshot.scp.Types;
 import onl.netfishers.netshot.scp.VirtualDevice;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.Task.ScheduleType;
@@ -4209,6 +4210,36 @@ public class RestService extends Thread {
         }
     }
 
+    /**
+     * Return the all type.
+     *
+     * @param request the request
+     * @return the Companies
+     * @throws WebApplicationException the web application exception
+     */
+    @GET
+    @Path("scp/type")
+    @RolesAllowed("readonly")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public List getAllType() {
+        Session session = Database.getSession();
+        List type = new ArrayList();
+        try {
+            session.beginTransaction();
+            type = session.createCriteria(Types.class).list();
+            return type;
+        } catch (ObjectNotFoundException e) {
+            return type;
+        } catch (HibernateException e) {
+            logger.error("Error while getting type.", e);
+            throw new NetshotBadRequestException(
+                    "Error while getting type.",
+                    NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+        } finally {
+            session.close();
+        }
+    }
+
 
     @POST
     @Path("scp/device")
@@ -4220,25 +4251,72 @@ public class RestService extends Thread {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            List o = session.createQuery("from VirtualDevice vd left join vd.company c " +
-                    "where vd.ip = :vdIp")
-                    .setParameter("vdIp", rsNewDeviceVirtual.getIp())
-                    .list();
-            if(o.size() == 0) {
-                VirtualDevice newVd = new VirtualDevice(rsNewDeviceVirtual.getName(), rsNewDeviceVirtual.getIp(), rsNewDeviceVirtual.getFolder());
-                Company c = (Company) session.get(Company.class, rsNewDeviceVirtual.company_id);
-                newVd.setCompany(c);
-                session.save(newVd);
-                tx.commit();
-                return newVd;
-            }else{
-                throw new NetshotBadRequestException("This ip is already set to an Applicance",
-                        NetshotBadRequestException.NETSHOT_DUPLICATE_DEVICE);
+            Company c = (Company) session.get(Company.class, rsNewDeviceVirtual.getCompany());
+            if (c != null) {
+                List o = session.createQuery("from VirtualDevice vd left join vd.company c " +
+                        "where vd.name = :cName AND c.name = :companyName")
+                        .setParameter("cName", rsNewDeviceVirtual.getName())
+                        .setParameter("companyName", c.getName())
+                        .list();
+                if (o.size() == 0) {
+                    Types t = (Types) session.get(Types.class, (long) rsNewDeviceVirtual.getType());
+                    if (t != null) {
+                        VirtualDevice newVd = new VirtualDevice(rsNewDeviceVirtual.getName(), rsNewDeviceVirtual.getFolder());
+                        newVd.setCompany(c);
+                        newVd.setType(t);
+                        session.save(newVd);
+                        tx.commit();
+                        return newVd;
+                    } else {
+                        throw new NetshotBadRequestException("This Types does not exists",
+                                NetshotBadRequestException.NETSHOT_DUPLICATE_DEVICE);
+                    }
+                } else {
+                    throw new NetshotBadRequestException("This ip is already set to an Applicance",
+                            NetshotBadRequestException.NETSHOT_DUPLICATE_DEVICE);
+                }
+            } else {
+                throw new NetshotBadRequestException("This company does not exist ",
+                        NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
             }
         } catch (HibernateException e) {
             tx.rollback();
             logger.error("Unable to add this virtualDevice.", e);
             throw new NetshotBadRequestException("Unable to add this virtualDevice",
+                    NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+        } finally {
+            session.close();
+        }
+    }
+
+    @POST
+    @Path("scp/company")
+    @RolesAllowed("readonly")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Company addCompany(@Context HttpServletRequest request, RsNewCompany rsNewCompany) {
+        Session session = Database.getSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Company c = (Company) session.createQuery("from Company c where c.name = :name")
+                    .setParameter("name", rsNewCompany.getName())
+                    .uniqueResult();
+            if (c == null) {
+                Company newC = new Company();
+                newC.setName(rsNewCompany.getName());
+                newC.setEmail(rsNewCompany.getEmail());
+                session.save(newC);
+                tx.commit();
+                return newC;
+            } else {
+                throw new NetshotBadRequestException("This Company already exists",
+                        NetshotBadRequestException.NETSHOT_DUPLICATE_DEVICE);
+            }
+        } catch (HibernateException e) {
+            tx.rollback();
+            logger.error("Unable to add this Company.", e);
+            throw new NetshotBadRequestException("Unable to add this Company",
                     NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
         } finally {
             session.close();
@@ -8252,12 +8330,7 @@ public class RestService extends Thread {
         /**
          * The name.
          */
-        private String name;
-
-        /**
-         * The ip.
-         */
-        private String ip;
+        private Integer type;
 
         /**
          * The company.
@@ -8269,22 +8342,18 @@ public class RestService extends Thread {
          */
         private String folder;
 
-        @XmlElement
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
+        /**
+         * The name.
+         */
+        private String name;
 
         @XmlElement
-        public String getIp() {
-            return ip;
+        public Integer getType() {
+            return type;
         }
 
-        public void setIp(String ip) {
-            this.ip = ip;
+        public void setType(Integer type) {
+            this.type = type;
         }
 
         @XmlElement
@@ -8303,6 +8372,52 @@ public class RestService extends Thread {
 
         public void setFolder(String folder) {
             this.folder = folder;
+        }
+
+        @XmlElement
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    /**
+     * The Class RsNewDeviceVirtual.
+     */
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.NONE)
+    public static class RsNewCompany {
+
+
+        /**
+         * The name.
+         */
+        private String name;
+
+        /**
+         * The email.
+         */
+        private String email;
+
+        @XmlElement
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @XmlElement
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
     }
 

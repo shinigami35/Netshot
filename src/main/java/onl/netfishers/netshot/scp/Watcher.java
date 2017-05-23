@@ -2,13 +2,18 @@ package onl.netfishers.netshot.scp;
 
 import onl.netfishers.netshot.Database;
 import onl.netfishers.netshot.Netshot;
+import onl.netfishers.netshot.RestService;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
@@ -23,6 +28,11 @@ public class Watcher {
     private static Map<WatchKey, Path> keys;
     private static boolean recursive;
     private static boolean trace = false;
+
+    /**
+     * The logger.
+     */
+    private static Logger logger = LoggerFactory.getLogger(Watcher.class);
 
     @SuppressWarnings("unchecked")
     static <T> WatchEvent<T> cast(WatchEvent<?> event) {
@@ -69,8 +79,9 @@ public class Watcher {
     public static void init() throws IOException {
         String s = Netshot.getConfig("netshot.watch.folderListen");
         Path dir = Paths.get(s);
+        System.out.println("Path watcher is : " + dir);
         if (Files.exists(dir) && Files.isDirectory(dir)) {
-
+            System.out.println("Set the watcher");
             watcher = FileSystems.getDefault().newWatchService();
             keys = new HashMap<WatchKey, Path>();
             recursive = true;
@@ -114,20 +125,18 @@ public class Watcher {
                     continue;
                 }
 
-                // Context for directory entry event is the file name of entry
+
                 WatchEvent<Path> ev = cast(event);
                 Path name = ev.context();
                 Path child = dir.resolve(name);
 
-                // print out event
-                System.out.format("%s: %s\n", event.kind().name(), child);
-
-                // if directory is created, and watching recursively, then
-                // register it and its sub-directories
                 if (recursive && (kind == ENTRY_CREATE)) {
                     try {
                         if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
                             registerAll(child);
+                        } else {
+                            System.out.println("File is => " + child);
+                            saveEntryScp(child);
                         }
                     } catch (IOException x) {
                         // ignore to keep sample readbale
@@ -147,17 +156,49 @@ public class Watcher {
         }
     }
 
-    public static void move(Path file) {
-        Session s = Database.getSession();
+    private static void saveEntryScp(Path child) {
+        Session session = Database.getSession();
+        Transaction tx;
         try {
-            BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
-            System.out.println("creationTime: " + attr.creationTime());
-            Path fileName = file.getFileName();
-            System.out.println("fileName: " + fileName);
+            tx = session.beginTransaction();
+            List l = session.createCriteria(VirtualDevice.class).list();
+            if (l.size() > 0) {
+                String firstPath = Netshot.getConfig("netshot.watch.folderListen");
+                for (Object o : l) {
+                    VirtualDevice vd = (VirtualDevice) o;
+                    String tmpPath = firstPath + vd.getFolder();
+                    Path tmp = Paths.get(tmpPath);
+                    if (child.getParent().equals(tmp)) {
+                        ScpStepFolder s = new ScpStepFolder();
+                        BasicFileAttributes attr = Files.readAttributes(child, BasicFileAttributes.class);
+                        s.setSize(getInMb(attr.size()));
+                        s.setNameFile(child.getFileName().toString());
+                        s.setCreated_at(convertDate(new Date(attr.creationTime().toMillis())));
+                        s.setVirtual(vd);
+                        session.save(s);
+                        tx.commit();
+                        break;
+                    }
+                }
+            }
+        } catch (HibernateException e) {
+            logger.error("Error while save new Scp Entry.", e);
+            throw new RestService.NetshotBadRequestException(
+                    "Error while save new Scp Entry.",
+                    RestService.NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error while open file => " + child, e);
+        } finally {
+            session.close();
         }
+    }
 
+    private static long getInMb(long sizeInBytes) {
+        return sizeInBytes / (1024 * 1024);
+    }
 
+    private static String convertDate(Date d) {
+        SimpleDateFormat timeStamp = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.FRANCE);
+        return timeStamp.format(d);
     }
 }

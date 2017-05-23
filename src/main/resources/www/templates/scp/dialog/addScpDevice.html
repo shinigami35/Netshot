@@ -8,27 +8,29 @@
         <fieldset>
             <label for="devicename">Name : </label>
             <input type="text"
-                   name="devicename" id="devicename" autofocus="autofocus"
+                   name="devicename" id="devicename"
                    class="text ui-widget-content ui-corner-all"/>
         </fieldset>
         <fieldset>
-            <label for="deviceipvirtual">IP : </label>
-            <input type="text"
-                   name="deviceipvirtual" id="deviceipvirtual"
-                   class="text ui-widget-content ui-corner-all"/>
+            <label for="devicetype">Type: </label> <select
+                name="devicetype" id="devicetype"
+                class="text ui-widget-content ui-corner-all" style="display: inline-block;">
+            <option value="nil"></option>
+        </select>
+        </fieldset>
+
+        <fieldset>
+            <label for="devicecompany">Company: </label> <select
+                name="devicecompany" id="devicecompany"
+                class="text ui-widget-content ui-corner-all" style="display: inline-block;" >
+            <option value="nil"></option>
+        </select>
         </fieldset>
         <fieldset>
             <label for="devicefolder">Folder : </label>
             <input type="text"
                    name="devicefolder" id="devicefolder"
                    class="text ui-widget-content ui-corner-all"/>
-        </fieldset>
-        <fieldset>
-            <label for="devicecompany">Company: </label> <select
-                name="devicecompany" id="devicecompany"
-                class="text ui-widget-content ui-corner-all">
-            <option value="nil"></option>
-        </select>
         </fieldset>
         <div class="nserror" id="error">
             <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>

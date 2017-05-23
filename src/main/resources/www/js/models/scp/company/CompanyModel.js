@@ -13,8 +13,7 @@ define([
 			attrs = attrs || this.toJSON();
 			options = options || {};
 			attrs = _.pick(attrs, [
-				'name',
-				'email'
+				'name'
 			]);
 			options.attrs = attrs;
 			return Backbone.Model.prototype.save.call(this, attrs, options);

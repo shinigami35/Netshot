@@ -1,31 +1,28 @@
 <div id="nsdevices-device" class="nsmain">
-    <!-- Page -->
-    <div class="virtualform">
-        <form style='float: left; padding: 5px;'>
-            <label for="virtual"> Appliances</label>
-            <select id="virtual">
+    <h1 id="nameMac"></h1>
 
-            </select>
-        </form>
-        <form style='float: left; padding: 5px;'>
-            <input type="text" value="test">
-            <input type="button" value="Search">
-        </form>
+    <div id="nsdevices-devicetabs">
+
+        <div id="devicetoolbar">
+            <button id="edit">Edit</button>
+            <button id="delete">Delete</button>
+        </div>
     </div>
 
-
-    <div class="virtual" id="virtualpage" >
-        <table>
+    <div id="nsdevices-devicedetails" class="panel">
+        <table id="general">
             <thead>
             <tr>
-                <th>Fichier</th>
+                <th>Name</th>
+                <th>Size</th>
                 <th>Date</th>
             </tr>
             </thead>
+            <tbody>
 
-            <tbody id="bodytableau">
             </tbody>
         </table>
+
     </div>
 
 </div>
@@ -40,6 +37,18 @@
 </div>
 
 <div id="nsdevices-list" class="nssidebar">
+    <div style="margin-bottom: 15px;">
+        <form>
+            <fieldset>
+                <label for="companyselect">Company: </label> <select
+                    name="companyselect" id="companyselect"
+                    class="text ui-widget-content ui-corner-all" style="display: inline-block;" >
+                <option value="ALL">ALL</option>
+            </select>
+            </fieldset>
+        </form>
+        <hr>
+    </div>
     <div id="nsdevices-listbox-virtual" class="nstreelist" tabindex="1">
         <ul>
         </ul>

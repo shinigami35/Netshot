@@ -6,8 +6,9 @@ define([
     'views/Dialog',
     'models/scp/device/DeviceVirtualModel',
     'models/scp/company/CompanyCollection',
+    'models/scp/type/TypeCollection',
     'text!templates/scp/dialog/addScpDevice.html'
-], function ($, _, Backbone, Dialog, DeviceVirtualModel, CompanyCollection, addScpDeviceTemplate) {
+], function ($, _, Backbone, Dialog, DeviceVirtualModel, CompanyCollection, TypeCollection, addScpDeviceTemplate) {
 
     return Dialog.extend({
 
@@ -16,30 +17,55 @@ define([
         initialize: function (options) {
             var that = this;
             this.model = new DeviceVirtualModel();
+            this.companySelect = null;
+            this.typeSelect = null;
             this.company = new CompanyCollection([]);
-            this.company.fetch().done(function () {
+            this.type = new TypeCollection([]);
+            $.when(this.company.fetch(), this.type.fetch()).done(function () {
                 that.render();
             });
         },
 
         dialogOptions: {
-            title: "Add device Virtual",
+            title: "Add device Virtual"
         },
         events: {
-            "change #devicecompany": "setPath"
+            "change #devicecompany": "setPath",
+            "change #devicetype": "setType"
+        },
+
+        setType: function (e) {
+            e.preventDefault();
+            var that = this;
+            var type_id = that.$('#devicetype').val();
+            if (type_id === "nil")
+                that.typeSelect = null;
+            else {
+                var type = that.type.get(parseInt(type_id)).toJSON();
+                if (type) {
+                    that.typeSelect = type.name;
+                    if (that.typeSelect && that.companySelect
+                        && that.typeSelect !== "nil" && that.typeSelect !== "nil") {
+                        that.$('#devicefolder')[0].value = "";
+                        that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/");
+                    }
+                }
+            }
         },
 
         setPath: function (e) {
-            e.preventDefault()
+            e.preventDefault();
             var that = this;
             var company_id = that.$('#devicecompany').val();
             if (company_id === "nil") {
+                that.companySelect = null;
                 that.$('#devicefolder')[0].value = "";
             } else {
                 var company = that.company.get(parseInt(company_id)).toJSON();
                 if (company) {
+                    that.companySelect = company.name;
                     that.$('#devicefolder')[0].value = "";
-                    that.$('#devicefolder').val("/" + company.name + "/");
+                    that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/");
                 }
             }
         },
@@ -49,15 +75,20 @@ define([
                 var that = this;
                 var $button = $(event.target).closest("button");
                 $button.button('disable');
-                var tmp = that.$('#devicecompany').val();
-                if (tmp === "nil") {
+                var tmpCompany = that.$('#devicecompany').val();
+                var tmpType = that.$('#devicetype').val();
+                if (tmpCompany === "nil") {
                     that.$("#errormsg").text("Error: You must select a company");
+                    that.$("#error").show();
+                    $button.button('enable');
+                } else if (tmpType === "nil") {
+                    that.$("#errormsg").text("Error: You must select a type");
                     that.$("#error").show();
                     $button.button('enable');
                 } else {
                     that.model.save({
+                        type: parseInt(that.$('#devicetype').val(), 10),
                         name: that.$('#devicename').val(),
-                        ip: that.$('#deviceipvirtual').val(),
                         company: parseInt(that.$('#devicecompany').val(), 10),
                         folder: that.$('#devicefolder').val()
                     }).done(function (data) {
@@ -77,11 +108,14 @@ define([
 
         onCreate: function () {
             var that = this;
-            console.log("OnCreate");
 
             _.each(this.company.models, function (c) {
                 $('<option />').attr('value', c.get('id'))
                     .text(c.get('name')).appendTo(that.$('#devicecompany'));
+            });
+            _.each(this.type.models, function (c) {
+                $('<option />').attr('value', c.get('id'))
+                    .text(c.get('name')).appendTo(that.$('#devicetype'));
             });
         }
 

@@ -27,8 +27,7 @@ define([
                 var $button = $(event.target).closest("button");
                 $button.button('disable');
                 that.model.save({
-                    name: that.$('#devicename').val(),
-                    email: that.$('#deviceemail').val()
+                    name: that.$('#devicename').val()
                 }).done(function (data) {
                     that.close();
                 }).fail(function (data) {

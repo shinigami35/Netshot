@@ -21,14 +21,14 @@ public class VirtualDevice implements Serializable {
     protected long id;
 
     /**
-     * The name appliance
+     * The type appliance
      */
-    protected String name;
+    protected Types type;
 
     /**
-     * The appliance IP.
+     * The saved name
      */
-    protected String ip;
+    protected String name;
 
     /**
      * The saved folder
@@ -42,25 +42,22 @@ public class VirtualDevice implements Serializable {
     protected VirtualDevice() {
     }
 
-    public VirtualDevice(String name, String ip, Company company, String folder) {
-        this.name = name;
-        this.ip = ip;
+    public VirtualDevice(Types type, Company company, String folder) {
+        this.type = type;
         this.company = company;
         this.folder = folder;
     }
 
-    public VirtualDevice(Long id, String name, String ip, Company company, String folder) {
-        this.name = name;
-        this.ip = ip;
+    public VirtualDevice(Long id, Types type, Company company, String folder) {
+        this.type = type;
         this.company = company;
         this.folder = folder;
         this.id = id;
     }
 
-    public VirtualDevice(String name, String ip, String folder) {
-        this.name = name;
-        this.ip = ip;
+    public VirtualDevice(String name, String folder) {
         this.folder = folder;
+        this.name = name;
     }
 
     @Id
@@ -75,6 +72,17 @@ public class VirtualDevice implements Serializable {
     }
 
     @XmlElement
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Types getType() {
+        return type;
+    }
+
+    public void setType(Types type) {
+        this.type = type;
+    }
+
+
+    @XmlElement
     public String getName() {
         return name;
     }
@@ -82,16 +90,6 @@ public class VirtualDevice implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    @XmlElement
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
 
     @XmlElement
     public String getFolder() {
@@ -113,7 +111,7 @@ public class VirtualDevice implements Serializable {
     }
 
     @XmlElement
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Company getCompany() {
         return company;
     }

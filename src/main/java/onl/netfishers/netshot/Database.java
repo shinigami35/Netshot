@@ -71,6 +71,7 @@ import onl.netfishers.netshot.device.credentials.DeviceSshKeyAccount;
 import onl.netfishers.netshot.device.credentials.DeviceTelnetAccount;
 import onl.netfishers.netshot.scp.Company;
 import onl.netfishers.netshot.scp.ScpStepFolder;
+import onl.netfishers.netshot.scp.Types;
 import onl.netfishers.netshot.scp.VirtualDevice;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.tasks.DeviceJsScript;
@@ -241,7 +242,7 @@ public class Database {
 					"org.hibernate.transaction.JDBCTransactionFactory")
 				.setProperty("current_session_context_class", "thread")
 				.setProperty("hibernate.hbm2ddl.auto", "update")
-				.setProperty("hibernate.show_sql", "true")
+				//.setProperty("hibernate.show_sql", "true")
 				.addAnnotatedClass(Device.class).addAnnotatedClass(DeviceGroup.class)
 				.addAnnotatedClass(Config.class)
 				.addAnnotatedClass(DeviceAttribute.class)
@@ -281,7 +282,8 @@ public class Database {
 
 			configuration.addAnnotatedClass(VirtualDevice.class)
 					.addAnnotatedClass(ScpStepFolder.class)
-					.addAnnotatedClass(Company.class);
+					.addAnnotatedClass(Company.class)
+					.addAnnotatedClass(Types.class);
 
 			for (Class<?> clazz : Task.getTaskClasses()) {
 				logger.info("Registering task class " + clazz.getName());

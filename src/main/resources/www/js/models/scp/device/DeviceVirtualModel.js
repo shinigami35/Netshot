@@ -12,8 +12,8 @@ define([
 			attrs = attrs || this.toJSON();
 			options = options || {};
 			attrs = _.pick(attrs, [
+				'type',
 				'name',
-				'ip',
 				'company',
 				'folder'
 			]);

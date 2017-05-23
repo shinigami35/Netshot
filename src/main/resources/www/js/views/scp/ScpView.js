@@ -8,17 +8,19 @@ define([
         'text!templates/scp/scp.html',
         'text!templates/scp/scpListItem.html',
         'text!templates/scp/scpListApp.html',
-        'text!templates/scp/scpLine.html',
         'text!templates/scp/toolbar/scpToolbar.html',
         'text!templates/scp/companyListItem.html',
+        'text!templates/scp/tableau/scpLineTableau.html',
         'views/scp/ScpView',
         'views/scp/dialog/AddScpDeviceDialog',
         'views/scp/dialog/AddScpCompanyDialog',
         'models/scp/device/DeviceVirtualCollection',
-        'models/scp/company/CompanyCollection'
+        'models/scp/company/CompanyCollection',
+        'models/scp/type/TypeCollection'
     ],
-    function ($, _, Backbone, Scptemplate, ScpList, ScpApp, ScpLine,
-              ScpToolbar, CompanyListItem, ScpViews, ScpDialogAdd, ScpDialogCompany, DeviceVirtualCollection, CompanyCollection) {
+    function ($, _, Backbone, Scptemplate, ScpList, ScpApp, ScpToolbar,
+              CompanyListItem, ScpLineTableau, ScpViews, ScpDialogAdd,
+              ScpDialogCompany, DeviceVirtualCollection, CompanyCollection, TypeCollection) {
         makeLoadProgress(15);
 
         var view = Backbone.View.extend({
@@ -28,12 +30,13 @@ define([
             template: _.template(Scptemplate),
             itemTemplate: _.template(ScpList),
             appTemplate: _.template(ScpApp),
-            lineTemplate: _.template(ScpLine),
             toolbarTemplate: _.template(ScpToolbar),
             companyListItem: _.template(CompanyListItem),
+            lineTableauTemplate: _.template(ScpLineTableau),
 
             events: {
-                "input #virtual": "changeBrowser"
+                "input #virtual": "changeBrowser",
+                "change #companyselect": "changeCompany"
             },
 
             initialize: function (option) {
@@ -43,6 +46,7 @@ define([
                 this.deviceName = [];
 
             },
+
             changeBrowser: function (e) {
                 var that = this;
                 e.preventDefault();
@@ -66,9 +70,27 @@ define([
                     }
                 })
             },
+
+            changeCompany: function (e) {
+                var that = this;
+                e.preventDefault();
+                var value = $(e.currentTarget).val();
+                if(value === 'ALL'){
+                    that.renderDeviceList();
+                }else{
+                    var company = that.company.get(value).toJSON();
+                    var newHtml = "";
+                    that.devices.models.forEach(function (elt) {
+                        if(company.name === elt.toJSON().company.name)
+                            newHtml += that.itemTemplate(elt.toJSON())
+                    });
+                    that.$("#nsdevices-listbox-virtual>ul").html("");
+                    that.$("#nsdevices-listbox-virtual>ul").html(newHtml);
+                }
+            },
+
             render: function () {
                 this.$el.html(this.template);
-                this.$("#virtualpage")[0].style.display = 'none';
                 this.initFetchDevices();
                 $('#nstoolbar-section').html(this.toolbarTemplate);
                 $('#nstoolbar-section button').button();
@@ -80,29 +102,35 @@ define([
                     .click(function () {
                         var scp_dialog_company = new ScpDialogCompany();
                     });
-
-
-
             },
+
             renderDeviceList: function () {
-                this.htmlBuffer = "";
-                this.htmlBufferApp = "";
+                var that = this;
                 this.htmlBufferCompany = "";
+                this.htmlBuffer = "";
+
                 this.devices.each(this.renderDeviceListItem, this);
-                this.devices.each(this.renderDeviceListApp, this);
                 this.devices.each(this.getNameVirtual, this);
                 this.company.each(this.renderCompanyListApp, this);
+
                 this.$("#nsdevices-listbox-virtual>ul").html(this.htmlBuffer);
                 this.$("#nsdevices-groups>ul").html(this.htmlBufferCompany);
-                this.$("#virtual").html(this.htmlBufferApp);
-
                 this.$("#nsdevices-groups>ul li.nsdevices-list-group").unbind()
-                   .click(function () {
-                    if ($(this).hasClass("active")) return;
-                    var id = $(this).data('group-id');
-                    // TODO => Récupérer les virtuals de cette Company
-                });
-                var that = this;
+                    .click(function () {
+                        if ($(this).hasClass("active")) return;
+                        var id = $(this).data('group-id');
+                        var company = that.company.get(id).toJSON();
+                        var newHtml = "";
+                        that.devices.models.forEach(function (elt) {
+                            if(company.name === elt.toJSON().company.name)
+                                newHtml += that.itemTemplate(elt.toJSON())
+                        });
+                        that.$("#companyselect").val(id);
+                        that.$("#nsdevices-listbox-virtual>ul").html("");
+                        that.$("#nsdevices-listbox-virtual>ul").html(newHtml);
+                    });
+
+                this.renderButton();
 
                 this.$("#nsdevices-listbox-virtual>ul li.nsdevices-list-device").unbind()
                     .click(function () {
@@ -112,20 +140,23 @@ define([
                         device = device.toJSON();
                         var line = "";
                         device.file.forEach(function (elt) {
-                            line += that.lineTemplate(elt);
+                            line += that.lineTableauTemplate(elt);
                         });
                         if (line !== "") {
-                            that.$("#bodytableau").html("");
-                            that.$("#bodytableau").html(line);
-                            that.$("#virtualpage")[0].style.display = 'block';
+                            that.$("#nameMac").val(device.name);
+                            that.$("#general>tbody").html(line);
                         } else {
-                            that.$("#bodytableau").html("");
-                            that.$("#virtualpage")[0].style.display = 'none';
+                            that.$("#nameMac").val(device.name);
+                            that.$("#general>tbody").html("");
                         }
                     });
 
-
+                _.each(this.company.models, function (c) {
+                    $('<option />').attr('value', c.get('id'))
+                        .text(c.get('name')).appendTo(that.$('#companyselect'));
+                });
             },
+
             getNameVirtual: function (device) {
                 var d = device.toJSON();
                 var tmp = {
@@ -134,19 +165,40 @@ define([
                 };
                 this.deviceName.push(tmp);
             },
+
             renderDeviceListItem: function (device) {
                 this.htmlBuffer += this.itemTemplate(device.toJSON());
             },
-            renderDeviceListApp: function (device) {
-                this.htmlBufferApp += this.appTemplate(device.toJSON());
-            },
+
             renderCompanyListApp: function (company) {
                 this.htmlBufferCompany += this.companyListItem(company.toJSON());
             },
+
             initFetchDevices: function () {
                 var that = this;
                 $.when(this.devices.fetch(), this.company.fetch()).done(function () {
                     that.renderDeviceList();
+                });
+            },
+
+            renderButton: function () {
+                this.$('#refresh').button({
+                    icons: {
+                        primary: "ui-icon-refresh"
+                    },
+                    text: false
+                });
+                this.$('#edit').button({
+                    icons: {
+                        primary: "ui-icon-wrench"
+                    },
+                    text: false
+                });
+                this.$("#delete").button({
+                    icons: {
+                        primary: "ui-icon-trash"
+                    },
+                    text: false
                 });
             }
         });

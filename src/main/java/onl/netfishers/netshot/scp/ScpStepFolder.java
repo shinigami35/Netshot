@@ -3,6 +3,7 @@ package onl.netfishers.netshot.scp;
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -16,21 +17,17 @@ public class ScpStepFolder implements Serializable {
 
     protected long id;
 
-    protected Date created_at = null;
+    protected String created_at = null;
 
     protected String nameFile = "";
 
-    protected Integer size;
+    protected long size;
 
     protected VirtualDevice virtual = null;
 
     protected ScpStepFolder() {
     }
 
-    public ScpStepFolder(Date created_at, String nameFile) {
-        this.created_at = created_at;
-        this.nameFile = nameFile;
-    }
 
 
     @Id
@@ -45,11 +42,11 @@ public class ScpStepFolder implements Serializable {
     }
 
     @XmlElement
-    public Date getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 
@@ -72,11 +69,11 @@ public class ScpStepFolder implements Serializable {
     }
 
     @XmlElement
-    public Integer getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(long size) {
         this.size = size;
     }
 }
