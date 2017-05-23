@@ -20,6 +20,7 @@ package onl.netfishers.netshot;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -329,6 +330,7 @@ public class Netshot extends Thread {
 			TaskManager.rescheduleAll();
 			logger.info("Launch Watcher function");
 			Watcher.init();
+
 
 		}
 		catch (Exception e) {

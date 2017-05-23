@@ -3,8 +3,6 @@ package onl.netfishers.netshot.scp;
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by agm on 17/05/2017.
@@ -25,9 +23,10 @@ public class ScpStepFolder implements Serializable {
 
     protected VirtualDevice virtual = null;
 
-    protected ScpStepFolder() {
-    }
+    private TaskScp task;
 
+    public ScpStepFolder() {
+    }
 
 
     @Id
@@ -75,5 +74,16 @@ public class ScpStepFolder implements Serializable {
 
     public void setSize(long size) {
         this.size = size;
+    }
+
+
+    @XmlElement
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public TaskScp getTask() {
+        return task;
+    }
+
+    public void setTask(TaskScp task) {
+        this.task = task;
     }
 }

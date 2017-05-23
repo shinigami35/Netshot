@@ -3,6 +3,7 @@ package onl.netfishers.netshot.scp;
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,49 +16,45 @@ import java.util.Set;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class VirtualDevice implements Serializable {
 
+
     /**
      * The id.
      */
     protected long id;
-
     /**
      * The type appliance
      */
     protected Types type;
-
     /**
      * The saved name
      */
     protected String name;
-
     /**
      * The saved folder
      */
     protected String folder;
-
     protected Company company;
-
     protected Set<ScpStepFolder> file = new HashSet<>();
+    private CRON cron;
+
+    private Date hour;
+
+    private TaskScp lastTask;
 
     protected VirtualDevice() {
-    }
-
-    public VirtualDevice(Types type, Company company, String folder) {
-        this.type = type;
-        this.company = company;
-        this.folder = folder;
-    }
-
-    public VirtualDevice(Long id, Types type, Company company, String folder) {
-        this.type = type;
-        this.company = company;
-        this.folder = folder;
-        this.id = id;
     }
 
     public VirtualDevice(String name, String folder) {
         this.folder = folder;
         this.name = name;
+    }
+
+
+    public VirtualDevice(String name, String folder, Date date, CRON cron) {
+        this.folder = folder;
+        this.name = name;
+        this.cron = cron;
+        this.hour = date;
     }
 
     @Id
@@ -80,7 +77,6 @@ public class VirtualDevice implements Serializable {
     public void setType(Types type) {
         this.type = type;
     }
-
 
     @XmlElement
     public String getName() {
@@ -118,5 +114,39 @@ public class VirtualDevice implements Serializable {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    @XmlElement
+    public CRON getCron() {
+        return cron;
+    }
+
+    public void setCron(CRON cron) {
+        this.cron = cron;
+    }
+
+    @XmlElement
+    public Date getHour() {
+        return hour;
+    }
+
+    public void setHour(Date hour) {
+        this.hour = hour;
+    }
+
+    @XmlElement
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public TaskScp getLastTask() {
+        return lastTask;
+    }
+
+    public void setLastTask(TaskScp lastTask) {
+        this.lastTask = lastTask;
+    }
+
+    public enum CRON {
+        DAILY,
+        WEEKLY,
+        HOUR
     }
 }

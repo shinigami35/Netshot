@@ -38,6 +38,7 @@ define([
             e.preventDefault();
             var that = this;
             var type_id = that.$('#devicetype').val();
+            var name = that.$('#devicename').val();
             if (type_id === "nil")
                 that.typeSelect = null;
             else {
@@ -47,7 +48,7 @@ define([
                     if (that.typeSelect && that.companySelect
                         && that.typeSelect !== "nil" && that.typeSelect !== "nil") {
                         that.$('#devicefolder')[0].value = "";
-                        that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/");
+                        that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/" + name + "/");
                     }
                 }
             }
@@ -57,6 +58,7 @@ define([
             e.preventDefault();
             var that = this;
             var company_id = that.$('#devicecompany').val();
+            var name = that.$('#devicename').val();
             if (company_id === "nil") {
                 that.companySelect = null;
                 that.$('#devicefolder')[0].value = "";
@@ -65,7 +67,7 @@ define([
                 if (company) {
                     that.companySelect = company.name;
                     that.$('#devicefolder')[0].value = "";
-                    that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/");
+                    that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/" + name + "/");
                 }
             }
         },
@@ -77,7 +79,12 @@ define([
                 $button.button('disable');
                 var tmpCompany = that.$('#devicecompany').val();
                 var tmpType = that.$('#devicetype').val();
-                if (tmpCompany === "nil") {
+                var tmpName = that.$('#devicename').val();
+                if (tmpName === "") {
+                    that.$("#errormsg").text("Error: You must add a name");
+                    that.$("#error").show();
+                    $button.button('enable');
+                } else if (tmpCompany === "nil") {
                     that.$("#errormsg").text("Error: You must select a company");
                     that.$("#error").show();
                     $button.button('enable');
@@ -90,7 +97,9 @@ define([
                         type: parseInt(that.$('#devicetype').val(), 10),
                         name: that.$('#devicename').val(),
                         company: parseInt(that.$('#devicecompany').val(), 10),
-                        folder: that.$('#devicefolder').val()
+                        folder: that.$('#devicefolder').val(),
+                        task: that.$('#devicetask').val(),
+                        hour: that.$('#devicehour').val()
                     }).done(function (data) {
                         that.close();
                     }).fail(function (data) {

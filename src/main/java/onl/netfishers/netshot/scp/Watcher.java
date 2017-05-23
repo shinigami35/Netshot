@@ -6,6 +6,8 @@ import onl.netfishers.netshot.RestService;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +16,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
@@ -157,6 +160,7 @@ public class Watcher {
     }
 
     private static void saveEntryScp(Path child) {
+        Date now = new Date();
         Session session = Database.getSession();
         Transaction tx;
         try {
@@ -175,7 +179,17 @@ public class Watcher {
                         s.setNameFile(child.getFileName().toString());
                         s.setCreated_at(convertDate(new Date(attr.creationTime().toMillis())));
                         s.setVirtual(vd);
+
+                        TaskScp newTask = new TaskScp();
+                        newTask.setDate(now);
+                        newTask.setStatus(TaskScp.TaskStatus.SUCCESS);
+                        newTask.setScpStepFolder(s);
                         session.save(s);
+                        session.save(newTask);
+
+                        vd.setLastTask(newTask);
+                        session.update(vd);
+
                         tx.commit();
                         break;
                     }
@@ -201,4 +215,29 @@ public class Watcher {
         SimpleDateFormat timeStamp = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.FRANCE);
         return timeStamp.format(d);
     }
+
+    private static long getTimeDiffHours(Date dateOne, Date dateTwo) {
+        String diff = "";
+        long timeDiff = Math.abs(dateOne.getTime() - dateTwo.getTime());
+        //diff = String.format("%d hour(s) %d min(s)", TimeUnit.MILLISECONDS.toHours(timeDiff), TimeUnit.MILLISECONDS.toMinutes(timeDiff) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDiff)));
+        return TimeUnit.MILLISECONDS.toHours(timeDiff);
+    }
+
+    private static long getTimeDiffDays(Date dateOne, Date dateTwo) {
+        String diff = "";
+        long timeDiff = Math.abs(dateOne.getTime() - dateTwo.getTime());
+        //diff = String.format("%d hour(s) %d min(s)", TimeUnit.MILLISECONDS.toHours(timeDiff), TimeUnit.MILLISECONDS.toMinutes(timeDiff) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDiff)));
+        return TimeUnit.MILLISECONDS.toDays(timeDiff);
+    }
+
+    private static long getTimeDiffWeek(Date dateOne, Date dateTwo) {
+        DateTime dateTime1 = new DateTime(dateOne);
+        DateTime dateTime2 = new DateTime(dateTwo);
+
+        return Weeks.weeksBetween(dateTime1, dateTime2).getWeeks();
+
+    }
+
 }
+
+

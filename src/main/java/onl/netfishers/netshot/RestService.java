@@ -93,6 +93,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.security.Principal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -4264,6 +4265,38 @@ public class RestService extends Thread {
                         VirtualDevice newVd = new VirtualDevice(rsNewDeviceVirtual.getName(), rsNewDeviceVirtual.getFolder());
                         newVd.setCompany(c);
                         newVd.setType(t);
+                        switch (rsNewDeviceVirtual.getTask()) {
+                            case "HOUR":
+                                newVd.setCron(VirtualDevice.CRON.HOUR);
+                                try {
+                                    Date d = new SimpleDateFormat("hh:mm a").parse(rsNewDeviceVirtual.getHour());
+                                    newVd.setHour(d);
+                                } catch (ParseException e) {
+                                    throw new NetshotBadRequestException("Error parse Date",
+                                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                                }
+                                break;
+                            case "DAILY": {
+                                newVd.setCron(VirtualDevice.CRON.DAILY);
+                                Calendar cal = Calendar.getInstance();
+                                cal.set(Calendar.HOUR_OF_DAY, 0);
+                                cal.set(Calendar.MINUTE, 1);
+                                cal.set(Calendar.SECOND, 0);
+                                cal.set(Calendar.MILLISECOND, 0);
+                                newVd.setHour(cal.getTime());
+                                break;
+                            }
+                            case "WEEKLY": {
+                                newVd.setCron(VirtualDevice.CRON.WEEKLY);
+                                Calendar cal = Calendar.getInstance();
+                                cal.set(Calendar.HOUR_OF_DAY, 0);
+                                cal.set(Calendar.MINUTE, 1);
+                                cal.set(Calendar.SECOND, 0);
+                                cal.set(Calendar.MILLISECOND, 0);
+                                newVd.setHour(cal.getTime());
+                                break;
+                            }
+                        }
                         session.save(newVd);
                         tx.commit();
                         return newVd;
@@ -8347,6 +8380,10 @@ public class RestService extends Thread {
          */
         private String name;
 
+        private String task;
+
+        private String hour;
+
         @XmlElement
         public Integer getType() {
             return type;
@@ -8381,6 +8418,24 @@ public class RestService extends Thread {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        @XmlElement
+        public String getTask() {
+            return task;
+        }
+
+        public void setTask(String task) {
+            this.task = task;
+        }
+
+        @XmlElement
+        public String getHour() {
+            return hour;
+        }
+
+        public void setHour(String hour) {
+            this.hour = hour;
         }
     }
 

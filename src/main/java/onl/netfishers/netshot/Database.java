@@ -69,10 +69,7 @@ import onl.netfishers.netshot.device.credentials.DeviceSnmpv2cCommunity;
 import onl.netfishers.netshot.device.credentials.DeviceSshAccount;
 import onl.netfishers.netshot.device.credentials.DeviceSshKeyAccount;
 import onl.netfishers.netshot.device.credentials.DeviceTelnetAccount;
-import onl.netfishers.netshot.scp.Company;
-import onl.netfishers.netshot.scp.ScpStepFolder;
-import onl.netfishers.netshot.scp.Types;
-import onl.netfishers.netshot.scp.VirtualDevice;
+import onl.netfishers.netshot.scp.*;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.tasks.DeviceJsScript;
 
@@ -283,6 +280,7 @@ public class Database {
 			configuration.addAnnotatedClass(VirtualDevice.class)
 					.addAnnotatedClass(ScpStepFolder.class)
 					.addAnnotatedClass(Company.class)
+					.addAnnotatedClass(TaskScp.class)
 					.addAnnotatedClass(Types.class);
 
 			for (Class<?> clazz : Task.getTaskClasses()) {
