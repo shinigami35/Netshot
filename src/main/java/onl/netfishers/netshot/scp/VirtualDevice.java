@@ -1,8 +1,16 @@
 package onl.netfishers.netshot.scp;
 
+import onl.netfishers.netshot.Netshot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +23,11 @@ import java.util.Set;
 @XmlRootElement
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class VirtualDevice implements Serializable {
+
+    /**
+     * The logger.
+     */
+    private static Logger logger = LoggerFactory.getLogger(VirtualDevice.class);
 
 
     /**
@@ -39,7 +52,12 @@ public class VirtualDevice implements Serializable {
 
     private Date hour;
 
-    private TaskScp lastTask;
+    private String login = null;
+
+    private String password = null;
+
+    private String ip = null;
+
 
     protected VirtualDevice() {
     }
@@ -50,12 +68,27 @@ public class VirtualDevice implements Serializable {
     }
 
 
-    public VirtualDevice(String name, String folder, Date date, CRON cron) {
-        this.folder = folder;
-        this.name = name;
-        this.cron = cron;
-        this.hour = date;
+    public static boolean createFolder(String folder) {
+        String firstPath = Netshot.getConfig("netshot.watch.folderListen");
+        String tmpPath;
+        if (firstPath.charAt(firstPath.length() - 1) == '/')
+            tmpPath = firstPath + folder;
+        else
+            tmpPath = firstPath + '/' + folder;
+        try {
+            Path tmp = Paths.get(tmpPath);
+            if (Files.notExists(tmp))
+                Files.createDirectories(tmp);
+            else if (Files.exists(tmp) && !Files.isDirectory(tmp))
+                Files.createDirectories(tmp);
+            return true;
+        } catch (IOException e) {
+            logger.error("Cannot create those directory : " + tmpPath, e);
+        }
+        return false;
+
     }
+
 
     @Id
     @GeneratedValue
@@ -135,13 +168,30 @@ public class VirtualDevice implements Serializable {
     }
 
     @XmlElement
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public TaskScp getLastTask() {
-        return lastTask;
+    public String getLogin() {
+        return login;
     }
 
-    public void setLastTask(TaskScp lastTask) {
-        this.lastTask = lastTask;
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    @XmlElement
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @XmlElement
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public enum CRON {

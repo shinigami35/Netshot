@@ -13,17 +13,24 @@ import java.io.Serializable;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class ScpStepFolder implements Serializable {
 
+    public enum TaskStatus {
+        SUCCESS,
+        FAILED
+    }
+
     protected long id;
 
-    protected String created_at = null;
+    private String created_at = null;
 
-    protected String nameFile = "";
+    private String nameFile = "";
 
     protected long size;
 
     protected VirtualDevice virtual = null;
 
-    private TaskScp task;
+    private TaskStatus status;
+
+    private String humanSize;
 
     public ScpStepFolder() {
     }
@@ -78,12 +85,20 @@ public class ScpStepFolder implements Serializable {
 
 
     @XmlElement
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public TaskScp getTask() {
-        return task;
+    public String getHumanSize() {
+        return humanSize;
     }
 
-    public void setTask(TaskScp task) {
-        this.task = task;
+    public void setHumanSize(String humanSize) {
+        this.humanSize = humanSize;
+    }
+
+    @XmlElement
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 }

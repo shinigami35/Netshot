@@ -280,7 +280,6 @@ public class Database {
 			configuration.addAnnotatedClass(VirtualDevice.class)
 					.addAnnotatedClass(ScpStepFolder.class)
 					.addAnnotatedClass(Company.class)
-					.addAnnotatedClass(TaskScp.class)
 					.addAnnotatedClass(Types.class);
 
 			for (Class<?> clazz : Task.getTaskClasses()) {

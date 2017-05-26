@@ -1,19 +1,13 @@
 package onl.netfishers.netshot.scp.job;
 
-import onl.netfishers.netshot.Database;
-import onl.netfishers.netshot.scp.ScpStepFolder;
-import onl.netfishers.netshot.scp.TaskScp;
-import onl.netfishers.netshot.scp.VirtualDevice;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**

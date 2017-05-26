@@ -43,6 +43,8 @@ import onl.netfishers.netshot.device.credentials.DeviceSshKeyAccount;
 import onl.netfishers.netshot.scp.Company;
 import onl.netfishers.netshot.scp.Types;
 import onl.netfishers.netshot.scp.VirtualDevice;
+import onl.netfishers.netshot.scp.job.BackupF5;
+import onl.netfishers.netshot.scp.job.JobScheduler;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.Task.ScheduleType;
 import onl.netfishers.netshot.work.tasks.*;
@@ -68,7 +70,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
@@ -96,8 +98,13 @@ import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.quartz.DateBuilder.evenHourDateAfterNow;
+import static org.quartz.DateBuilder.todayAt;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 /**
  * The RestService class exposes the Netshot methods as a REST service.
@@ -4262,44 +4269,82 @@ public class RestService extends Thread {
                 if (o.size() == 0) {
                     Types t = (Types) session.get(Types.class, (long) rsNewDeviceVirtual.getType());
                     if (t != null) {
-                        VirtualDevice newVd = new VirtualDevice(rsNewDeviceVirtual.getName(), rsNewDeviceVirtual.getFolder());
-                        newVd.setCompany(c);
-                        newVd.setType(t);
-                        switch (rsNewDeviceVirtual.getTask()) {
-                            case "HOUR":
-                                newVd.setCron(VirtualDevice.CRON.HOUR);
-                                try {
-                                    Date d = new SimpleDateFormat("hh:mm a").parse(rsNewDeviceVirtual.getHour());
-                                    newVd.setHour(d);
-                                } catch (ParseException e) {
-                                    throw new NetshotBadRequestException("Error parse Date",
-                                            NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                        if (VirtualDevice.createFolder(rsNewDeviceVirtual.getFolder())) {
+                            VirtualDevice newVd = new VirtualDevice(rsNewDeviceVirtual.getName(), rsNewDeviceVirtual.getFolder());
+                            newVd.setCompany(c);
+                            newVd.setType(t);
+                            if (rsNewDeviceVirtual.getLogin() != null && rsNewDeviceVirtual.getPwd() != null) {
+                                newVd.setLogin(rsNewDeviceVirtual.getLogin());
+                                newVd.setPassword(rsNewDeviceVirtual.getPwd());
+                            }
+                            switch (rsNewDeviceVirtual.getTask()) {
+                                case "HOUR":
+                                    newVd.setCron(VirtualDevice.CRON.HOUR);
+                                    try {
+                                        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                                        String date = df.format(Calendar.getInstance().getTime());
+                                        String newDate = date + " " + rsNewDeviceVirtual.getHour();
+                                        Date d = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(newDate);
+                                        newVd.setHour(d);
+                                        session.save(newVd);
+                                        tx.commit();
+
+                                        Calendar calendar = GregorianCalendar.getInstance();
+                                        calendar.setTime(d);
+
+                                        JobDetail jobF5 = JobBuilder.newJob(BackupF5.class)
+                                                .withIdentity("BackupF5_" + newVd.getId(), "Hourly").build();
+                                        Trigger trigger = TriggerBuilder
+                                                .newTrigger()
+                                                .withIdentity("BackupF5_" + newVd.getId(), "Hourly")
+                                                .startAt(todayAt(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 0))  // first fire time 15:00:00 tomorrow
+                                                .withSchedule(simpleSchedule()
+                                                        .withIntervalInHours(24) // interval is actually set at 24 hours' worth of milliseconds
+                                                        .repeatForever())
+                                                .build();
+                                        jobF5.getJobDataMap().put("id", newVd.getId());
+                                        try {
+                                            JobScheduler.getScheduler().scheduleJob(jobF5, trigger);
+                                        } catch (SchedulerException e) {
+                                            logger.error("Error : add new trigger hourly F5", e);
+                                            throw new NetshotBadRequestException("Error : add new trigger hourly F5",
+                                                    NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                                        }
+
+                                    } catch (ParseException e) {
+                                        throw new NetshotBadRequestException("Error parse Date",
+                                                NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                                    }
+                                    break;
+                                case "DAILY": {
+                                    newVd.setCron(VirtualDevice.CRON.DAILY);
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.set(Calendar.HOUR_OF_DAY, 0);
+                                    cal.set(Calendar.MINUTE, 1);
+                                    cal.set(Calendar.SECOND, 0);
+                                    cal.set(Calendar.MILLISECOND, 0);
+                                    newVd.setHour(cal.getTime());
+                                    session.save(newVd);
+                                    tx.commit();
+                                    break;
                                 }
-                                break;
-                            case "DAILY": {
-                                newVd.setCron(VirtualDevice.CRON.DAILY);
-                                Calendar cal = Calendar.getInstance();
-                                cal.set(Calendar.HOUR_OF_DAY, 0);
-                                cal.set(Calendar.MINUTE, 1);
-                                cal.set(Calendar.SECOND, 0);
-                                cal.set(Calendar.MILLISECOND, 0);
-                                newVd.setHour(cal.getTime());
-                                break;
+                                case "WEEKLY": {
+                                    newVd.setCron(VirtualDevice.CRON.WEEKLY);
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.set(Calendar.HOUR_OF_DAY, 0);
+                                    cal.set(Calendar.MINUTE, 1);
+                                    cal.set(Calendar.SECOND, 0);
+                                    cal.set(Calendar.MILLISECOND, 0);
+                                    newVd.setHour(cal.getTime());
+                                    session.save(newVd);
+                                    tx.commit();
+                                    break;
+                                }
                             }
-                            case "WEEKLY": {
-                                newVd.setCron(VirtualDevice.CRON.WEEKLY);
-                                Calendar cal = Calendar.getInstance();
-                                cal.set(Calendar.HOUR_OF_DAY, 0);
-                                cal.set(Calendar.MINUTE, 1);
-                                cal.set(Calendar.SECOND, 0);
-                                cal.set(Calendar.MILLISECOND, 0);
-                                newVd.setHour(cal.getTime());
-                                break;
-                            }
-                        }
-                        session.save(newVd);
-                        tx.commit();
-                        return newVd;
+                            return newVd;
+                        } else
+                            throw new NetshotBadRequestException("Directory cannot be create",
+                                    NetshotBadRequestException.NETSHOT_ERROR_CREATEFOLDER);
                     } else {
                         throw new NetshotBadRequestException("This Types does not exists",
                                 NetshotBadRequestException.NETSHOT_DUPLICATE_DEVICE);
@@ -8384,6 +8429,12 @@ public class RestService extends Thread {
 
         private String hour;
 
+        private String login;
+
+        private String pwd;
+
+        private String ip;
+
         @XmlElement
         public Integer getType() {
             return type;
@@ -8436,6 +8487,33 @@ public class RestService extends Thread {
 
         public void setHour(String hour) {
             this.hour = hour;
+        }
+
+        @XmlElement
+        public String getLogin() {
+            return login;
+        }
+
+        public void setLogin(String login) {
+            this.login = login;
+        }
+
+        @XmlElement
+        public String getPwd() {
+            return pwd;
+        }
+
+        public void setPwd(String pwd) {
+            this.pwd = pwd;
+        }
+
+        @XmlElement
+        public String getIp() {
+            return ip;
+        }
+
+        public void setIp(String ip) {
+            this.ip = ip;
         }
     }
 

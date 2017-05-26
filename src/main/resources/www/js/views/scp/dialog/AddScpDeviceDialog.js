@@ -51,7 +51,17 @@ define([
                         that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/" + name + "/");
                     }
                 }
+                if(type.name === "F5"){
+                    that.$('#devicelogin').parent().show();
+                    that.$('#devicepassword').parent().show();
+                    that.$('#deviceip').parent().show();
+                } else {
+                    that.$('#devicelogin').parent().hide();
+                    that.$('#devicepassword').parent().hide();
+                    that.$('#deviceip').parent().hide();
+                }
             }
+
         },
 
         setPath: function (e) {
@@ -99,7 +109,10 @@ define([
                         company: parseInt(that.$('#devicecompany').val(), 10),
                         folder: that.$('#devicefolder').val(),
                         task: that.$('#devicetask').val(),
-                        hour: that.$('#devicehour').val()
+                        hour: that.$('#devicehour').val(),
+                        login: that.$('#devicelogin').val(),
+                        pwd: that.$('#devicepassword').val(),
+                        ip: that.$('#deviceip').val()
                     }).done(function (data) {
                         that.close();
                     }).fail(function (data) {
@@ -117,6 +130,10 @@ define([
 
         onCreate: function () {
             var that = this;
+
+            this.$('#devicelogin').parent().hide();
+            this.$('#devicepassword').parent().hide();
+            this.$('#deviceip').parent().hide();
 
             _.each(this.company.models, function (c) {
                 $('<option />').attr('value', c.get('id'))

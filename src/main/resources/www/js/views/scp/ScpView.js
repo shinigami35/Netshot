@@ -75,13 +75,13 @@ define([
                 var that = this;
                 e.preventDefault();
                 var value = $(e.currentTarget).val();
-                if(value === 'ALL'){
+                if (value === 'ALL') {
                     that.renderDeviceList();
-                }else{
+                } else {
                     var company = that.company.get(value).toJSON();
                     var newHtml = "";
                     that.devices.models.forEach(function (elt) {
-                        if(company.name === elt.toJSON().company.name)
+                        if (company.name === elt.toJSON().company.name)
                             newHtml += that.itemTemplate(elt.toJSON())
                     });
                     that.$("#nsdevices-listbox-virtual>ul").html("");
@@ -90,6 +90,7 @@ define([
             },
 
             render: function () {
+                var that = this;
                 this.$el.html(this.template);
                 this.initFetchDevices();
                 $('#nstoolbar-section').html(this.toolbarTemplate);
@@ -122,7 +123,7 @@ define([
                         var company = that.company.get(id).toJSON();
                         var newHtml = "";
                         that.devices.models.forEach(function (elt) {
-                            if(company.name === elt.toJSON().company.name)
+                            if (company.name === elt.toJSON().company.name)
                                 newHtml += that.itemTemplate(elt.toJSON())
                         });
                         that.$("#companyselect").val(id);
@@ -151,6 +152,11 @@ define([
                         }
                     });
 
+                this.$("#companyselect option").each(function () {
+                    $(this).remove();
+                });
+                $('<option />').attr('value', 'ALL')
+                    .text('ALL').appendTo(that.$('#companyselect'));
                 _.each(this.company.models, function (c) {
                     $('<option />').attr('value', c.get('id'))
                         .text(c.get('name')).appendTo(that.$('#companyselect'));

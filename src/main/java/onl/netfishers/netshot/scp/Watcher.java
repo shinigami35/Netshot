@@ -25,27 +25,32 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 /**
  * Created by agm on 18/05/2017.
  */
-public class Watcher {
+public class Watcher extends Thread {
 
-    private static WatchService watcher;
-    private static Map<WatchKey, Path> keys;
-    private static boolean recursive;
-    private static boolean trace = false;
+    private WatchService watcher;
+    private Map<WatchKey, Path> keys;
+    private boolean recursive;
+    private boolean trace = false;
 
     /**
      * The logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(Watcher.class);
+    private Logger logger = LoggerFactory.getLogger(Watcher.class);
 
     @SuppressWarnings("unchecked")
-    static <T> WatchEvent<T> cast(WatchEvent<?> event) {
+    <T> WatchEvent<T> cast(WatchEvent<?> event) {
         return (WatchEvent<T>) event;
+    }
+
+
+    public Watcher() {
+        super("Watcher");
     }
 
     /**
      * Register the given directory with the WatchService
      */
-    private static void register(Path dir) throws IOException {
+    private void register(Path dir) throws IOException {
         WatchKey key = dir.register(watcher, ENTRY_CREATE);
         if (trace) {
             Path prev = keys.get(key);
@@ -64,13 +69,13 @@ public class Watcher {
      * Register the given directory, and all its sub-directories, with the
      * WatchService.
      */
-    private static void registerAll(final Path start) throws IOException {
+    private void registerAll(final Path start) throws IOException {
         // register directory and sub-directories
         Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
                     throws IOException {
-                Watcher.register(dir);
+                register(dir);
                 return FileVisitResult.CONTINUE;
             }
         });
@@ -79,7 +84,7 @@ public class Watcher {
     /**
      * Creates a WatchService and registers the given directory
      */
-    public static void init() throws IOException {
+    public void init() throws IOException {
         String s = Netshot.getConfig("netshot.watch.folderListen");
         Path dir = Paths.get(s);
         System.out.println("Path watcher is : " + dir);
@@ -92,7 +97,7 @@ public class Watcher {
             if (recursive) {
                 System.out.format("Scanning %s ...\n", dir);
                 registerAll(dir);
-                Watcher.processEvents();
+                processEvents();
                 System.out.println("Done.");
             } else {
                 register(dir);
@@ -104,7 +109,7 @@ public class Watcher {
     /**
      * Process all events for keys queued to the watcher
      */
-    private static void processEvents() {
+    private void processEvents() {
         while (true) {
 
             WatchKey key;
@@ -159,8 +164,7 @@ public class Watcher {
         }
     }
 
-    private static void saveEntryScp(Path child) {
-        Date now = new Date();
+    private void saveEntryScp(Path child) {
         Session session = Database.getSession();
         Transaction tx;
         try {
@@ -175,19 +179,13 @@ public class Watcher {
                     if (child.getParent().equals(tmp)) {
                         ScpStepFolder s = new ScpStepFolder();
                         BasicFileAttributes attr = Files.readAttributes(child, BasicFileAttributes.class);
-                        s.setSize(getInMb(attr.size()));
+                        s.setSize(attr.size());
+                        s.setHumanSize(humanReadableByteCount(attr.size(), true));
                         s.setNameFile(child.getFileName().toString());
                         s.setCreated_at(convertDate(new Date(attr.creationTime().toMillis())));
                         s.setVirtual(vd);
+                        s.setStatus(ScpStepFolder.TaskStatus.SUCCESS);
 
-                        TaskScp newTask = new TaskScp();
-                        newTask.setDate(now);
-                        newTask.setStatus(TaskScp.TaskStatus.SUCCESS);
-                        newTask.setScpStepFolder(s);
-                        session.save(s);
-                        session.save(newTask);
-
-                        vd.setLastTask(newTask);
                         session.update(vd);
 
                         tx.commit();
@@ -207,30 +205,30 @@ public class Watcher {
         }
     }
 
-    private static long getInMb(long sizeInBytes) {
-        return sizeInBytes / (1024 * 1024);
+    private String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
-    private static String convertDate(Date d) {
+    private String convertDate(Date d) {
         SimpleDateFormat timeStamp = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.FRANCE);
         return timeStamp.format(d);
     }
 
-    private static long getTimeDiffHours(Date dateOne, Date dateTwo) {
-        String diff = "";
+    private long getTimeDiffHours(Date dateOne, Date dateTwo) {
         long timeDiff = Math.abs(dateOne.getTime() - dateTwo.getTime());
-        //diff = String.format("%d hour(s) %d min(s)", TimeUnit.MILLISECONDS.toHours(timeDiff), TimeUnit.MILLISECONDS.toMinutes(timeDiff) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDiff)));
         return TimeUnit.MILLISECONDS.toHours(timeDiff);
     }
 
-    private static long getTimeDiffDays(Date dateOne, Date dateTwo) {
-        String diff = "";
+    private long getTimeDiffDays(Date dateOne, Date dateTwo) {
         long timeDiff = Math.abs(dateOne.getTime() - dateTwo.getTime());
-        //diff = String.format("%d hour(s) %d min(s)", TimeUnit.MILLISECONDS.toHours(timeDiff), TimeUnit.MILLISECONDS.toMinutes(timeDiff) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDiff)));
         return TimeUnit.MILLISECONDS.toDays(timeDiff);
     }
 
-    private static long getTimeDiffWeek(Date dateOne, Date dateTwo) {
+    private long getTimeDiffWeek(Date dateOne, Date dateTwo) {
         DateTime dateTime1 = new DateTime(dateOne);
         DateTime dateTime2 = new DateTime(dateTwo);
 

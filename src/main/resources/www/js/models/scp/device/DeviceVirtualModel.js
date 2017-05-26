@@ -17,7 +17,10 @@ define([
 				'company',
 				'folder',
 				'task',
-				'hour'
+				'hour',
+				'login',
+				'pwd',
+				'ip'
 			]);
 			options.attrs = attrs;
 			return Backbone.Model.prototype.save.call(this, attrs, options);
