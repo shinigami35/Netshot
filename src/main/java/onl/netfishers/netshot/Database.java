@@ -69,7 +69,10 @@ import onl.netfishers.netshot.device.credentials.DeviceSnmpv2cCommunity;
 import onl.netfishers.netshot.device.credentials.DeviceSshAccount;
 import onl.netfishers.netshot.device.credentials.DeviceSshKeyAccount;
 import onl.netfishers.netshot.device.credentials.DeviceTelnetAccount;
-import onl.netfishers.netshot.scp.*;
+import onl.netfishers.netshot.scp.device.Company;
+import onl.netfishers.netshot.scp.device.ScpStepFolder;
+import onl.netfishers.netshot.scp.device.Types;
+import onl.netfishers.netshot.scp.device.VirtualDevice;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.tasks.DeviceJsScript;
 

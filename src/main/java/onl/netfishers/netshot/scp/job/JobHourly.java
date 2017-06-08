@@ -1,12 +1,13 @@
 package onl.netfishers.netshot.scp.job;
 
 import onl.netfishers.netshot.Database;
-import onl.netfishers.netshot.scp.ScpStepFolder;
-import onl.netfishers.netshot.scp.VirtualDevice;
+import onl.netfishers.netshot.scp.device.ScpStepFolder;
+import onl.netfishers.netshot.scp.device.VirtualDevice;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.quartz.Job;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -16,8 +17,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static onl.netfishers.netshot.scp.job.JobTools.generateScp;
+
 /**
- * Created by agm on 23/05/2017.
+ * Created by agm on 02/06/2017.
  */
 public class JobHourly implements Job {
 
@@ -26,45 +29,63 @@ public class JobHourly implements Job {
      */
     private static Logger logger = LoggerFactory.getLogger(JobHourly.class);
 
+
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         Session session = Database.getSession();
-        String request = "FROM VirtualDevice vd WHERE vd.type = :typevD ORDER BY vd.hour";
+        Date d = new Date();
+
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
 
-            List l = session.createQuery(request)
-                    .setParameter("typevD", VirtualDevice.CRON.HOUR)
-                    .list();
-            if (l.size() > 0) {
-                for (Object o : l) {
-                    VirtualDevice vd = (VirtualDevice) o;
-                    List<ScpStepFolder> scp = new ArrayList<>();
-                    scp.addAll(vd.getFile());
-                    if (scp.size() >= 2) {
-                        ScpStepFolder last = scp.get(scp.size() - 1);
-                        ScpStepFolder lastMinusOne = scp.get(scp.size() - 2);
-                        long diff = JobTools.getTimeDiffHours(parseDate(last.getCreated_at()), parseDate(lastMinusOne.getCreated_at()));
-                        if (diff > 1) {
-                            for (int i = (int) diff; i > 0; i--) {
-                                Calendar cal = Calendar.getInstance();
-                                cal.setTime(parseDate(last.getCreated_at()));
-                                cal.add(Calendar.HOUR, -i);
-                                Date newDate = cal.getTime();
+            JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+            long id = dataMap.getLongValue("v_id");
+            VirtualDevice virtualDevice = (VirtualDevice) session.get(VirtualDevice.class, id);
+            if (virtualDevice != null) {
+                List<ScpStepFolder> scp = new ArrayList<>();
+                scp.addAll(virtualDevice.getFile());
+                if (scp.size() == 0) {
+                    long diff = JobTools.getTimeDiffHours(d, virtualDevice.getHour());
+                    if (diff > 1) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(d);
+                        cal.add(Calendar.HOUR_OF_DAY, -1);
+                        Date newDate = cal.getTime();
 
-                                ScpStepFolder newScp = new ScpStepFolder();
-                                newScp.setNameFile("");
-                                newScp.setSize(0);
-                                newScp.setCreated_at(JobTools.convertDate(newDate));
-                                newScp.setVirtual(vd);
-                                newScp.setStatus(ScpStepFolder.TaskStatus.FAILED);
+                        ScpStepFolder newScp = generateScp(virtualDevice, newDate);
 
-                                session.save(newScp);
+                        session.save(newScp);
+                        tx.commit();
+                    }
+                } else if (scp.size() == 1) {
+                    ScpStepFolder last = scp.get(scp.size() - 1);
+                    long diff = JobTools.getTimeDiffHours(d, last.getCreated());
+                    if (diff > 1) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(last.getCreated());
+                        cal.add(Calendar.HOUR_OF_DAY, -1);
+                        Date newDate = cal.getTime();
 
-                                tx.commit();
-                            }
-                        }
+                        ScpStepFolder newScp = generateScp(virtualDevice, newDate);
+
+                        session.save(newScp);
+                        tx.commit();
+                    }
+                } else if (scp.size() >= 2) {
+                    ScpStepFolder last = scp.get(scp.size() - 1);
+                    ScpStepFolder lastMinusOne = scp.get(scp.size() - 2);
+                    long diff = JobTools.getTimeDiffHours(parseDate(last.getCreated_at()), parseDate(lastMinusOne.getCreated_at()));
+                    if (diff > 1) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(parseDate(last.getCreated_at()));
+                        cal.add(Calendar.HOUR_OF_DAY, -1);
+                        Date newDate = cal.getTime();
+
+                        ScpStepFolder newScp = generateScp(virtualDevice, newDate);
+
+                        session.save(newScp);
+                        tx.commit();
                     }
                 }
             }
@@ -76,9 +97,10 @@ public class JobHourly implements Job {
         }
     }
 
+
     private Date parseDate(String s) {
         try {
-            SimpleDateFormat timeStamp = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.FRANCE);
+            SimpleDateFormat timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
             return timeStamp.parse(s);
         } catch (ParseException e) {
             e.printStackTrace();

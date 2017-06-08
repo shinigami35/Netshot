@@ -1,4 +1,4 @@
-package onl.netfishers.netshot.scp;
+package onl.netfishers.netshot.scp.device;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
@@ -15,8 +15,6 @@ public class Company implements Serializable {
     private long id;
 
     private String name;
-
-    private String email;
 
     private Set<VirtualDevice> appliances = new HashSet<>(0);
 
@@ -43,15 +41,6 @@ public class Company implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @XmlElement
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @XmlElement

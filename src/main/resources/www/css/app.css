@@ -377,6 +377,13 @@ h1 {
     bottom: 5px;
 }
 
+#nsdevices-list-virtual {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    bottom: 5px;
+}
+
 #nsdevices-listheader {
     position: absolute;
     top: 33px;

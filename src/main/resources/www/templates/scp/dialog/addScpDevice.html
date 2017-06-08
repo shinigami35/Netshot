@@ -6,7 +6,7 @@
 
     <form>
         <fieldset>
-            <label for="devicename">Name : </label>
+            <label for="devicename">Name: </label>
             <input type="text"
                    name="devicename" id="devicename"
                    class="text ui-widget-content ui-corner-all"/>
@@ -20,27 +20,6 @@
         </fieldset>
 
         <fieldset>
-            <label for="devicelogin">Login : </label>
-            <input type="text"
-                   name="devicelogin" id="devicelogin"
-                   class="text ui-widget-content ui-corner-all"/>
-        </fieldset>
-
-        <fieldset>
-            <label for="devicepassword">Password : </label>
-            <input type="password"
-                   name="devicepassword" id="devicepassword"
-                   class="text ui-widget-content ui-corner-all"/>
-        </fieldset>
-
-        <fieldset>
-            <label for="deviceip">IP : </label>
-            <input type="text"
-                   name="deviceip" id="deviceip"
-                   class="text ui-widget-content ui-corner-all"/>
-        </fieldset>
-
-        <fieldset>
             <label for="devicecompany">Company: </label> <select
                 name="devicecompany" id="devicecompany"
                 class="text ui-widget-content ui-corner-all" style="display: inline-block;">
@@ -48,13 +27,13 @@
         </select>
         </fieldset>
         <fieldset>
-            <label for="devicefolder">Folder : </label>
+            <label for="devicefolder">Folder: </label>
             <input type="text"
                    name="devicefolder" id="devicefolder"
                    class="text ui-widget-content ui-corner-all" disabled/>
         </fieldset>
         <fieldset>
-            <label for="devicetask">Date : </label> <select
+            <label for="devicetask">Repeat: </label> <select
                 name="devicetask" id="devicetask"
                 class="text ui-widget-content ui-corner-all" style="display: inline-block;">
             <option value="HOUR">HOURLY</option>
@@ -63,7 +42,14 @@
         </select>
         </fieldset>
         <fieldset>
-            <label for="devicehour">Time : </label> <select
+            <label for="devicetime">Date: </label>
+            <input type="text" id="devicetime"
+                   class="nsdatepicker text ui-widget-content ui-corner-all"
+                   readonly="readonly" />
+
+        </fieldset>
+        <fieldset>
+            <label for="devicehour">Time: </label> <select
                 name="devicehour" id="devicehour"
                 class="text ui-widget-content ui-corner-all" style="display: inline-block;">
             <option value="5:00 AM">5:00 AM</option>

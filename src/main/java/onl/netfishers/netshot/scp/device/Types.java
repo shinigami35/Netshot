@@ -1,4 +1,4 @@
-package onl.netfishers.netshot.scp;
+package onl.netfishers.netshot.scp.device;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

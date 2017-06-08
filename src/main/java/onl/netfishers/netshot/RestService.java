@@ -40,11 +40,10 @@ import onl.netfishers.netshot.device.credentials.DeviceCliAccount;
 import onl.netfishers.netshot.device.credentials.DeviceCredentialSet;
 import onl.netfishers.netshot.device.credentials.DeviceSnmpCommunity;
 import onl.netfishers.netshot.device.credentials.DeviceSshKeyAccount;
-import onl.netfishers.netshot.scp.Company;
-import onl.netfishers.netshot.scp.Types;
-import onl.netfishers.netshot.scp.VirtualDevice;
-import onl.netfishers.netshot.scp.job.BackupF5;
-import onl.netfishers.netshot.scp.job.JobScheduler;
+import onl.netfishers.netshot.scp.device.Company;
+import onl.netfishers.netshot.scp.device.ScpStepFolder;
+import onl.netfishers.netshot.scp.device.Types;
+import onl.netfishers.netshot.scp.device.VirtualDevice;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.Task.ScheduleType;
 import onl.netfishers.netshot.work.tasks.*;
@@ -70,7 +69,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
-import org.quartz.*;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
@@ -83,6 +82,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
+import javax.ws.rs.Path;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -94,17 +94,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.nio.file.*;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.quartz.DateBuilder.evenHourDateAfterNow;
-import static org.quartz.DateBuilder.todayAt;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static onl.netfishers.netshot.scp.job.JobTools.*;
 
 /**
  * The RestService class exposes the Netshot methods as a REST service.
@@ -163,6 +161,21 @@ public class RestService extends Thread {
         nsRestService = new RestService();
         nsRestService.setUncaughtExceptionHandler(Netshot.exceptionHandler);
         nsRestService.start();
+    }
+
+
+    private static void deleteFolder(File folder) {
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    deleteFolder(f);
+                } else {
+                    f.delete();
+                }
+            }
+        }
+        folder.delete();
     }
 
     /* (non-Javadoc)
@@ -4140,11 +4153,13 @@ public class RestService extends Thread {
     @Path("scp/device")
     @RolesAllowed("readonly")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List getVirtual() {
+    public Object getVirtual() {
         Session s = Database.getSession();
         try {
             List el = s.createCriteria(VirtualDevice.class).list();
-            return el;
+            Set<Object> mySet = new HashSet<Object>();
+            mySet.addAll(el);
+            return mySet;
         } catch (HibernateException e) {
             logger.error("Unable to fetch the virutalDevice.", e);
             throw new NetshotBadRequestException("Unable to fetch the virutalDevice",
@@ -4171,7 +4186,7 @@ public class RestService extends Thread {
         VirtualDevice v;
         try {
             session.beginTransaction();
-            v = (VirtualDevice) session.load(VirtualDevice.class, id);
+            v = (VirtualDevice) session.get(VirtualDevice.class, id);
             return v;
         } catch (ObjectNotFoundException e) {
             logger.error("The VirutalDevice doesn't exist.", e);
@@ -4249,9 +4264,51 @@ public class RestService extends Thread {
     }
 
 
+    @GET
+    @Path("scp/file/{id}")
+    @RolesAllowed("readonly")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Object getConfigurationVirtualDevice(@PathParam("id") Long id) {
+        logger.debug("REST request, get virutal device {id}.", id);
+        Session session = Database.getSession();
+        String destPath = Netshot.getConfig("netshot.watch.moveFile");
+        try {
+            ScpStepFolder scp = (ScpStepFolder) session.get(ScpStepFolder.class, id);
+            if (scp == null) {
+                logger.warn("Unable to find the scp object.");
+                throw new WebApplicationException(
+                        "Unable to find the scp set",
+                        javax.ws.rs.core.Response.Status.NOT_FOUND);
+            }
+            VirtualDevice vs = scp.getVirtual();
+            if (vs != null) {
+                java.nio.file.Path dest = generatePath(destPath, vs.getFolder());
+                java.nio.file.Path tmpDest = Paths.get(dest.toAbsolutePath().toString() + '/' +
+                        vs.getId() + "_" + generateDateSave(scp.getCreated()) + '_' + scp.getNameFile());
+
+                StreamingOutput fileStream = output -> {
+                    byte[] data = Files.readAllBytes(tmpDest);
+                    output.write(data);
+                    output.flush();
+                };
+                return Response.ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                        .header("Content-Disposition", "attachment; filename=" + scp.getNameFile())
+                        .build();
+            }
+            throw new WebApplicationException("Unable to get the configuration",
+                    javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR);
+        } catch (HibernateException e) {
+            throw new WebApplicationException("Unable to get the configuration",
+                    javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR);
+        } finally {
+            session.close();
+        }
+    }
+
+
     @POST
     @Path("scp/device")
-    @RolesAllowed("readonly")
+    @RolesAllowed("readwrite")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public VirtualDevice addDeviceVitual(@Context HttpServletRequest request, RsNewDeviceVirtual rsNewDeviceVirtual) {
@@ -4273,71 +4330,33 @@ public class RestService extends Thread {
                             VirtualDevice newVd = new VirtualDevice(rsNewDeviceVirtual.getName(), rsNewDeviceVirtual.getFolder());
                             newVd.setCompany(c);
                             newVd.setType(t);
-                            if (rsNewDeviceVirtual.getLogin() != null && rsNewDeviceVirtual.getPwd() != null) {
-                                newVd.setLogin(rsNewDeviceVirtual.getLogin());
-                                newVd.setPassword(rsNewDeviceVirtual.getPwd());
-                            }
+                            String newDate = rsNewDeviceVirtual.getDate() + " " + rsNewDeviceVirtual.getHour();
+                            Date d = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(newDate);
                             switch (rsNewDeviceVirtual.getTask()) {
                                 case "HOUR":
                                     newVd.setCron(VirtualDevice.CRON.HOUR);
-                                    try {
-                                        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-                                        String date = df.format(Calendar.getInstance().getTime());
-                                        String newDate = date + " " + rsNewDeviceVirtual.getHour();
-                                        Date d = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(newDate);
-                                        newVd.setHour(d);
-                                        session.save(newVd);
-                                        tx.commit();
+                                    newVd.setHour(d);
+                                    session.save(newVd);
+                                    tx.commit();
 
-                                        Calendar calendar = GregorianCalendar.getInstance();
-                                        calendar.setTime(d);
-
-                                        JobDetail jobF5 = JobBuilder.newJob(BackupF5.class)
-                                                .withIdentity("BackupF5_" + newVd.getId(), "Hourly").build();
-                                        Trigger trigger = TriggerBuilder
-                                                .newTrigger()
-                                                .withIdentity("BackupF5_" + newVd.getId(), "Hourly")
-                                                .startAt(todayAt(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 0))  // first fire time 15:00:00 tomorrow
-                                                .withSchedule(simpleSchedule()
-                                                        .withIntervalInHours(24) // interval is actually set at 24 hours' worth of milliseconds
-                                                        .repeatForever())
-                                                .build();
-                                        jobF5.getJobDataMap().put("id", newVd.getId());
-                                        try {
-                                            JobScheduler.getScheduler().scheduleJob(jobF5, trigger);
-                                        } catch (SchedulerException e) {
-                                            logger.error("Error : add new trigger hourly F5", e);
-                                            throw new NetshotBadRequestException("Error : add new trigger hourly F5",
-                                                    NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-                                        }
-
-                                    } catch (ParseException e) {
-                                        throw new NetshotBadRequestException("Error parse Date",
-                                                NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
-                                    }
+                                    generateTaskHourly(newVd);
                                     break;
                                 case "DAILY": {
                                     newVd.setCron(VirtualDevice.CRON.DAILY);
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.set(Calendar.HOUR_OF_DAY, 0);
-                                    cal.set(Calendar.MINUTE, 1);
-                                    cal.set(Calendar.SECOND, 0);
-                                    cal.set(Calendar.MILLISECOND, 0);
-                                    newVd.setHour(cal.getTime());
+                                    newVd.setHour(d);
                                     session.save(newVd);
                                     tx.commit();
+
+                                    generateTaskDaily(newVd);
                                     break;
                                 }
                                 case "WEEKLY": {
                                     newVd.setCron(VirtualDevice.CRON.WEEKLY);
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.set(Calendar.HOUR_OF_DAY, 0);
-                                    cal.set(Calendar.MINUTE, 1);
-                                    cal.set(Calendar.SECOND, 0);
-                                    cal.set(Calendar.MILLISECOND, 0);
-                                    newVd.setHour(cal.getTime());
+                                    newVd.setHour(d);
                                     session.save(newVd);
                                     tx.commit();
+
+                                    generateTaskWeekly(newVd);
                                     break;
                                 }
                             }
@@ -4362,6 +4381,9 @@ public class RestService extends Thread {
             logger.error("Unable to add this virtualDevice.", e);
             throw new NetshotBadRequestException("Unable to add this virtualDevice",
                     NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+        } catch (ParseException e) {
+            throw new NetshotBadRequestException("Error parse Date",
+                    NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
         } finally {
             session.close();
         }
@@ -4369,7 +4391,7 @@ public class RestService extends Thread {
 
     @POST
     @Path("scp/company")
-    @RolesAllowed("readonly")
+    @RolesAllowed("readwrite")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Company addCompany(@Context HttpServletRequest request, RsNewCompany rsNewCompany) {
@@ -4383,7 +4405,6 @@ public class RestService extends Thread {
             if (c == null) {
                 Company newC = new Company();
                 newC.setName(rsNewCompany.getName());
-                newC.setEmail(rsNewCompany.getEmail());
                 session.save(newC);
                 tx.commit();
                 return newC;
@@ -4395,6 +4416,52 @@ public class RestService extends Thread {
             tx.rollback();
             logger.error("Unable to add this Company.", e);
             throw new NetshotBadRequestException("Unable to add this Company",
+                    NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+        } finally {
+            session.close();
+        }
+    }
+
+    /**
+     * Return the all type.
+     *
+     * @param request the request
+     * @return the Companies
+     * @throws WebApplicationException the web application exception
+     */
+    @DELETE
+    @Path("scp/device/{id}")
+    @RolesAllowed("readwrite")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void deleteDevice(@PathParam("id") Integer id) {
+        Session session = Database.getSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            VirtualDevice vs = (VirtualDevice) session.get(VirtualDevice.class, (long) id);
+            if (vs != null) {
+                for (ScpStepFolder s : vs.getFile()) {
+                    session.delete(s);
+                }
+                java.nio.file.Path folder = generatePathDest(vs.getFolder());
+                java.nio.file.Path folderDdl = generatePathMove(vs.getFolder());
+                vs.setCompany(null);
+                session.delete(vs);
+                tx.commit();
+                // Delete the backup film from this virtual device
+                deleteFolder(folder.toAbsolutePath().toFile());
+                deleteFolder(folderDdl.toAbsolutePath().toFile());
+            }
+
+        } catch (ObjectNotFoundException e) {
+            throw new NetshotBadRequestException(
+                    "Virtual device not found",
+                    NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
+        } catch (HibernateException e) {
+            tx.rollback();
+            logger.error("Error while getting type.", e);
+            throw new NetshotBadRequestException(
+                    "Error while getting type.",
                     NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
         } finally {
             session.close();
@@ -8429,11 +8496,8 @@ public class RestService extends Thread {
 
         private String hour;
 
-        private String login;
+        private String date;
 
-        private String pwd;
-
-        private String ip;
 
         @XmlElement
         public Integer getType() {
@@ -8490,30 +8554,12 @@ public class RestService extends Thread {
         }
 
         @XmlElement
-        public String getLogin() {
-            return login;
+        public String getDate() {
+            return date;
         }
 
-        public void setLogin(String login) {
-            this.login = login;
-        }
-
-        @XmlElement
-        public String getPwd() {
-            return pwd;
-        }
-
-        public void setPwd(String pwd) {
-            this.pwd = pwd;
-        }
-
-        @XmlElement
-        public String getIp() {
-            return ip;
-        }
-
-        public void setIp(String ip) {
-            this.ip = ip;
+        public void setDate(String date) {
+            this.date = date;
         }
     }
 
@@ -8530,10 +8576,6 @@ public class RestService extends Thread {
          */
         private String name;
 
-        /**
-         * The email.
-         */
-        private String email;
 
         @XmlElement
         public String getName() {
@@ -8544,14 +8586,6 @@ public class RestService extends Thread {
             this.name = name;
         }
 
-        @XmlElement
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
     }
 
 }

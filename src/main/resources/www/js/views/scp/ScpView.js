@@ -9,18 +9,16 @@ define([
         'text!templates/scp/scpListItem.html',
         'text!templates/scp/scpListApp.html',
         'text!templates/scp/toolbar/scpToolbar.html',
-        'text!templates/scp/companyListItem.html',
-        'text!templates/scp/tableau/scpLineTableau.html',
         'views/scp/ScpView',
         'views/scp/dialog/AddScpDeviceDialog',
         'views/scp/dialog/AddScpCompanyDialog',
         'models/scp/device/DeviceVirtualCollection',
         'models/scp/company/CompanyCollection',
-        'models/scp/type/TypeCollection'
+        'views/scp/VirtualDeviceView'
     ],
     function ($, _, Backbone, Scptemplate, ScpList, ScpApp, ScpToolbar,
-              CompanyListItem, ScpLineTableau, ScpViews, ScpDialogAdd,
-              ScpDialogCompany, DeviceVirtualCollection, CompanyCollection, TypeCollection) {
+              ScpViews, ScpDialogAdd,
+              ScpDialogCompany, DeviceVirtualCollection, CompanyCollection, VirtualDeviceView) {
         makeLoadProgress(15);
 
         var view = Backbone.View.extend({
@@ -31,8 +29,7 @@ define([
             itemTemplate: _.template(ScpList),
             appTemplate: _.template(ScpApp),
             toolbarTemplate: _.template(ScpToolbar),
-            companyListItem: _.template(CompanyListItem),
-            lineTableauTemplate: _.template(ScpLineTableau),
+
 
             events: {
                 "input #virtual": "changeBrowser",
@@ -42,8 +39,10 @@ define([
             initialize: function (option) {
                 this.devices = new DeviceVirtualCollection([]);
                 this.company = new CompanyCollection([]);
+                this.deviceVirtualView = null;
                 this.device = null;
                 this.deviceName = [];
+                this.id = option.id;
 
             },
 
@@ -97,60 +96,33 @@ define([
                 $('#nstoolbar-section button').button();
                 $('#nstoolbar-devices-add').unbind('click').button()
                     .click(function () {
-                        var scp_dialog_add = new ScpDialogAdd();
+                        var scp_dialog_add = new ScpDialogAdd({
+                            company : that.company,
+                            onRefresh: function () {
+                                that.initFetchDevices();
+                            }
+                        });
                     });
                 $('#nstoolbar-company-add').unbind('click').button()
                     .click(function () {
-                        var scp_dialog_company = new ScpDialogCompany();
+                        var scp_dialog_company = new ScpDialogCompany({
+                                onRefresh: function () {
+                                    that.initFetchDevices();
+                                }
+                            }
+                        );
                     });
             },
 
             renderDeviceList: function () {
                 var that = this;
-                this.htmlBufferCompany = "";
                 this.htmlBuffer = "";
 
                 this.devices.each(this.renderDeviceListItem, this);
                 this.devices.each(this.getNameVirtual, this);
-                this.company.each(this.renderCompanyListApp, this);
 
                 this.$("#nsdevices-listbox-virtual>ul").html(this.htmlBuffer);
-                this.$("#nsdevices-groups>ul").html(this.htmlBufferCompany);
-                this.$("#nsdevices-groups>ul li.nsdevices-list-group").unbind()
-                    .click(function () {
-                        if ($(this).hasClass("active")) return;
-                        var id = $(this).data('group-id');
-                        var company = that.company.get(id).toJSON();
-                        var newHtml = "";
-                        that.devices.models.forEach(function (elt) {
-                            if (company.name === elt.toJSON().company.name)
-                                newHtml += that.itemTemplate(elt.toJSON())
-                        });
-                        that.$("#companyselect").val(id);
-                        that.$("#nsdevices-listbox-virtual>ul").html("");
-                        that.$("#nsdevices-listbox-virtual>ul").html(newHtml);
-                    });
 
-                this.renderButton();
-
-                this.$("#nsdevices-listbox-virtual>ul li.nsdevices-list-device").unbind()
-                    .click(function () {
-                        if ($(this).hasClass("active")) return;
-                        var id = $(this).data('id');
-                        var device = that.devices.get(id);
-                        device = device.toJSON();
-                        var line = "";
-                        device.file.forEach(function (elt) {
-                            line += that.lineTableauTemplate(elt);
-                        });
-                        if (line !== "") {
-                            that.$("#nameMac").val(device.name);
-                            that.$("#general>tbody").html(line);
-                        } else {
-                            that.$("#nameMac").val(device.name);
-                            that.$("#general>tbody").html("");
-                        }
-                    });
 
                 this.$("#companyselect option").each(function () {
                     $(this).remove();
@@ -161,6 +133,12 @@ define([
                     $('<option />').attr('value', c.get('id'))
                         .text(c.get('name')).appendTo(that.$('#companyselect'));
                 });
+                this.decorateDeviceList();
+
+                if (this.id) {
+                    that.renderDevice(this.id);
+                    that.highlightDevice(this.id);
+                }
             },
 
             getNameVirtual: function (device) {
@@ -176,9 +154,6 @@ define([
                 this.htmlBuffer += this.itemTemplate(device.toJSON());
             },
 
-            renderCompanyListApp: function (company) {
-                this.htmlBufferCompany += this.companyListItem(company.toJSON());
-            },
 
             initFetchDevices: function () {
                 var that = this;
@@ -187,26 +162,74 @@ define([
                 });
             },
 
-            renderButton: function () {
-                this.$('#refresh').button({
-                    icons: {
-                        primary: "ui-icon-refresh"
-                    },
-                    text: false
+            decorateDeviceList: function () {
+                var that = this;
+                this.$("#nsdevices-listbox-virtual>ul li").unbind().mouseenter(function () {
+                    var $this = $(this);
+                    if (!$this.hasClass("active")) {
+                        $this.addClass("hover");
+                    }
+                }).mouseleave(function () {
+                    $(this).removeClass("hover");
+                }).click(function (e) {
+                    if ($(this).hasClass("active")) return;
+                    var id = $(this).data('id');
+                    that.renderDevice(id);
+                    that.highlightDevice(id);
+                    return false;
                 });
-                this.$('#edit').button({
-                    icons: {
-                        primary: "ui-icon-wrench"
-                    },
-                    text: false
-                });
-                this.$("#delete").button({
-                    icons: {
-                        primary: "ui-icon-trash"
-                    },
-                    text: false
-                });
-            }
+            },
+            highlightDevice: function (id) {
+                var item = this.getDeviceListItem(id);
+                this.$('#nsdevices-listbox-virtual>ul li.active').removeClass('active');
+                if (item.length > 0) {
+                    item.removeClass("hover").addClass("active");
+                    if (item.position().top > this.$('#nsdevices-listbox-virtual').height() - 30) {
+                        this.$('#nsdevices-listbox-virtual').scrollTop(item.position().top
+                            + this.$('#nsdevices-listbox-virtual').scrollTop());
+                    }
+                }
+                else {
+                    this.device = null;
+                    this.renderDevice();
+                }
+            },
+            getDeviceListItem: function (id) {
+                if (typeof id === "undefined") {
+                    id = this.device.get('id');
+                }
+                return this.$('#nsdevices-listbox-virtual>ul li[data-id="' + id + '"]');
+            },
+            //TODO
+            renderDevice: function (id) {
+                var that = this;
+                if (id !== "undefined")
+                    this.device = this.devices.get(id);
+                if (this.deviceVirtualView != null) this.deviceVirtualView.destroy();
+                if (this.device != null) {
+                    this.deviceVirtualView = new VirtualDeviceView({
+                        model: this.device,
+                        onEdited: function () {
+                            that.device = that.deviceView.model;
+                            that.rerenderDeviceListItem();
+                            //that.decorateDeviceList();
+                        },
+                        onDeleted: function () {
+                            that.device = that.deviceVirtualView.model;
+                            that.deleteVirtualDeviceListItem();
+                            that.devices.remove(that.device);
+                            that.device = null;
+                            that.renderDeviceList();
+                        }
+                    });
+                    this.deviceVirtualView.render();
+                }
+            },
+            deleteVirtualDeviceListItem: function () {
+                this.getDeviceListItem().remove();
+            },
         });
+
+
         return view;
     });

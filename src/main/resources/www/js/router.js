@@ -93,9 +93,22 @@ define([
 			this.currentView.render();
 		});
 
-        app_router.on('route:showScp', function() {
-            this.currentView = new ScpView();
-            this.currentView.render();
+        app_router.on('route:showScp', function(id) {
+            var id = parseInt(id);
+            if (this.currentView != null
+                && typeof this.currentView.renderDevice === "function") {
+                if (!isNaN(id)) {
+                    this.currentView.renderDevice(id);
+                }
+            }
+            else {
+                options = {};
+                if (!isNaN(id)) {
+                    options['id'] = id;
+                }
+                this.currentView = new ScpView(options);
+                this.currentView.render();
+            }
         });
 
 		var headerView = new HeaderView();

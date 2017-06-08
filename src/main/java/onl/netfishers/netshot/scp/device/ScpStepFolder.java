@@ -1,8 +1,9 @@
-package onl.netfishers.netshot.scp;
+package onl.netfishers.netshot.scp.device;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by agm on 17/05/2017.
@@ -31,6 +32,8 @@ public class ScpStepFolder implements Serializable {
     private TaskStatus status;
 
     private String humanSize;
+
+    private Date created;
 
     public ScpStepFolder() {
     }
@@ -100,5 +103,14 @@ public class ScpStepFolder implements Serializable {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    @XmlElement
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 }

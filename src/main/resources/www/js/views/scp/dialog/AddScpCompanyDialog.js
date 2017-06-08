@@ -29,6 +29,7 @@ define([
                 that.model.save({
                     name: that.$('#devicename').val()
                 }).done(function (data) {
+                    that.options.onRefresh();
                     that.close();
                 }).fail(function (data) {
                     var error = $.parseJSON(data.responseText);

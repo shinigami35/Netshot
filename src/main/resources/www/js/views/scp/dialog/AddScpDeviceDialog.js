@@ -19,9 +19,9 @@ define([
             this.model = new DeviceVirtualModel();
             this.companySelect = null;
             this.typeSelect = null;
-            this.company = new CompanyCollection([]);
+            this.company = options.company;
             this.type = new TypeCollection([]);
-            $.when(this.company.fetch(), this.type.fetch()).done(function () {
+            $.when(this.type.fetch()).done(function () {
                 that.render();
             });
         },
@@ -51,19 +51,9 @@ define([
                         that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/" + name + "/");
                     }
                 }
-                if(type.name === "F5"){
-                    that.$('#devicelogin').parent().show();
-                    that.$('#devicepassword').parent().show();
-                    that.$('#deviceip').parent().show();
-                } else {
-                    that.$('#devicelogin').parent().hide();
-                    that.$('#devicepassword').parent().hide();
-                    that.$('#deviceip').parent().hide();
-                }
             }
 
         },
-
         setPath: function (e) {
             e.preventDefault();
             var that = this;
@@ -110,10 +100,9 @@ define([
                         folder: that.$('#devicefolder').val(),
                         task: that.$('#devicetask').val(),
                         hour: that.$('#devicehour').val(),
-                        login: that.$('#devicelogin').val(),
-                        pwd: that.$('#devicepassword').val(),
-                        ip: that.$('#deviceip').val()
+                        date: that.formatDate(that.$('#devicetime').datepicker('getDate'))
                     }).done(function (data) {
+                        that.options.onRefresh();
                         that.close();
                     }).fail(function (data) {
                         var error = $.parseJSON(data.responseText);
@@ -131,10 +120,6 @@ define([
         onCreate: function () {
             var that = this;
 
-            this.$('#devicelogin').parent().hide();
-            this.$('#devicepassword').parent().hide();
-            this.$('#deviceip').parent().hide();
-
             _.each(this.company.models, function (c) {
                 $('<option />').attr('value', c.get('id'))
                     .text(c.get('name')).appendTo(that.$('#devicecompany'));
@@ -143,6 +128,26 @@ define([
                 $('<option />').attr('value', c.get('id'))
                     .text(c.get('name')).appendTo(that.$('#devicetype'));
             });
+            var in10min = new Date();
+            in10min.setTime(in10min.getTime() + 10 * 60 * 1000);
+            this.$('.nsdatepicker').datepicker({
+                dateFormat: "dd/mm/y",
+                autoSize: true,
+                minDate: 0,
+                onSelect: function () {
+                }
+            }).datepicker('setDate', in10min);
+        },
+        formatDate: function (date) {
+            var d = date;
+            var month = '' + (d.getMonth() + 1);
+            var day = '' + d.getDate();
+            var year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [day, month, year].join('/');
         }
 
     });

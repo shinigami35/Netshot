@@ -2,4 +2,11 @@
     <td><%- nameFile %></td>
     <td><%- humanSize %></td>
     <td><%- created_at %></td>
+    <% if(status === "SUCCESS") { %>
+        <td style="color: green">Success</td>
+        <td><a href="/api/scp/file/<%- id %>">Download</a></td>
+    <% } else { %>
+        <td style="color: red">Error</td>
+        <td></td>
+    <% } %>
 </tr>

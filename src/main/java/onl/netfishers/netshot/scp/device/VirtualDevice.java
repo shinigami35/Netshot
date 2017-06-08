@@ -1,4 +1,4 @@
-package onl.netfishers.netshot.scp;
+package onl.netfishers.netshot.scp.device;
 
 import onl.netfishers.netshot.Netshot;
 import org.slf4j.Logger;
@@ -8,9 +8,11 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.GroupPrincipal;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +30,8 @@ public class VirtualDevice implements Serializable {
      * The logger.
      */
     private static Logger logger = LoggerFactory.getLogger(VirtualDevice.class);
+
+    public static String DEFAULT_FOLDER = "Netshot";
 
 
     /**
@@ -52,18 +56,12 @@ public class VirtualDevice implements Serializable {
 
     private Date hour;
 
-    private String login = null;
-
-    private String password = null;
-
-    private String ip = null;
-
 
     protected VirtualDevice() {
     }
 
     public VirtualDevice(String name, String folder) {
-        this.folder = folder;
+        this.folder = DEFAULT_FOLDER + folder;
         this.name = name;
     }
 
@@ -72,21 +70,51 @@ public class VirtualDevice implements Serializable {
         String firstPath = Netshot.getConfig("netshot.watch.folderListen");
         String tmpPath;
         if (firstPath.charAt(firstPath.length() - 1) == '/')
-            tmpPath = firstPath + folder;
+            tmpPath = firstPath + DEFAULT_FOLDER + '/' + folder;
         else
-            tmpPath = firstPath + '/' + folder;
+            tmpPath = firstPath + '/' + DEFAULT_FOLDER + '/' + folder;
         try {
             Path tmp = Paths.get(tmpPath);
             if (Files.notExists(tmp))
                 Files.createDirectories(tmp);
             else if (Files.exists(tmp) && !Files.isDirectory(tmp))
                 Files.createDirectories(tmp);
+            setPermFolder(tmp);
             return true;
         } catch (IOException e) {
             logger.error("Cannot create those directory : " + tmpPath, e);
         }
         return false;
 
+    }
+
+    public static void setPermFolder(Path p) {
+        String group = Netshot.getConfig("netshot.watch.group");
+
+        Set<PosixFilePermission> perms = new HashSet<>();
+        try {
+            FileSystem fileSystem = p.getFileSystem();
+            UserPrincipalLookupService lookupService = fileSystem.getUserPrincipalLookupService();
+
+
+            //add owners permission
+            perms.add(PosixFilePermission.OWNER_READ);
+            perms.add(PosixFilePermission.OWNER_WRITE);
+            perms.add(PosixFilePermission.OWNER_EXECUTE);
+            //add group permissions
+            perms.add(PosixFilePermission.GROUP_READ);
+            perms.add(PosixFilePermission.GROUP_WRITE);
+            perms.add(PosixFilePermission.GROUP_EXECUTE);
+
+
+            if (group != null && !group.equals("")) {
+                GroupPrincipal groupPrincipal = lookupService.lookupPrincipalByGroupName(group);
+                Files.getFileAttributeView(p, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS).setGroup(groupPrincipal);
+                Files.setPosixFilePermissions(p, perms);
+            }
+        } catch (IOException e) {
+            logger.error("Could not set perms to : " + p.getFileName().toString(), e);
+        }
     }
 
 
@@ -102,7 +130,7 @@ public class VirtualDevice implements Serializable {
     }
 
     @XmlElement
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     public Types getType() {
         return type;
     }
@@ -131,6 +159,7 @@ public class VirtualDevice implements Serializable {
 
     @XmlElement
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "virtual")
+    @OrderBy("created DESC")
     public Set<ScpStepFolder> getFile() {
         return file;
     }
@@ -140,7 +169,7 @@ public class VirtualDevice implements Serializable {
     }
 
     @XmlElement
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     public Company getCompany() {
         return company;
     }
@@ -167,32 +196,6 @@ public class VirtualDevice implements Serializable {
         this.hour = hour;
     }
 
-    @XmlElement
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    @XmlElement
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @XmlElement
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
 
     public enum CRON {
         DAILY,
