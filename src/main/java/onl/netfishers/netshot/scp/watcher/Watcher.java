@@ -135,7 +135,7 @@ public class Watcher extends Thread {
             List listDir = session.createCriteria(VirtualDevice.class).list();
             for (Object o : listDir) {
                 VirtualDevice vd = (VirtualDevice) o;
-                Path p = Paths.get(s  + '/' + vd.getFolder());
+                Path p = Paths.get(s + '/' + vd.getFolder());
                 register(p);
             }
             register(dir);
@@ -154,6 +154,10 @@ public class Watcher extends Thread {
      * Process all events for keys queued to the watcher
      */
     private void processEvents() {
+        String s = Netshot.getConfig("netshot.watch.folderListen");
+        Path dirRoot = Paths.get(s + '/' + DEFAULT_FOLDER);
+        String pathTmp = "";
+        int i = 0;
         while (true) {
 
             WatchKey key;
@@ -186,7 +190,14 @@ public class Watcher extends Thread {
                 if (recursive && (kind == ENTRY_CREATE)) {
                     try {
                         if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
-                            register(child);
+                            String parentChild = child.getParent().toAbsolutePath().toString();
+                            String sdirRoot = dirRoot.toAbsolutePath().toString();
+                            if (parentChild.equals(sdirRoot))
+                                register(child);
+                            else {
+                                pathTmp = parentChild;
+                                i++;
+                            }
                         } else {
                             System.out.println("File is => " + child);
                             while (true) {
@@ -215,7 +226,7 @@ public class Watcher extends Thread {
 
     private void saveEntryScp(Path child) {
         Session session = Database.getSession();
-        Transaction tx;
+        Transaction tx = null;
         try {
             tx = session.beginTransaction();
             List l = session.createCriteria(VirtualDevice.class).list();
@@ -247,6 +258,7 @@ public class Watcher extends Thread {
                 }
             }
         } catch (HibernateException e) {
+            tx.rollback();
             logger.error("Error while save new Scp Entry.", e);
             throw new RestService.NetshotBadRequestException(
                     "Error while save new Scp Entry.",
@@ -312,7 +324,7 @@ public class Watcher extends Thread {
 
     private void getNewInstanceOnReload() {
         Session session = Database.getSession();
-        Transaction tx;
+        Transaction tx = null;
         try {
             tx = session.beginTransaction();
             List virt = session.createCriteria(VirtualDevice.class).list();
@@ -342,6 +354,7 @@ public class Watcher extends Thread {
             }
             tx.commit();
         } catch (HibernateException e) {
+            tx.rollback();
             logger.error("Error access BDD ", e);
         } catch (IOException e) {
             logger.error("Error access file in directory", e);

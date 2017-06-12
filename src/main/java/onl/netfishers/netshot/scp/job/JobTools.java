@@ -132,7 +132,7 @@ public class JobTools {
         cal.add(Calendar.DATE, 1);
         Date newDate = cal.getTime();
 
-        JobDetail jobDaily = JobBuilder.newJob(JobHourly.class)
+        JobDetail jobDaily = JobBuilder.newJob(JobDaily.class)
                 .withIdentity("JobDaily_" + vs.getId(), "Daily_" + vs.getId()).build();
 
         JobDataMap jobDataMap = jobDaily.getJobDataMap();
@@ -165,7 +165,7 @@ public class JobTools {
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         Date newDate = cal.getTime();
 
-        JobDetail jobWeekly = JobBuilder.newJob(JobHourly.class)
+        JobDetail jobWeekly = JobBuilder.newJob(JobWeek.class)
                 .withIdentity("JobWeekly_" + vs.getId(), "Weekly_" + vs.getId()).build();
 
         JobDataMap jobDataMap = jobWeekly.getJobDataMap();

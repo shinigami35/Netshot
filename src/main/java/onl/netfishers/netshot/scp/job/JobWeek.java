@@ -44,48 +44,26 @@ public class JobWeek implements Job {
             if (virtualDevice != null) {
                 List<ScpStepFolder> scp = new ArrayList<>();
                 scp.addAll(virtualDevice.getFile());
+                long diff = 0;
                 if (scp.size() == 0) {
-                    long diff = JobTools.getTimeDiffWeek(d, virtualDevice.getHour());
-                    if (diff > 1) {
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(d);
-                        cal.add(Calendar.WEEK_OF_YEAR, -1);
-                        Date newDate = cal.getTime();
-
-                        ScpStepFolder newScp = generateScp(virtualDevice, newDate);
-
-                        session.save(newScp);
-                        tx.commit();
-                    }
+                    diff = JobTools.getTimeDiffWeek(d, virtualDevice.getHour());
                 } else if (scp.size() == 1) {
                     ScpStepFolder last = scp.get(scp.size() - 1);
-                    long diff = JobTools.getTimeDiffWeek(d, last.getCreated());
-                    if (diff > 1) {
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(last.getCreated());
-                        cal.add(Calendar.WEEK_OF_YEAR, -1);
-                        Date newDate = cal.getTime();
-
-                        ScpStepFolder newScp = generateScp(virtualDevice, newDate);
-
-                        session.save(newScp);
-                        tx.commit();
-                    }
+                    diff = JobTools.getTimeDiffWeek(d, last.getCreated());
                 } else if (scp.size() >= 2) {
                     ScpStepFolder last = scp.get(scp.size() - 1);
-                    ScpStepFolder lastMinusOne = scp.get(scp.size() - 2);
-                    long diff = JobTools.getTimeDiffWeek(parseDate(last.getCreated_at()), parseDate(lastMinusOne.getCreated_at()));
-                    if (diff > 1) {
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(parseDate(last.getCreated_at()));
-                        cal.add(Calendar.WEEK_OF_YEAR, -1);
-                        Date newDate = cal.getTime();
+                    diff = JobTools.getTimeDiffWeek(d, parseDate(last.getCreated_at()));
+                }
+                if (diff > 1) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(d);
+                    cal.add(Calendar.WEEK_OF_YEAR, -1);
+                    Date newDate = cal.getTime();
 
-                        ScpStepFolder newScp = generateScp(virtualDevice, newDate);
+                    ScpStepFolder newScp = generateScp(virtualDevice, newDate);
 
-                        session.save(newScp);
-                        tx.commit();
-                    }
+                    session.save(newScp);
+                    tx.commit();
                 }
             }
         } catch (HibernateException e) {
