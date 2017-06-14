@@ -39,17 +39,23 @@ import java.util.regex.Pattern;
  */
 public class Finder {
 
-    /** The Constant HQLPREFIX. */
+    /**
+     * The Constant HQLPREFIX.
+     */
     private final static String HQLPREFIX = "var";
-    /** The tokens. */
+    /**
+     * The tokens.
+     */
     private List<Token> tokens;
-    /** The expression. */
+    /**
+     * The expression.
+     */
     private Expression expression;
 
     /**
      * Instantiates a new finder.
      *
-     * @param query the query
+     * @param query  the query
      * @param driver the device class
      * @throws FinderParseException the finder parse exception
      */
@@ -130,110 +136,174 @@ public class Finder {
      */
     public static enum TokenType {
 
-        /** The and. */
+        /**
+         * The and.
+         */
         AND("(?i)^\\s*(and)\\b", "AND"),
 
-        /** The or. */
+        /**
+         * The or.
+         */
         OR("(?i)^\\s*(or)\\b", "OR"),
 
-        /** The not. */
+        /**
+         * The not.
+         */
         NOT("(?i)^\\s*(not)\\b", "NOT"),
 
-        /** The is. */
+        /**
+         * The is.
+         */
         IS("(?i)^\\s*(is)\\b", "IS"),
 
-        /** The in. */
+        /**
+         * The in.
+         */
         IN("(?i)^\\s*(in)\\b", "IN"),
 
-        /** The bracketin. */
+        /**
+         * The bracketin.
+         */
         BRACKETIN("^\\s*(\\()", "("),
 
-        /** The bracketout. */
+        /**
+         * The bracketout.
+         */
         BRACKETOUT("^\\s*(\\))", ")"),
 
-        /** The contains. */
+        /**
+         * The contains.
+         */
         CONTAINS("(?i)^\\s*(contains)\\b", "CONTAINS"),
 
-        /** The startswith. */
+        /**
+         * The startswith.
+         */
         STARTSWITH("(?i)^\\s*(startswith)\\b", "STARTSWITH"),
 
-        /** The endswith. */
+        /**
+         * The endswith.
+         */
         ENDSWITH("(?i)^\\s*(endswith)\\b", "ENDSWITH"),
 
-        /** The before. */
+        /**
+         * The before.
+         */
         BEFORE("(?i)^\\s*(before)\\b", "BEFORE"),
 
-        /** The after. */
+        /**
+         * The after.
+         */
         AFTER("(?i)^\\s*(after)\\b", "AFTER"),
 
-        /** The lessthan. */
+        /**
+         * The lessthan.
+         */
         LESSTHAN("(?i)^\\s*(lessthan)\\b", "LESSTHAN"),
 
-        /** The greaterthan. */
+        /**
+         * The greaterthan.
+         */
         GREATERTHAN("(?i)^\\s*(greaterthan)\\b", "GREATERTHAN"),
 
-        /** The ip. */
+        /**
+         * The ip.
+         */
         IP("(?i)^\\s*(\\[ip\\])", "IP"),
 
-        /** The mac. */
+        /**
+         * The mac.
+         */
         MAC("(?i)^\\s*(\\[mac\\])", "MAC"),
 
-        /** The module. */
+        /**
+         * The module.
+         */
         MODULE("(?i)^\\s*(\\[module\\])", "MODULE"),
 
-        /** Interface. */
+        /**
+         * Interface.
+         */
         INTERFACE("(?i)^\\s*(\\[interface\\])", "INTERFACE"),
 
-        /** The module. */
+        /**
+         * The module.
+         */
         VRF("(?i)^\\s*(\\[vrf\\])", "VRF"),
 
-        /** The module. */
+        /**
+         * The module.
+         */
         VIRTUALNAME("(?i)^\\s*(\\[virtual name\\])", "VIRTUAL NAME"),
 
-        /** The device. */
+        /**
+         * The device.
+         */
         DEVICE("(?i)^\\s*(\\[device\\])", "DEVICE"),
 
-        /** The SUBNET v4. */
+        /**
+         * The SUBNET v4.
+         */
         SUBNETV4(
                 "^\\s*(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/(1[0-9]|2[0-9]|3[0-2]|[0-9]))",
                 ""),
 
-        /** The IP v4. */
+        /**
+         * The IP v4.
+         */
         IPV4(
                 "^\\s*(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))",
                 ""),
 
-        /** The SUBNET v6. */
+        /**
+         * The SUBNET v6.
+         */
         SUBNETV6(
                 "^\\s*(((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(([0-9A-Fa-f]{1,4}:){0,5}:((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(::([0-9A-Fa-f]{1,4}:){0,5}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))/(1[01][0-9]|12[0-8]|[0-9][0-9]|[0-9]))",
                 ""),
 
-        /** The IP v6. */
+        /**
+         * The IP v6.
+         */
         IPV6(
                 "^\\s*((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(([0-9A-Fa-f]{1,4}:){0,5}:((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(::([0-9A-Fa-f]{1,4}:){0,5}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))",
                 ""),
 
-        /** The macsubnet. */
+        /**
+         * The macsubnet.
+         */
         MACSUBNET(
                 "^\\s*([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}/(4[0-8]|[1-3][0-9]|[0-9]))",
                 ""),
 
-        /** The macaddress. */
+        /**
+         * The macaddress.
+         */
         MACADDRESS("^\\s*([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})", ""),
 
-        /** The quote. */
+        /**
+         * The quote.
+         */
         QUOTE("^\\s*\"(.*?)(?<!\\\\)\"", ""),
 
-        /** The numeric. */
+        /**
+         * The numeric.
+         */
         NUMERIC("^\\s*([0-9\\.]+)\\b", ""),
 
-        /** The item. */
+        /**
+         * The item.
+         */
         ITEM("^\\s*\\[([A-Za-z\\-0-9 \\(\\)]+)\\]", "");
 
-        /** The pattern. */
+        /**
+         * The pattern.
+         */
         private Pattern pattern;
 
-        /** The command. */
+        /**
+         * The command.
+         */
         private String command;
 
         /**
@@ -280,24 +350,32 @@ public class Finder {
      */
     public static class Token {
 
-        /** The position. */
+        /**
+         * The position.
+         */
         public int position;
 
-        /** The text. */
+        /**
+         * The text.
+         */
         public String text;
 
-        /** The type. */
+        /**
+         * The type.
+         */
         public TokenType type;
 
-        /** The expression. */
+        /**
+         * The expression.
+         */
         public Expression expression = null;
 
         /**
          * Instantiates a new token.
          *
-         * @param text the text
+         * @param text     the text
          * @param position the position
-         * @param type the type
+         * @param type     the type
          */
         public Token(String text, int position, TokenType type) {
             this.position = position;
@@ -311,7 +389,9 @@ public class Finder {
      */
     public static abstract class Expression {
 
-        /** The device class. */
+        /**
+         * The device class.
+         */
         protected DeviceDriver driver;
 
         /**
@@ -493,7 +573,7 @@ public class Finder {
         /**
          * Sets the variables.
          *
-         * @param query the query
+         * @param query      the query
          * @param itemPrefix the item prefix
          */
         public void setVariables(Query query, String itemPrefix) {
@@ -507,7 +587,9 @@ public class Finder {
          */
         public static class FinderParseException extends Exception {
 
-            /** The Constant serialVersionUID. */
+            /**
+             * The Constant serialVersionUID.
+             */
             private static final long serialVersionUID = -4102690686882816860L;
 
             /**
@@ -528,7 +610,9 @@ public class Finder {
      */
     public static class NotOperator extends Expression {
 
-        /** The child. */
+        /**
+         * The child.
+         */
         public Expression child;
 
         /**
@@ -605,7 +689,9 @@ public class Finder {
      */
     public static class AndOperator extends Expression {
 
-        /** The children. */
+        /**
+         * The children.
+         */
         public List<Expression> children = new ArrayList<Expression>();
 
         /**
@@ -711,7 +797,9 @@ public class Finder {
      */
     public static class OrOperator extends Expression {
 
-        /** The children. */
+        /**
+         * The children.
+         */
         public List<Expression> children = new ArrayList<Expression>();
 
         /**
@@ -816,9 +904,13 @@ public class Finder {
      */
     public static class ModuleExpression extends Expression {
 
-        /** The sign. */
+        /**
+         * The sign.
+         */
         public TokenType sign;
-        /** The value. */
+        /**
+         * The value.
+         */
         private String value;
 
         /**
@@ -917,9 +1009,13 @@ public class Finder {
      */
     public static class InterfaceExpression extends Expression {
 
-        /** The sign. */
+        /**
+         * The sign.
+         */
         public TokenType sign;
-        /** The value. */
+        /**
+         * The value.
+         */
         private String value;
 
         /**
@@ -1018,7 +1114,9 @@ public class Finder {
      */
     public static class DeviceExpression extends Expression {
 
-        /** The value. */
+        /**
+         * The value.
+         */
         private Long value;
 
         /**
@@ -1134,11 +1232,17 @@ public class Finder {
      */
     public static class MacExpression extends Expression {
 
-        /** The sign. */
+        /**
+         * The sign.
+         */
         public TokenType sign;
-        /** The target. */
+        /**
+         * The target.
+         */
         public PhysicalAddress target;
-        /** The prefix length. */
+        /**
+         * The prefix length.
+         */
         public int prefixLength;
 
         /**
@@ -1259,11 +1363,17 @@ public class Finder {
      */
     public static class Ipv4Expression extends Expression {
 
-        /** The sign. */
+        /**
+         * The sign.
+         */
         public TokenType sign;
-        /** The with mask. */
+        /**
+         * The with mask.
+         */
         public boolean withMask;
-        /** The target. */
+        /**
+         * The target.
+         */
         public Network4Address target;
 
         /**
@@ -1411,11 +1521,17 @@ public class Finder {
      */
     public static class Ipv6Expression extends Expression {
 
-        /** The sign. */
+        /**
+         * The sign.
+         */
         public TokenType sign;
-        /** The with mask. */
+        /**
+         * The with mask.
+         */
         public boolean withMask;
-        /** The target. */
+        /**
+         * The target.
+         */
         public Network6Address target;
 
         /**
@@ -1565,21 +1681,29 @@ public class Finder {
      */
     public abstract static class AttributeExpression extends Expression {
 
-        /** The item. */
+        /**
+         * The item.
+         */
         public String item;
-        /** The sign. */
+        /**
+         * The sign.
+         */
         public TokenType sign;
-        /** The property level. */
+        /**
+         * The property level.
+         */
         public PropertyLevel propertyLevel;
-        /** The property. */
+        /**
+         * The property.
+         */
         private String property;
 
         /**
          * Instantiates a new config item expression.
          *
-         * @param driver the device class
-         * @param item the item
-         * @param property the property
+         * @param driver        the device class
+         * @param item          the item
+         * @param property      the property
          * @param propertyLevel the property level
          */
         public AttributeExpression(DeviceDriver driver,
@@ -1692,7 +1816,9 @@ public class Finder {
             DEVICEATTRIBUTE("da.", false),
             CONFIGATTRIBUTE("ca.", false);
 
-            /** The prefix. */
+            /**
+             * The prefix.
+             */
             private String prefix;
             private boolean nativeProperty;
 
@@ -1714,15 +1840,17 @@ public class Finder {
      */
     public static class NumericAttributeExpression extends AttributeExpression {
 
-        /** The value. */
+        /**
+         * The value.
+         */
         private Double value;
 
         /**
          * Instantiates a new numeric config item expression.
          *
-         * @param driver the device class
-         * @param item the item
-         * @param property the property
+         * @param driver        the device class
+         * @param item          the item
+         * @param property      the property
          * @param propertyLevel the property level
          */
         public NumericAttributeExpression(DeviceDriver driver,
@@ -1826,15 +1954,17 @@ public class Finder {
      */
     public static class EnumAttributeExpression extends AttributeExpression {
 
-        /** The value. */
+        /**
+         * The value.
+         */
         private Object value;
 
         /**
          * Instantiates a new enum config item expression.
          *
-         * @param driver the device class
-         * @param item the item
-         * @param property the property
+         * @param driver        the device class
+         * @param item          the item
+         * @param property      the property
          * @param propertyLevel the property level
          */
         public EnumAttributeExpression(DeviceDriver driver,
@@ -1924,7 +2054,9 @@ public class Finder {
      */
     public static class TextAttributeExpression extends AttributeExpression {
 
-        /** The value. */
+        /**
+         * The value.
+         */
         private String value;
 
         private boolean longText = false;
@@ -1932,9 +2064,9 @@ public class Finder {
         /**
          * Instantiates a new text config item expression.
          *
-         * @param driver the device class
-         * @param item the item
-         * @param property the property
+         * @param driver        the device class
+         * @param item          the item
+         * @param property      the property
          * @param propertyLevel the property level
          */
         public TextAttributeExpression(DeviceDriver driver,
@@ -2053,11 +2185,15 @@ public class Finder {
      */
     public static class DateAttributeExpression extends AttributeExpression {
 
-        /** The Constant WITHTIME. */
+        /**
+         * The Constant WITHTIME.
+         */
         final private static DateFormat WITHTIME = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm");
 
-        /** The Constant WITHOUTTIME. */
+        /**
+         * The Constant WITHOUTTIME.
+         */
         final private static DateFormat WITHOUTTIME = new SimpleDateFormat(
                 "yyyy-MM-dd");
 
@@ -2066,17 +2202,21 @@ public class Finder {
             WITHOUTTIME.setLenient(false);
         }
 
-        /** The value. */
+        /**
+         * The value.
+         */
         private Date value;
-        /** The format. */
+        /**
+         * The format.
+         */
         private DateFormat format = WITHTIME;
 
         /**
          * Instantiates a new date config item expression.
          *
-         * @param driver the device class
-         * @param item the item
-         * @param property the property
+         * @param driver        the device class
+         * @param item          the item
+         * @param property      the property
          * @param propertyLevel the property level
          */
         public DateAttributeExpression(DeviceDriver driver,
@@ -2217,9 +2357,9 @@ public class Finder {
         /**
          * Instantiates a new binary config item expression.
          *
-         * @param driver the device class
-         * @param item the item
-         * @param property the property
+         * @param driver        the device class
+         * @param item          the item
+         * @param property      the property
          * @param propertyLevel the property level
          */
         public BinaryAttributeExpression(DeviceDriver driver,
@@ -2296,16 +2436,24 @@ public class Finder {
      */
     private static class FinderCriteria {
 
-        /** The where filter. */
+        /**
+         * The where filter.
+         */
         public String where = "1 = 1";
 
-        /** The HQL additional tables to join. */
+        /**
+         * The HQL additional tables to join.
+         */
         public Set<String> joins = new TreeSet<String>();
 
-        /** The tables (other than the main device) to fetch from */
+        /**
+         * The tables (other than the main device) to fetch from
+         */
         public Set<String> otherTables = new TreeSet<String>();
 
-        /** The where clauses to prepend to join other tables to the device one */
+        /**
+         * The where clauses to prepend to join other tables to the device one
+         */
         public Set<String> whereJoins = new TreeSet<String>();
     }
 
@@ -2315,9 +2463,13 @@ public class Finder {
     public static class VrfExpression extends Expression {
 
 
-        /** The sign. */
+        /**
+         * The sign.
+         */
         public TokenType sign;
-        /** The value. */
+        /**
+         * The value.
+         */
         private String value;
 
         public VrfExpression(DeviceDriver driver) {
@@ -2409,9 +2561,13 @@ public class Finder {
     public static class VirtualNameExpression extends Expression {
 
 
-        /** The sign. */
+        /**
+         * The sign.
+         */
         public TokenType sign;
-        /** The value. */
+        /**
+         * The value.
+         */
         private String value;
 
         public VirtualNameExpression(DeviceDriver driver) {

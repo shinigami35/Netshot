@@ -39,10 +39,10 @@ public class DeviceTelnetAccount extends DeviceCliAccount {
     /**
      * Instantiates a new device telnet account.
      *
-     * @param username the username
-     * @param password the password
+     * @param username      the username
+     * @param password      the password
      * @param superPassword the super password
-     * @param name the name
+     * @param name          the name
      */
     public DeviceTelnetAccount(String username, String password,
                                String superPassword, String name) {

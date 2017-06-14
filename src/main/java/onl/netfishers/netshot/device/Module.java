@@ -35,15 +35,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class Module {
 
-    /** The slot. */
+    /**
+     * The slot.
+     */
     protected String slot;
-    /** The part number. */
+    /**
+     * The part number.
+     */
     protected String partNumber;
-    /** The serial number. */
+    /**
+     * The serial number.
+     */
     protected String serialNumber;
-    /** The device. */
+    /**
+     * The device.
+     */
     protected Device device;
-    /** The id. */
+    /**
+     * The id.
+     */
     private long id;
 
 

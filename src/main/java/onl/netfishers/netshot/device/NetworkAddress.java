@@ -40,7 +40,7 @@ public abstract class NetworkAddress {
     /**
      * Gets the network address.
      *
-     * @param inetAddress the inet address
+     * @param inetAddress  the inet address
      * @param prefixLength the prefix length
      * @return the network address
      */
@@ -55,7 +55,7 @@ public abstract class NetworkAddress {
     /**
      * Gets the network address.
      *
-     * @param address the address
+     * @param address      the address
      * @param prefixLength the prefix length
      * @return the network address
      * @throws UnknownHostException the unknown host exception

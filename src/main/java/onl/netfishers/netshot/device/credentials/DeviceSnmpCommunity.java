@@ -28,7 +28,9 @@ import javax.xml.bind.annotation.XmlElement;
 @Entity
 public abstract class DeviceSnmpCommunity extends DeviceCredentialSet {
 
-    /** The community. */
+    /**
+     * The community.
+     */
     private String community;
 
     /**
@@ -42,7 +44,7 @@ public abstract class DeviceSnmpCommunity extends DeviceCredentialSet {
      * Instantiates a new device snmp community.
      *
      * @param community the community
-     * @param name the name
+     * @param name      the name
      */
     public DeviceSnmpCommunity(String community, String name) {
         super(name);

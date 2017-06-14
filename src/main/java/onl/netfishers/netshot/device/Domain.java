@@ -37,27 +37,41 @@ import java.util.Set;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class Domain {
 
-    /** The id. */
+    /**
+     * The id.
+     */
     private long id;
 
-    /** The change date. */
+    /**
+     * The change date.
+     */
     private Date changeDate;
 
     private int version;
 
-    /** The name. */
+    /**
+     * The name.
+     */
     private String name;
 
-    /** The description. */
+    /**
+     * The description.
+     */
     private String description;
 
-    /** The domain credential sets/. */
+    /**
+     * The domain credential sets/.
+     */
     private Set<DeviceCredentialSet> credentialSets = new HashSet<DeviceCredentialSet>();
 
-    /** The server4 address. */
+    /**
+     * The server4 address.
+     */
     private Network4Address server4Address;
 
-    /** The server6 address. */
+    /**
+     * The server6 address.
+     */
     private Network6Address server6Address;
     private Set<DiscoverDeviceTypeTask> discoverDeviceTypeTasks;
     private Set<ScanSubnetsTask> scanSubnetsTasks;
@@ -72,14 +86,10 @@ public class Domain {
     /**
      * Instantiates a new domain.
      *
-     * @param name
-     *          the name
-     * @param description
-     *          the description
-     * @param server4Address
-     *          the server4 address
-     * @param server6Address
-     *          the server6 address
+     * @param name           the name
+     * @param description    the description
+     * @param server4Address the server4 address
+     * @param server6Address the server6 address
      */
     public Domain(String name, String description,
                   Network4Address server4Address, Network6Address server6Address) {
@@ -119,8 +129,7 @@ public class Domain {
     /**
      * Sets the name.
      *
-     * @param name
-     *          the new name
+     * @param name the new name
      */
     public void setName(String name) {
         this.name = name;
@@ -139,8 +148,7 @@ public class Domain {
     /**
      * Sets the description.
      *
-     * @param description
-     *          the new description
+     * @param description the new description
      */
     public void setDescription(String description) {
         this.description = description;
@@ -163,8 +171,7 @@ public class Domain {
     /**
      * Sets the server4 address.
      *
-     * @param server4Address
-     *          the new server4 address
+     * @param server4Address the new server4 address
      */
     public void setServer4Address(Network4Address server4Address) {
         this.server4Address = server4Address;
@@ -187,8 +194,7 @@ public class Domain {
     /**
      * Sets the server6 address.
      *
-     * @param server6Address
-     *          the new server6 address
+     * @param server6Address the new server6 address
      */
     public void setServer6Address(Network6Address server6Address) {
         this.server6Address = server6Address;
@@ -247,8 +253,7 @@ public class Domain {
     /**
      * Sets the credential sets.
      *
-     * @param credentialSets
-     *          the new credential sets
+     * @param credentialSets the new credential sets
      */
     public void setCredentialSets(Set<DeviceCredentialSet> credentialSets) {
         this.credentialSets = credentialSets;

@@ -1,18 +1,18 @@
 /**
  * Copyright 2013-2016 Sylvain Cadilhac (NetFishers)
- * 
+ * <p>
  * This file is part of Netshot.
- * 
+ * <p>
  * Netshot is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * Netshot is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Netshot.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,7 +24,7 @@ import onl.netfishers.netshot.work.Task;
  * The Class Traceroute4Task.
  */
 public class Traceroute4Task extends Task {
-	/*
+    /*
 	public static class IPv4Packet {
 		private Network4Address sourceAddress;
 		private Network4Address destinationAddress;
@@ -63,21 +63,21 @@ public class Traceroute4Task extends Task {
 	}*/
 
 
-	/* (non-Javadoc)
-	 * @see onl.netfishers.netshot.work.Task#getTaskDescription()
-	 */
-	@Override
-	public String getTaskDescription() {
-		return "Traceroute task";
-	}
+    /* (non-Javadoc)
+     * @see onl.netfishers.netshot.work.Task#getTaskDescription()
+     */
+    @Override
+    public String getTaskDescription() {
+        return "Traceroute task";
+    }
 
-	/* (non-Javadoc)
-	 * @see onl.netfishers.netshot.work.Task#run()
-	 */
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
+    /* (non-Javadoc)
+     * @see onl.netfishers.netshot.work.Task#run()
+     */
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

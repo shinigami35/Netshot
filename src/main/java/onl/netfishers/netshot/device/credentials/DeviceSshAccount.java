@@ -39,10 +39,10 @@ public class DeviceSshAccount extends DeviceCliAccount {
     /**
      * Instantiates a new device ssh account.
      *
-     * @param username the username
-     * @param password the password
+     * @param username      the username
+     * @param password      the password
      * @param superPassword the super password
-     * @param name the name
+     * @param name          the name
      */
     public DeviceSshAccount(String username, String password,
                             String superPassword, String name) {

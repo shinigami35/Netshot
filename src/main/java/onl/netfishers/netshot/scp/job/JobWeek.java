@@ -58,6 +58,7 @@ public class JobWeek implements Job {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(d);
                     cal.add(Calendar.WEEK_OF_YEAR, -1);
+                    cal.add(Calendar.DATE, -1);
                     Date newDate = cal.getTime();
 
                     ScpStepFolder newScp = generateScp(virtualDevice, newDate);

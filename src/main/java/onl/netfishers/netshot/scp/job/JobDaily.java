@@ -75,8 +75,6 @@ public class JobDaily implements Job {
     }
 
 
-
-
     private Date parseDate(String s) {
         try {
             SimpleDateFormat timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);

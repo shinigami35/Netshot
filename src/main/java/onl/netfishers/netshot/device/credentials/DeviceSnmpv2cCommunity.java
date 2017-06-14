@@ -40,7 +40,7 @@ public class DeviceSnmpv2cCommunity extends DeviceSnmpCommunity {
      * Instantiates a new device snmpv2c community.
      *
      * @param community the community
-     * @param name the name
+     * @param name      the name
      */
     public DeviceSnmpv2cCommunity(String community, String name) {
         super(community, name);

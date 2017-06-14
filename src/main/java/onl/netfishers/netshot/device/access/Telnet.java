@@ -29,10 +29,14 @@ import java.io.PrintStream;
  */
 public class Telnet extends Cli {
 
-    /** The port. */
+    /**
+     * The port.
+     */
     private int port = 23;
 
-    /** The telnet. */
+    /**
+     * The telnet.
+     */
     private TelnetClient telnet = null;
 
     /**

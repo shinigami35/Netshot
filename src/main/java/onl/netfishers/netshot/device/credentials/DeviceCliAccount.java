@@ -29,13 +29,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public abstract class DeviceCliAccount extends DeviceCredentialSet {
 
-    /** The username. */
+    /**
+     * The username.
+     */
     private String username;
 
-    /** The password. */
+    /**
+     * The password.
+     */
     private String password;
 
-    /** The super password. */
+    /**
+     * The super password.
+     */
     private String superPassword;
 
     /**
@@ -48,10 +54,10 @@ public abstract class DeviceCliAccount extends DeviceCredentialSet {
     /**
      * Instantiates a new device cli account.
      *
-     * @param username the username
-     * @param password the password
+     * @param username      the username
+     * @param password      the password
      * @param superPassword the super password
-     * @param name the name
+     * @param name          the name
      */
     public DeviceCliAccount(String username, String password,
                             String superPassword, String name) {

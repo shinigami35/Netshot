@@ -35,11 +35,17 @@ import java.nio.ByteBuffer;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class Network6Address extends NetworkAddress {
 
-    /** The address1. */
+    /**
+     * The address1.
+     */
     private long address1;
-    /** The address2. */
+    /**
+     * The address2.
+     */
     private long address2;
-    /** The prefix length. */
+    /**
+     * The prefix length.
+     */
     private int prefixLength;
     private AddressUsage addressUsage = AddressUsage.PRIMARY;
 
@@ -53,7 +59,7 @@ public class Network6Address extends NetworkAddress {
     /**
      * Instantiates a new network6 address.
      *
-     * @param address the address
+     * @param address      the address
      * @param prefixLength the prefix length
      */
     public Network6Address(Inet6Address address, int prefixLength) {
@@ -76,7 +82,7 @@ public class Network6Address extends NetworkAddress {
     /**
      * Instantiates a new network6 address.
      *
-     * @param address the address
+     * @param address      the address
      * @param prefixLength the prefix length
      * @throws UnknownHostException the unknown host exception
      */
@@ -100,7 +106,7 @@ public class Network6Address extends NetworkAddress {
      * Instantiates a new network6 address.
      *
      * @param address the address
-     * @param length the length
+     * @param length  the length
      * @throws UnknownHostException the unknown host exception
      */
     public Network6Address(String address, String length) throws UnknownHostException {

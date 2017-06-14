@@ -35,9 +35,13 @@ import java.nio.ByteBuffer;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class Network4Address extends NetworkAddress {
 
-    /** The address. */
+    /**
+     * The address.
+     */
     private int address = 0;
-    /** The prefix length. */
+    /**
+     * The prefix length.
+     */
     private int prefixLength = 0;
     private AddressUsage addressUsage = AddressUsage.PRIMARY;
 
@@ -50,12 +54,9 @@ public class Network4Address extends NetworkAddress {
     /**
      * Instantiates a new network4 address.
      *
-     * @param address
-     *          the address
-     * @param prefixLength
-     *          the prefix length
-     * @throws UnknownHostException
-     *           the unknown host exception
+     * @param address      the address
+     * @param prefixLength the prefix length
+     * @throws UnknownHostException the unknown host exception
      */
     public Network4Address(Inet4Address address, int prefixLength)
             throws UnknownHostException {
@@ -69,10 +70,8 @@ public class Network4Address extends NetworkAddress {
     /**
      * Instantiates a new network4 address.
      *
-     * @param address
-     *          the address
-     * @throws UnknownHostException
-     *           the unknown host exception
+     * @param address the address
+     * @throws UnknownHostException the unknown host exception
      */
     public Network4Address(String address) throws UnknownHostException {
         this(address, 0);
@@ -81,12 +80,9 @@ public class Network4Address extends NetworkAddress {
     /**
      * Instantiates a new network4 address.
      *
-     * @param address
-     *          the address
-     * @param prefixLength
-     *          the prefix length
-     * @throws UnknownHostException
-     *           the unknown host exception
+     * @param address      the address
+     * @param prefixLength the prefix length
+     * @throws UnknownHostException the unknown host exception
      */
     public Network4Address(int address, int prefixLength)
             throws UnknownHostException {
@@ -101,12 +97,9 @@ public class Network4Address extends NetworkAddress {
     /**
      * Instantiates a new network4 address.
      *
-     * @param address
-     *          the address
-     * @param prefixLength
-     *          the prefix length
-     * @throws UnknownHostException
-     *           the unknown host exception
+     * @param address      the address
+     * @param prefixLength the prefix length
+     * @throws UnknownHostException the unknown host exception
      */
     public Network4Address(String address, int prefixLength)
             throws UnknownHostException {
@@ -120,12 +113,9 @@ public class Network4Address extends NetworkAddress {
     /**
      * Instantiates a new network4 address.
      *
-     * @param address
-     *          the address
-     * @param mask
-     *          the mask
-     * @throws UnknownHostException
-     *           the unknown host exception
+     * @param address the address
+     * @param mask    the mask
+     * @throws UnknownHostException the unknown host exception
      */
     public Network4Address(String address, String mask)
             throws UnknownHostException {
@@ -136,11 +126,9 @@ public class Network4Address extends NetworkAddress {
     /**
      * Dotted mask to prefix length.
      *
-     * @param mask
-     *          the mask
+     * @param mask the mask
      * @return the int
-     * @throws UnknownHostException
-     *           the unknown host exception
+     * @throws UnknownHostException the unknown host exception
      */
     public static int dottedMaskToPrefixLength(String mask)
             throws UnknownHostException {
@@ -152,8 +140,7 @@ public class Network4Address extends NetworkAddress {
     /**
      * Inet address to int.
      *
-     * @param address
-     *          the address
+     * @param address the address
      * @return the int
      */
     public static int inetAddressToInt(Inet4Address address) {
@@ -164,11 +151,9 @@ public class Network4Address extends NetworkAddress {
     /**
      * Int to inet address.
      *
-     * @param address
-     *          the address
+     * @param address the address
      * @return the inet address
-     * @throws UnknownHostException
-     *           the unknown host exception
+     * @throws UnknownHostException the unknown host exception
      */
     public static InetAddress intToInetAddress(int address)
             throws UnknownHostException {
@@ -180,8 +165,7 @@ public class Network4Address extends NetworkAddress {
     /**
      * Int to ip.
      *
-     * @param address
-     *          the address
+     * @param address the address
      * @return the string
      */
     public static String intToIP(int address) {
@@ -195,11 +179,9 @@ public class Network4Address extends NetworkAddress {
     /**
      * Ip to int.
      *
-     * @param address
-     *          the address
+     * @param address the address
      * @return the int
-     * @throws UnknownHostException
-     *           the unknown host exception
+     * @throws UnknownHostException the unknown host exception
      */
     public static int ipToInt(String address) throws UnknownHostException {
         try {
@@ -215,8 +197,7 @@ public class Network4Address extends NetworkAddress {
     /**
      * Prefix length to dotted mask.
      *
-     * @param length
-     *          the length
+     * @param length the length
      * @return the string
      */
     public static String prefixLengthToDottedMask(int length) {
@@ -227,8 +208,7 @@ public class Network4Address extends NetworkAddress {
     /**
      * Prefix length to int address.
      *
-     * @param length
-     *          the length
+     * @param length the length
      * @return the int
      */
     public static int prefixLengthToIntAddress(int length) {
@@ -271,8 +251,7 @@ public class Network4Address extends NetworkAddress {
     /**
      * Sets the address.
      *
-     * @param address
-     *          the new address
+     * @param address the new address
      */
     public void setAddress(int address) {
         this.address = address;
@@ -337,8 +316,7 @@ public class Network4Address extends NetworkAddress {
     /**
      * Sets the prefix length.
      *
-     * @param prefixLength
-     *          the new prefix length
+     * @param prefixLength the new prefix length
      */
     public void setPrefixLength(int prefixLength) {
         this.prefixLength = prefixLength;
@@ -434,8 +412,7 @@ public class Network4Address extends NetworkAddress {
     /**
      * Determines whether a subnet contains another IP or not.
      *
-     * @param otherAddress
-     *          the IP to check
+     * @param otherAddress the IP to check
      * @return true if the IP is contained within the current subnet
      */
     public boolean contains(Network4Address otherAddress) {

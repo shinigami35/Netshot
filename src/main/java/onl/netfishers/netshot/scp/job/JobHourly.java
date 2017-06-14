@@ -59,6 +59,7 @@ public class JobHourly implements Job {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(d);
                     cal.add(Calendar.HOUR_OF_DAY, -1);
+                    cal.add(Calendar.MINUTE, -30);
                     Date newDate = cal.getTime();
 
                     ScpStepFolder newScp = generateScp(virtualDevice, newDate);

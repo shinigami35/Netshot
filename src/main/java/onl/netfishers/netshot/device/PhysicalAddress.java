@@ -30,7 +30,9 @@ import java.util.regex.Pattern;
 @Embeddable
 public class PhysicalAddress {
 
-    /** The address. */
+    /**
+     * The address.
+     */
     @Column(name = "physicalAddress")
     private long address;
 

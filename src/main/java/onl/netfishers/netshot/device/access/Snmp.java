@@ -38,19 +38,25 @@ import java.io.IOException;
  */
 public class Snmp extends Poller {
 
-    /** The port. */
+    /**
+     * The port.
+     */
     private static int PORT = 161;
-    /** The snmp. */
+    /**
+     * The snmp.
+     */
     private org.snmp4j.Snmp snmp;
-    /** The target. */
+    /**
+     * The target.
+     */
     private Target target;
 
     /**
      * Instantiates a new snmp.
      *
-     * @param address the address
+     * @param address   the address
      * @param community the community
-     * @param v1 the v1
+     * @param v1        the v1
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public Snmp(NetworkAddress address, String community, boolean v1) throws IOException {
@@ -62,7 +68,7 @@ public class Snmp extends Poller {
     /**
      * Instantiates a new snmp.
      *
-     * @param address the address
+     * @param address   the address
      * @param community the community
      * @throws IOException Signals that an I/O exception has occurred.
      */
@@ -73,7 +79,7 @@ public class Snmp extends Poller {
     /**
      * Instantiates a new snmp.
      *
-     * @param address the address
+     * @param address  the address
      * @param username the username
      * @param password the password
      */

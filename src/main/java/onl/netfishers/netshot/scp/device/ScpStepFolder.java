@@ -14,30 +14,17 @@ import java.util.Date;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class ScpStepFolder implements Serializable {
 
-    public enum TaskStatus {
-        SUCCESS,
-        FAILED
-    }
-
     protected long id;
-
-    private String created_at = null;
-
-    private String nameFile = "";
-
     protected long size;
-
     protected VirtualDevice virtual = null;
-
+    private String created_at = null;
+    private String nameFile = "";
     private TaskStatus status;
-
     private String humanSize;
-
     private Date created;
 
     public ScpStepFolder() {
     }
-
 
     @Id
     @GeneratedValue
@@ -86,7 +73,6 @@ public class ScpStepFolder implements Serializable {
         this.size = size;
     }
 
-
     @XmlElement
     public String getHumanSize() {
         return humanSize;
@@ -112,5 +98,10 @@ public class ScpStepFolder implements Serializable {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public enum TaskStatus {
+        SUCCESS,
+        FAILED
     }
 }

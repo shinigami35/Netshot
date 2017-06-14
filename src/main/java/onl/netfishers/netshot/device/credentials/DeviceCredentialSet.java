@@ -45,13 +45,21 @@ import java.util.Date;
 })
 public class DeviceCredentialSet {
 
-    /** The change date. */
+    /**
+     * The change date.
+     */
     protected Date changeDate;
-    /** The id. */
+    /**
+     * The id.
+     */
     protected long id;
-    /** The name. */
+    /**
+     * The name.
+     */
     protected String name;
-    /** The mgmtDomain. */
+    /**
+     * The mgmtDomain.
+     */
     protected Domain mgmtDomain;
     private int version;
 

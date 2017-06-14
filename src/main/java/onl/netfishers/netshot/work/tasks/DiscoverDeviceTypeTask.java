@@ -18,42 +18,27 @@
  */
 package onl.netfishers.netshot.work.tasks;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlElement;
-
 import onl.netfishers.netshot.Database;
 import onl.netfishers.netshot.TaskManager;
-import onl.netfishers.netshot.device.Device;
-import onl.netfishers.netshot.device.DeviceDriver;
-import onl.netfishers.netshot.device.Domain;
-import onl.netfishers.netshot.device.DynamicDeviceGroup;
-import onl.netfishers.netshot.device.Network4Address;
+import onl.netfishers.netshot.device.*;
 import onl.netfishers.netshot.device.access.Snmp;
 import onl.netfishers.netshot.device.credentials.DeviceCredentialSet;
 import onl.netfishers.netshot.device.credentials.DeviceSnmpCommunity;
 import onl.netfishers.netshot.device.credentials.DeviceSnmpv1Community;
 import onl.netfishers.netshot.device.credentials.DeviceSnmpv2cCommunity;
 import onl.netfishers.netshot.work.Task;
-
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This task discovers the type of the given device.
@@ -165,6 +150,15 @@ public class DiscoverDeviceTypeTask extends Task {
         return successCredentialSet;
     }
 
+    /**
+     * Sets the success credential set.
+     *
+     * @param successCredentialSet the new success credential set
+     */
+    protected void setSuccessCredentialSet(
+            DeviceCredentialSet successCredentialSet) {
+        this.successCredentialSet = successCredentialSet;
+    }
 
     private boolean snmpDiscover(Snmp poller) {
         logger.debug("Trying SNMP discovery.");
@@ -405,6 +399,15 @@ public class DiscoverDeviceTypeTask extends Task {
         return deviceAddress;
     }
 
+    /**
+     * Sets the device address.
+     *
+     * @param deviceAddress the new device address
+     */
+    protected void setDeviceAddress(Network4Address deviceAddress) {
+        this.deviceAddress = deviceAddress;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -428,6 +431,15 @@ public class DiscoverDeviceTypeTask extends Task {
     }
 
     /**
+     * Sets the device id.
+     *
+     * @param deviceId the new device id
+     */
+    protected void setDeviceId(long deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    /**
      * Gets the snapshot task id.
      *
      * @return the snapshot task id
@@ -435,6 +447,15 @@ public class DiscoverDeviceTypeTask extends Task {
     @XmlElement
     public long getSnapshotTaskId() {
         return snapshotTaskId;
+    }
+
+    /**
+     * Sets the snapshot task id.
+     *
+     * @param snapshotTaskId the new snapshot task id
+     */
+    protected void setSnapshotTaskId(long snapshotTaskId) {
+        this.snapshotTaskId = snapshotTaskId;
     }
 
     /**
@@ -454,44 +475,6 @@ public class DiscoverDeviceTypeTask extends Task {
      */
     protected void setCredentialSets(Set<DeviceCredentialSet> credentialSets) {
         this.credentialSets = credentialSets;
-    }
-
-    /**
-     * Sets the device address.
-     *
-     * @param deviceAddress the new device address
-     */
-    protected void setDeviceAddress(Network4Address deviceAddress) {
-        this.deviceAddress = deviceAddress;
-    }
-
-    /**
-     * Sets the success credential set.
-     *
-     * @param successCredentialSet the new success credential set
-     */
-    protected void setSuccessCredentialSet(
-            DeviceCredentialSet successCredentialSet) {
-        this.successCredentialSet = successCredentialSet;
-    }
-
-
-    /**
-     * Sets the device id.
-     *
-     * @param deviceId the new device id
-     */
-    protected void setDeviceId(long deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    /**
-     * Sets the snapshot task id.
-     *
-     * @param snapshotTaskId the new snapshot task id
-     */
-    protected void setSnapshotTaskId(long snapshotTaskId) {
-        this.snapshotTaskId = snapshotTaskId;
     }
 
 }

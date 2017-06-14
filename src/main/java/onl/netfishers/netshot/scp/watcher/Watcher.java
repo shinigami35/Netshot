@@ -47,6 +47,7 @@ public class Watcher extends Thread {
         super("Watcher");
     }
 
+
     private boolean createDestDirectory(String destPath) {
         Path dest = Paths.get(destPath);
         try {

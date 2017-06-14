@@ -30,8 +30,12 @@ import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 import onl.netfishers.netshot.collector.SnmpTrapReceiver;
 import onl.netfishers.netshot.collector.SyslogServer;
 import onl.netfishers.netshot.device.DeviceDriver;
-import onl.netfishers.netshot.scp.watcher.Watcher;
+import onl.netfishers.netshot.scp.device.Types;
 import onl.netfishers.netshot.scp.job.JobScheduler;
+import onl.netfishers.netshot.scp.watcher.Watcher;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
@@ -40,6 +44,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -331,11 +336,41 @@ public class Netshot extends Thread {
             logger.info("Launch Trigger SCPTask function");
             JobScheduler.init();
 
+            InitSupportSCP();
+
         } catch (Exception e) {
             System.err.println("NETSHOT FATAL ERROR: " + e.getMessage());
             System.exit(1);
         }
 
+    }
+
+    private static void InitSupportSCP() {
+        String[] support = {
+                "Balabit",
+                "F5",
+                "FirePower",
+                "Infoblox",
+                "Splunk"
+        };
+
+        Session session = Database.getSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            List list = session.createCriteria(Types.class).list();
+            if (list.size() == 0) {
+                for (String s : support) {
+                    Types t = new Types(s);
+                    session.save(t);
+                }
+                tx.commit();
+            }
+        } catch (HibernateException e) {
+            tx.rollback();
+            logger.error("Cannot add Types in DB : " + e.getMessage());
+        }
     }
 
 }

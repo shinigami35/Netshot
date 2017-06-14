@@ -41,33 +41,55 @@ import java.util.Set;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class NetworkInterface {
 
-    /** The device. */
+    /**
+     * The device.
+     */
     @ManyToOne
     protected Device device;
-    /** The interface name. */
+    /**
+     * The interface name.
+     */
     protected String interfaceName;
-    /** The ip4 addresses. */
+    /**
+     * The ip4 addresses.
+     */
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     protected Set<Network4Address> ip4Addresses = new HashSet<Network4Address>();
-    /** The ip6 addresses. */
+    /**
+     * The ip6 addresses.
+     */
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     protected Set<Network6Address> ip6Addresses = new HashSet<Network6Address>();
-    /** The physical address. */
+    /**
+     * The physical address.
+     */
     @Embedded
     protected PhysicalAddress physicalAddress = new PhysicalAddress(0);
-    /** The vrf instance. */
+    /**
+     * The vrf instance.
+     */
     protected String vrfInstance;
-    /** The virtual device. */
+    /**
+     * The virtual device.
+     */
     protected String virtualDevice;
-    /** The description. */
+    /**
+     * The description.
+     */
     protected String description;
-    /** The enabled. */
+    /**
+     * The enabled.
+     */
     protected boolean enabled;
-    /** The level3. */
+    /**
+     * The level3.
+     */
     protected boolean level3;
-    /** The id. */
+    /**
+     * The id.
+     */
     @Id
     @GeneratedValue
     private long id;
@@ -82,13 +104,13 @@ public class NetworkInterface {
     /**
      * Instantiates a new network interface.
      *
-     * @param device the device
+     * @param device        the device
      * @param interfaceName the interface name
      * @param virtualDevice the virtual device
-     * @param vrfInstance the vrf instance
-     * @param enabled the enabled
-     * @param level3 the level3
-     * @param description the description
+     * @param vrfInstance   the vrf instance
+     * @param enabled       the enabled
+     * @param level3        the level3
+     * @param description   the description
      */
     public NetworkInterface(Device device, String interfaceName, String virtualDevice,
                             String vrfInstance, boolean enabled, boolean level3, String description) {

@@ -26,14 +26,11 @@ import java.util.Set;
 @XmlAccessorType(value = XmlAccessType.NONE)
 public class VirtualDevice implements Serializable {
 
+    public static String DEFAULT_FOLDER = "Netshot";
     /**
      * The logger.
      */
     private static Logger logger = LoggerFactory.getLogger(VirtualDevice.class);
-
-    public static String DEFAULT_FOLDER = "Netshot";
-
-
     /**
      * The id.
      */
@@ -69,11 +66,13 @@ public class VirtualDevice implements Serializable {
     public static boolean createFolder(String folder) {
         String firstPath = Netshot.getConfig("netshot.watch.folderListen");
         String tmpPath;
+        folder = folder.replaceAll("[^a-zA-Z0-9.-]", "_");
         if (firstPath.charAt(firstPath.length() - 1) == '/')
             tmpPath = firstPath + DEFAULT_FOLDER + '/' + folder;
         else
             tmpPath = firstPath + '/' + DEFAULT_FOLDER + '/' + folder;
         try {
+            tmpPath = tmpPath.replaceAll("\\s","");
             Path tmp = Paths.get(tmpPath);
             if (Files.notExists(tmp))
                 Files.createDirectories(tmp);

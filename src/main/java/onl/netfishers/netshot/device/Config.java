@@ -39,15 +39,25 @@ import java.util.*;
 })
 public class Config {
 
-    /** The change date. */
+    /**
+     * The change date.
+     */
     protected Date changeDate;
-    /** The device. */
+    /**
+     * The device.
+     */
     protected Device device;
-    /** The id. */
+    /**
+     * The id.
+     */
     protected long id;
-    /** The attributes. */
+    /**
+     * The attributes.
+     */
     private Set<ConfigAttribute> attributes = new HashSet<ConfigAttribute>();
-    /** The author. */
+    /**
+     * The author.
+     */
     private String author = "";
     private int version;
 

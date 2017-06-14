@@ -29,35 +29,51 @@ import java.io.PrintStream;
  */
 public class Ssh extends Cli {
 
-    /** The port. */
+    /**
+     * The port.
+     */
     private int port = 22;
 
-    /** The jsch. */
+    /**
+     * The jsch.
+     */
     private JSch jsch;
 
-    /** The session. */
+    /**
+     * The session.
+     */
     private Session session;
 
-    /** The channel. */
+    /**
+     * The channel.
+     */
     private Channel channel;
 
-    /** The username. */
+    /**
+     * The username.
+     */
     private String username;
 
-    /** The password or passphrase. */
+    /**
+     * The password or passphrase.
+     */
     private String password;
 
-    /** The public key. */
+    /**
+     * The public key.
+     */
     private String publicKey = null;
 
-    /** The private key. */
+    /**
+     * The private key.
+     */
     private String privateKey = null;
 
     /**
      * Instantiates a new SSH connection (password authentication).
      *
-     * @param host the host
-     * @param port the port
+     * @param host     the host
+     * @param port     the port
      * @param username the username
      * @param password the password
      */
@@ -72,9 +88,9 @@ public class Ssh extends Cli {
     /**
      * Instantiates a new SSH connection (private key authentication).
      *
-     * @param host the host
-     * @param port the port
-     * @param username the SSH username
+     * @param host       the host
+     * @param port       the port
+     * @param username   the SSH username
      * @param privateKey the RSA/DSA private key
      * @param passphrase the passphrase which protects the private key
      */
@@ -90,8 +106,8 @@ public class Ssh extends Cli {
     /**
      * Instantiates a new SSH connection (private key authentication).
      *
-     * @param host the host
-     * @param username the SSH username
+     * @param host       the host
+     * @param username   the SSH username
      * @param privateKey the RSA/DSA private key
      * @param passphrase the passphrase which protects the private key
      */
@@ -107,7 +123,7 @@ public class Ssh extends Cli {
     /**
      * Instantiates a new ssh.
      *
-     * @param host the host
+     * @param host     the host
      * @param username the username
      * @param password the password
      */

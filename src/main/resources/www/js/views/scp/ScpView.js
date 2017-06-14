@@ -92,26 +92,29 @@ define([
                 var that = this;
                 this.$el.html(this.template);
                 this.initFetchDevices();
-                $('#nstoolbar-section').html(this.toolbarTemplate);
-                $('#nstoolbar-section button').button();
-                $('#nstoolbar-devices-add').unbind('click').button()
-                    .click(function () {
-                        var scp_dialog_add = new ScpDialogAdd({
-                            company : that.company,
-                            onRefresh: function () {
-                                that.initFetchDevices();
-                            }
-                        });
-                    });
-                $('#nstoolbar-company-add').unbind('click').button()
-                    .click(function () {
-                        var scp_dialog_company = new ScpDialogCompany({
+
+                if (user.isAdmin() || user.isReadWrite()) {
+                    $('#nstoolbar-section').html(this.toolbarTemplate);
+                    $('#nstoolbar-section button').button();
+                    $('#nstoolbar-devices-add').unbind('click').button()
+                        .click(function () {
+                            var scp_dialog_add = new ScpDialogAdd({
+                                company: that.company,
                                 onRefresh: function () {
                                     that.initFetchDevices();
                                 }
-                            }
-                        );
-                    });
+                            });
+                        });
+                    $('#nstoolbar-company-add').unbind('click').button()
+                        .click(function () {
+                            var scp_dialog_company = new ScpDialogCompany({
+                                    onRefresh: function () {
+                                        that.initFetchDevices();
+                                    }
+                                }
+                            );
+                        });
+                }
             },
 
             renderDeviceList: function () {

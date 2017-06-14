@@ -1,52 +1,42 @@
 /**
  * Copyright 2013-2016 Sylvain Cadilhac (NetFishers)
- * 
+ * <p>
  * This file is part of Netshot.
- * 
+ * <p>
  * Netshot is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * Netshot is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Netshot.  If not, see <http://www.gnu.org/licenses/>.
  */
 package onl.netfishers.netshot.test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
 import onl.netfishers.netshot.Database;
-import onl.netfishers.netshot.device.Config;
-import onl.netfishers.netshot.device.Device;
+import onl.netfishers.netshot.device.*;
 import onl.netfishers.netshot.device.Device.NetworkClass;
 import onl.netfishers.netshot.device.Device.Status;
-import onl.netfishers.netshot.device.Domain;
-import onl.netfishers.netshot.device.Module;
-import onl.netfishers.netshot.device.Network4Address;
-import onl.netfishers.netshot.device.NetworkInterface;
-import onl.netfishers.netshot.device.PhysicalAddress;
 import onl.netfishers.netshot.device.attribute.ConfigLongTextAttribute;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.*;
+
 public class Tester {
 
-	private static Logger logger = LoggerFactory.getLogger(Tester.class);
+    private static Logger logger = LoggerFactory.getLogger(Tester.class);
 
-	public static void createDevices() {
+    public static void createDevices() {
 
 /*		Session session = Database.getSession();
-		session.beginTransaction();
+        session.beginTransaction();
 		try {
 			Domain domain = new Domain("Fake", "Fake domain", new Network4Address("10.0.16.1"), null);
 			session.save(domain);
@@ -167,87 +157,86 @@ public class Tester {
 		catch (Exception e) {
 			e.printStackTrace();
 		}*/
-		
-		
-		List<NetworkClass> networkClasses = Arrays.asList(NetworkClass.values());
-		try {
 
-			for (int i = 1000; i < 1050; i++) {
-				Session session = Database.getSession();
-				session.beginTransaction();
-				Domain domain = (Domain) session.load(Domain.class, 1L);
-				Network4Address deviceAddress = new Network4Address(
-				    Network4Address.intToIP((10 << 24) + (16 << 16) + i), 32);
-				Device device = new Device("CiscoIOS12", deviceAddress, domain, "Tester", "/", "", true, true);
-				device.setName(String.format("TEST%05d", i));
-				device.setLocation("Fake location");
-				device.setContact("Fake contact");
-				device.setFamily("Fake Cisco IOS");
-				device.setNetworkClass(networkClasses.get(new Random()
-				    .nextInt(networkClasses.size())));
-				device.setStatus(Status.INPRODUCTION);
-				device.setComments(String.format("Fake device %d ", i));
-				List<Config> configs = new ArrayList<Config>();
-				int configNumber = 100 + new Random().nextInt(300);
-				int configLength = 100000 + new Random().nextInt(1200000);
-				StringBuilder runningConfig = new StringBuilder();
-				
-				long baseDate = new Date().getTime();
-				long[] configDates = new Random().longs(configNumber, baseDate - 1000L * 3600 * 24 * 365 * 3, baseDate).sorted().toArray();
-				
-				
-				for (int j = 0; j < configNumber; j++) {
-					Config config = new Config(device);
-					config.setAuthor("Fake");
-					String configPiece = "!This is a fake IOS configuration\r\n" + 
-							"interface Loopback0\r\n" +
-							" ip address 1.1.1.1 255.255.255.255\r\n" +
-							"!\r\n" +
-							String.format("snmp-server contact CONF %05d\r\n", j) +
-							"!";
-					while (runningConfig.length() < configLength) {
-						runningConfig.append(configPiece);
-					}
-					configLength += new Random().nextInt(1000);
-					config.setChangeDate(new Date(1000 * (configDates[j] / 1000)));
-					
-					config.addAttribute(new ConfigLongTextAttribute(config, "runningConfig", runningConfig.toString()));
-					configs.add(config);
-					device.setLastConfig(config);
-					if (j % 10 == 0) {
-						logger.warn(String.format("Device %05d, config %05d", i, j));
-					}
-				}
-				device.setConfigs(configs);
 
-				List<NetworkInterface> netInterfaces = new ArrayList<NetworkInterface>();
-				NetworkInterface managementInterface = new NetworkInterface(device,
-				    "Loopback0", "", "", true, true, "Management interface");
-				managementInterface.addIpAddress(deviceAddress);
-				managementInterface
-				    .setPhysicalAddress(new PhysicalAddress(16 << 32 + i));
-				netInterfaces.add(managementInterface);
-				device.setNetworkInterfaces(netInterfaces);
+        List<NetworkClass> networkClasses = Arrays.asList(NetworkClass.values());
+        try {
 
-				List<Module> modules = new ArrayList<Module>();
-				Module module = new Module();
-				module.setDevice(device);
-				module.setPartNumber("FAKE");
-				module.setSlot("Fake Slot 0");
-				module.setSerialNumber(String.format("ABCDXYZ%03X", i));
-				modules.add(module);
+            for (int i = 1000; i < 1050; i++) {
+                Session session = Database.getSession();
+                session.beginTransaction();
+                Domain domain = (Domain) session.load(Domain.class, 1L);
+                Network4Address deviceAddress = new Network4Address(
+                        Network4Address.intToIP((10 << 24) + (16 << 16) + i), 32);
+                Device device = new Device("CiscoIOS12", deviceAddress, domain, "Tester", "/", "", true, true);
+                device.setName(String.format("TEST%05d", i));
+                device.setLocation("Fake location");
+                device.setContact("Fake contact");
+                device.setFamily("Fake Cisco IOS");
+                device.setNetworkClass(networkClasses.get(new Random()
+                        .nextInt(networkClasses.size())));
+                device.setStatus(Status.INPRODUCTION);
+                device.setComments(String.format("Fake device %d ", i));
+                List<Config> configs = new ArrayList<Config>();
+                int configNumber = 100 + new Random().nextInt(300);
+                int configLength = 100000 + new Random().nextInt(1200000);
+                StringBuilder runningConfig = new StringBuilder();
 
-				device.setModules(modules);
-				session.save(device);
-				session.getTransaction().commit();
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		logger.warn("Done");
+                long baseDate = new Date().getTime();
+                long[] configDates = new Random().longs(configNumber, baseDate - 1000L * 3600 * 24 * 365 * 3, baseDate).sorted().toArray();
 
-	}
+
+                for (int j = 0; j < configNumber; j++) {
+                    Config config = new Config(device);
+                    config.setAuthor("Fake");
+                    String configPiece = "!This is a fake IOS configuration\r\n" +
+                            "interface Loopback0\r\n" +
+                            " ip address 1.1.1.1 255.255.255.255\r\n" +
+                            "!\r\n" +
+                            String.format("snmp-server contact CONF %05d\r\n", j) +
+                            "!";
+                    while (runningConfig.length() < configLength) {
+                        runningConfig.append(configPiece);
+                    }
+                    configLength += new Random().nextInt(1000);
+                    config.setChangeDate(new Date(1000 * (configDates[j] / 1000)));
+
+                    config.addAttribute(new ConfigLongTextAttribute(config, "runningConfig", runningConfig.toString()));
+                    configs.add(config);
+                    device.setLastConfig(config);
+                    if (j % 10 == 0) {
+                        logger.warn(String.format("Device %05d, config %05d", i, j));
+                    }
+                }
+                device.setConfigs(configs);
+
+                List<NetworkInterface> netInterfaces = new ArrayList<NetworkInterface>();
+                NetworkInterface managementInterface = new NetworkInterface(device,
+                        "Loopback0", "", "", true, true, "Management interface");
+                managementInterface.addIpAddress(deviceAddress);
+                managementInterface
+                        .setPhysicalAddress(new PhysicalAddress(16 << 32 + i));
+                netInterfaces.add(managementInterface);
+                device.setNetworkInterfaces(netInterfaces);
+
+                List<Module> modules = new ArrayList<Module>();
+                Module module = new Module();
+                module.setDevice(device);
+                module.setPartNumber("FAKE");
+                module.setSlot("Fake Slot 0");
+                module.setSerialNumber(String.format("ABCDXYZ%03X", i));
+                modules.add(module);
+
+                device.setModules(modules);
+                session.save(device);
+                session.getTransaction().commit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        logger.warn("Done");
+
+    }
 
 }

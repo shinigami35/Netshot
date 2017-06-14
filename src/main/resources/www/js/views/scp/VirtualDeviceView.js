@@ -53,36 +53,41 @@ define([
         },
         renderButton: function () {
             var that = this;
-             this.$('#refresh').button({
-                 icons: {
-                     primary: "ui-icon-refresh"
-                 },
-                 text: false
-             }).click(function (e) {
+            this.$('#refresh').button({
+                icons: {
+                    primary: "ui-icon-refresh"
+                },
+                text: false
+            }).click(function (e) {
                 e.preventDefault();
                 that.refresh();
-             });
+            });
             // this.$('#edit').button({
             //     icons: {
             //         primary: "ui-icon-wrench"
             //     },
             //     text: false
             // });
-            this.$("#delete").button({
-                icons: {
-                    primary: "ui-icon-trash"
-                },
-                text: false
-            }).click(function () {
-                var deleteDialog = new DeleteVirtualDeviceDialog({
-                    model: that.model,
-                    onDeleted: function () {
-                        Backbone.history.navigate("/scp/");
-                        that.options.onDeleted();
-                        that.destroy();
-                    }
+            if (user.isAdmin()) {
+                this.$("#delete").button({
+                    icons: {
+                        primary: "ui-icon-trash"
+                    },
+                    text: false
+                }).click(function () {
+                    var deleteDialog = new DeleteVirtualDeviceDialog({
+                        model: that.model,
+                        onDeleted: function () {
+                            Backbone.history.navigate("/scp/");
+                            that.options.onDeleted();
+                            that.destroy();
+                        }
+                    });
                 });
-            });
+            }else {
+                this.$("#delete").remove();
+            }
+
         },
 
         destroy: function () {

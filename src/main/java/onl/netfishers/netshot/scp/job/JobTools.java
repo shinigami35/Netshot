@@ -127,8 +127,6 @@ public class JobTools {
 
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.setTime(vs.getHour());
-        cal.set(java.util.Calendar.HOUR_OF_DAY, 1);
-        cal.set(java.util.Calendar.MINUTE, 0);
         cal.add(Calendar.DATE, 1);
         Date newDate = cal.getTime();
 
@@ -159,8 +157,6 @@ public class JobTools {
 
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.setTime(vs.getHour());
-        cal.set(java.util.Calendar.HOUR_OF_DAY, 1);
-        cal.set(java.util.Calendar.MINUTE, 0);
         cal.add(Calendar.DATE, 1);
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         Date newDate = cal.getTime();

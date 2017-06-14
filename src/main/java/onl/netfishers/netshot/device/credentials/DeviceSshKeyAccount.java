@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * SSH credentials with a private key.
  * The inherited password is actually the passphrase for the key.
- * @author sylv
  *
+ * @author sylv
  */
 @Entity
 @XmlRootElement()

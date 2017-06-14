@@ -49,34 +49,58 @@ import java.util.*;
 })
 abstract public class DeviceGroup {
 
-    /** The applied policies. */
+    /**
+     * The applied policies.
+     */
     protected Set<Policy> appliedPolicies = new HashSet<Policy>();
 
-    /** The applied software rules. */
+    /**
+     * The applied software rules.
+     */
     protected Set<SoftwareRule> appliedSoftwareRules = new HashSet<SoftwareRule>();
 
-    /** The applied hardware rules. */
+    /**
+     * The applied hardware rules.
+     */
     protected Set<HardwareRule> appliedHardwareRules = new HashSet<HardwareRule>();
 
-    /** The cached devices. */
+    /**
+     * The cached devices.
+     */
     protected Set<Device> cachedDevices = new HashSet<Device>();
 
-    /** The change date. */
+    /**
+     * The change date.
+     */
     protected Date changeDate;
-    /** The check compliance tasks. */
+    /**
+     * The check compliance tasks.
+     */
     protected List<CheckGroupComplianceTask> checkComplianceTasks = new ArrayList<CheckGroupComplianceTask>();
-    /** The check software compliance tasks. */
+    /**
+     * The check software compliance tasks.
+     */
     protected List<CheckGroupSoftwareTask> checkSoftwareComplianceTasks = new ArrayList<CheckGroupSoftwareTask>();
     protected List<RunDeviceGroupScriptTask> runDeviceGroupScriptTasks = new ArrayList<RunDeviceGroupScriptTask>();
-    /** The id. */
+    /**
+     * The id.
+     */
     protected long id;
-    /** The name. */
+    /**
+     * The name.
+     */
     protected String name;
-    /** Folder containing the group. */
+    /**
+     * Folder containing the group.
+     */
     protected String folder = "";
-    /** Whether the group should be hidden in reports. */
+    /**
+     * Whether the group should be hidden in reports.
+     */
     protected boolean hiddenFromReports = false;
-    /** The snapshot tasks. */
+    /**
+     * The snapshot tasks.
+     */
     protected List<TakeGroupSnapshotTask> snapshotTasks = new ArrayList<TakeGroupSnapshotTask>();
     private int version;
 

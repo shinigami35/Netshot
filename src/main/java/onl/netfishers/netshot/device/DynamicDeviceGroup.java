@@ -38,13 +38,19 @@ import java.util.List;
 @Entity
 public class DynamicDeviceGroup extends DeviceGroup {
 
-    /** The logger. */
+    /**
+     * The logger.
+     */
     private static Logger logger = LoggerFactory.getLogger(DeviceGroup.class);
 
-    /** The device class. */
+    /**
+     * The device class.
+     */
     private String driver = null;
 
-    /** The query. */
+    /**
+     * The query.
+     */
     private String query = "[Name] IS \"Example\"";
 
     /**
@@ -173,9 +179,9 @@ public class DynamicDeviceGroup extends DeviceGroup {
      * Refresh cache.
      *
      * @param session the session
-     * @param device the device
+     * @param device  the device
      * @throws FinderParseException the finder parse exception
-     * @throws HibernateException the hibernate exception
+     * @throws HibernateException   the hibernate exception
      */
     public void refreshCache(Session session, Device device) throws FinderParseException, HibernateException {
         logger.debug("Refreshing cache of group {} for device {}.", this.getId(), device.getId());
