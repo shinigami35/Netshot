@@ -33,6 +33,7 @@ import onl.netfishers.netshot.device.DeviceDriver;
 import onl.netfishers.netshot.scp.device.Types;
 import onl.netfishers.netshot.scp.job.JobScheduler;
 import onl.netfishers.netshot.scp.watcher.Watcher;
+import onl.netfishers.netshot.ssh.ScpServer;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -335,6 +336,9 @@ public class Netshot extends Thread {
             w.start();
             logger.info("Launch Trigger SCPTask function");
             JobScheduler.init();
+            logger.info("Launch SSH Server function");
+            ScpServer.initServer();
+
 
             InitSupportSCP();
 
