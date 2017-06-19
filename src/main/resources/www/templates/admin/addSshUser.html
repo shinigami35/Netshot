@@ -1,0 +1,35 @@
+<div id="nsadmin-usereditform" title="Add/Edit User">
+
+    <div class="nsdialog-logo">
+        <img alt="Add" src="img/add_32px.png"/>
+    </div>
+
+    <form>
+        <fieldset>
+            <label for="name">Username: </label>
+            <input type="text" name="name" id="name" autofocus="autofocus"
+                   class="text ui-widget-content ui-corner-all"/>
+        </fieldset>
+        <fieldset>
+            <label>
+                <input type="radio" name="auth" value="password" id="authpass" checked> Password<br>
+                <input type="radio" name="auth" value="certificat" id="authcert"> Certificat<br>
+            </label>
+        </fieldset>
+        <fieldset>
+            <label for="password">Password: </label>
+            <input type="password" name="password" id="password" autofocus="autofocus"
+                   class="text ui-widget-content ui-corner-all"/>
+        </fieldset>
+        <fieldset>
+            <label for="certificat">Password: </label>
+            <textarea id="certificat" rows="10" cols="40"
+                      class="text ui-widget-content ui-corner-all"></textarea>
+        </fieldset>
+
+        <div class="nserror" id="error">
+            <span class="ui-icon ui-icon-alert"></span>
+            <span id="errormsg"></span>
+        </div>
+    </form>
+</div>

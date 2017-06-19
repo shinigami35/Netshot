@@ -27,6 +27,7 @@ import onl.netfishers.netshot.scp.device.Company;
 import onl.netfishers.netshot.scp.device.ScpStepFolder;
 import onl.netfishers.netshot.scp.device.Types;
 import onl.netfishers.netshot.scp.device.VirtualDevice;
+import onl.netfishers.netshot.ssh.authentification.user.UserSsh;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.tasks.DeviceJsScript;
 import org.apache.commons.lang.ArrayUtils;
@@ -57,16 +58,24 @@ import java.util.zip.ZipInputStream;
  */
 public class Database {
 
-    /** The session factory. */
+    /**
+     * The session factory.
+     */
     private static SessionFactory sessionFactory;
 
-    /** The service registry. */
+    /**
+     * The service registry.
+     */
     private static ServiceRegistry serviceRegistry;
 
-    /** The configuration. */
+    /**
+     * The configuration.
+     */
     private static Configuration configuration;
 
-    /** The logger. */
+    /**
+     * The logger.
+     */
     private static Logger logger = LoggerFactory.getLogger(Database.class);
 
     /**
@@ -75,7 +84,7 @@ public class Database {
      * @param packageName the package name
      * @return the list
      * @throws ClassNotFoundException the class not found exception
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException            Signals that an I/O exception has occurred.
      */
     public static List<Class<?>> listClassesInPackage(String packageName)
             throws ClassNotFoundException, IOException {
@@ -100,11 +109,11 @@ public class Database {
     /**
      * Find classes with a path.
      *
-     * @param path the path
+     * @param path        the path
      * @param packageName the package name
      * @return the tree set
      * @throws MalformedURLException the malformed url exception
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException           Signals that an I/O exception has occurred.
      */
     private static TreeSet<String> findClasses(String path, String packageName)
             throws MalformedURLException, IOException {
@@ -214,6 +223,7 @@ public class Database {
             configuration.addAnnotatedClass(VirtualDevice.class)
                     .addAnnotatedClass(ScpStepFolder.class)
                     .addAnnotatedClass(Company.class)
+                    .addAnnotatedClass(UserSsh.class)
                     .addAnnotatedClass(Types.class);
 
             for (Class<?> clazz : Task.getTaskClasses()) {
@@ -258,7 +268,7 @@ public class Database {
     /**
      * Gets the real object from the Hibernate proxy.
      *
-     * @param <T> the generic type
+     * @param <T>    the generic type
      * @param entity the entity
      * @return the t
      */

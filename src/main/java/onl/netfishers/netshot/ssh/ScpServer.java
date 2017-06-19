@@ -1,15 +1,32 @@
 package onl.netfishers.netshot.ssh;
 
+import onl.netfishers.netshot.Database;
 import onl.netfishers.netshot.Netshot;
+import onl.netfishers.netshot.ssh.authentification.user.UserSsh;
 import onl.netfishers.netshot.ssh.exception.ScpServerException;
+import org.apache.sshd.common.NamedFactory;
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
+import org.apache.sshd.common.util.SecurityUtils;
+import org.apache.sshd.common.util.ValidateUtils;
+import org.apache.sshd.server.Command;
 import org.apache.sshd.server.SshServer;
+import org.apache.sshd.server.auth.UserAuth;
+import org.apache.sshd.server.auth.password.UserAuthPasswordFactory;
+import org.apache.sshd.server.auth.pubkey.UserAuthPublicKeyFactory;
+import org.apache.sshd.server.keyprovider.AbstractGeneratorHostKeyProvider;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.scp.ScpCommandFactory;
+import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
+import org.hibernate.Session;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyPair;
+import java.security.PublicKey;
+import java.util.*;
 
 
 public class ScpServer {
@@ -28,13 +45,22 @@ public class ScpServer {
                 status = Status.STARTING;
 
                 sshd.setPort(Integer.parseInt(DEFAULT_PORT));
-                sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
+                initCertServer();
 
-                sshd.setPublickeyAuthenticator(publicKeyAuth);
-                //sshd.setPasswordAuthenticator(passwordAuth);
+                List<NamedFactory<UserAuth>> userAuthFactories = new ArrayList<>();
+                //String sshAuthenticatorsOrderString =  "password,keyboard-interactive,publickey";
+                //userAuthFactories.add(new UserAuthPublicKeyFactory());
+                // -userAuthFactories.add(new UserAuthPasswordFactory());
+                //sshd.setUserAuthFactories(userAuthFactories);
+
                 sshd.setCommandFactory(new ScpCommandFactory());
 
                 initUserHomeFolder();
+
+                sshd.setPasswordAuthenticator(passwordAuth);
+                sshd.setPublickeyAuthenticator(publicKeyAuth);
+
+                sshd.setSubsystemFactories(Arrays.<NamedFactory<Command>>asList(new SftpSubsystemFactory()));
 
                 sshd.start();
 
@@ -65,25 +91,57 @@ public class ScpServer {
         }
     }
 
-    private enum Status {
-        STOPPED, STARTING, STARTED, STOPPING
-    }
-
-    private static void initUserHomeFolder(){
+    private static void initUserHomeFolder() {
+        Session session = Database.getSession();
+        List list = session.createCriteria(UserSsh.class).list();
+        Set<Object> s = new HashSet<Object>(list);
         VirtualFileSystemFactory fsFactory = new VirtualFileSystemFactory();
-        fsFactory.setUserHomeDir("netshot", Paths.get(DEFAULT_FOLDER));
-        fsFactory.setUserHomeDir("netshotssh", Paths.get(DEFAULT_FOLDER));
-        fsFactory.setUserHomeDir("netshotpwd", Paths.get(DEFAULT_FOLDER));
+        for (Object o : s) {
+            UserSsh userSsh = (UserSsh) o;
+            fsFactory.setUserHomeDir(userSsh.getName(), Paths.get(DEFAULT_FOLDER));
+        }
         sshd.setFileSystemFactory(fsFactory);
     }
 
-    public static void initServer(){
-        try{
+    private static void initCertServer() throws IOException {
+
+        String hostKeyType = AbstractGeneratorHostKeyProvider.DEFAULT_ALGORITHM;
+
+        AbstractGeneratorHostKeyProvider hostKeyProvider;
+        Path hostKeyFile;
+        if (SecurityUtils.isBouncyCastleRegistered()) {
+            hostKeyFile = new File("key.pem").toPath();
+            hostKeyProvider = SecurityUtils.createGeneratorHostKeyProvider(hostKeyFile);
+        } else {
+            hostKeyFile = new File("key.ser").toPath();
+            hostKeyProvider = new SimpleGeneratorHostKeyProvider(hostKeyFile);
+        }
+        hostKeyProvider.setAlgorithm(hostKeyType);
+
+        List<KeyPair> keys = ValidateUtils.checkNotNullAndNotEmpty(hostKeyProvider.loadKeys(),
+                "Failed to load keys from %s", hostKeyFile);
+        KeyPair kp = keys.get(0);
+        PublicKey pubKey = kp.getPublic();
+        String keyAlgorithm = pubKey.getAlgorithm();
+        // force re-generation of host key if not same algorithm
+        if (!Objects.equals(keyAlgorithm, hostKeyProvider.getAlgorithm())) {
+            Files.deleteIfExists(hostKeyFile);
+            hostKeyProvider.clearLoadedKeys();
+        }
+        sshd.setKeyPairProvider(hostKeyProvider);
+    }
+
+    public static void initServer() {
+        try {
             ScpServer.start();
             Thread.sleep(Long.MAX_VALUE);
             initServer();
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.err.println(ex.toString());
         }
+    }
+
+    private enum Status {
+        STOPPED, STARTING, STARTED, STOPPING
     }
 }

@@ -1,0 +1,29 @@
+
+<tr>
+	<td><%- name %></td>
+	<td>
+		<% if (password !== null) { %>
+		<span class="ui-corner-all" title="Read-write">
+			<span class="ui-icon ui-icon-bullet"></span>
+		</span>
+		<% } else { %>
+		<span class="ui-corner-all" title="Read-only">
+			<span class="ui-icon ui-icon-radio-off"></span>
+		</span>
+		<% } %>
+	</td>
+	<td>
+		<% if (certificat !== null) { %>
+		<span class="ui-corner-all" title="Admin">
+			<span class="ui-icon ui-icon-bullet"></span>
+		</span>
+		<% } else { %>
+		<span class="ui-corner-all" title="Not admin">
+			<span class="ui-icon ui-icon-radio-off"></span>
+		</span>
+		<% } %>
+	</td>
+	<td>
+		<button class="delete" data-id="<%- id %>">Delete</button>
+	</td>
+</tr>

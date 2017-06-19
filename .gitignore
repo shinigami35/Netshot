@@ -10,6 +10,7 @@ target/*
 .settings/*
 *.iml
 *.jks
+*.ser
 src/main/resources/configs/
 src/main/resources/META-INF/
 

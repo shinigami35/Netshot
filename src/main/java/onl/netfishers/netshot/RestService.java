@@ -44,6 +44,7 @@ import onl.netfishers.netshot.scp.device.Company;
 import onl.netfishers.netshot.scp.device.ScpStepFolder;
 import onl.netfishers.netshot.scp.device.Types;
 import onl.netfishers.netshot.scp.device.VirtualDevice;
+import onl.netfishers.netshot.ssh.authentification.user.UserSsh;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.Task.ScheduleType;
 import onl.netfishers.netshot.work.tasks.*;
@@ -4306,6 +4307,34 @@ public class RestService extends Thread {
     }
 
 
+    /**
+     * Gets the Virtual Device.
+     *
+     * @param request the request
+     * @return the Virtual Device
+     * @throws WebApplicationException the web application exception
+     */
+    @GET
+    @Path("users/ssh")
+    @RolesAllowed("admin")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Object getUsersSsh() {
+        Session s = Database.getSession();
+        try {
+            List el = s.createCriteria(UserSsh.class).list();
+            Set<Object> mySet = new HashSet<Object>();
+            mySet.addAll(el);
+            return mySet;
+        } catch (HibernateException e) {
+            logger.error("Unable to fetch the UserSSH.", e);
+            throw new NetshotBadRequestException("Unable to fetch the UserSSH",
+                    NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+        } finally {
+            s.close();
+        }
+    }
+
+
     @POST
     @Path("scp/device")
     @RolesAllowed("readwrite")
@@ -4422,6 +4451,50 @@ public class RestService extends Thread {
         }
     }
 
+
+    @POST
+    @Path("users/ssh")
+    @RolesAllowed("admin")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public UserSsh addUserSsh(@Context HttpServletRequest request, RsNewuserSsh rsNewuserSsh) {
+        Session session = Database.getSession();
+        Transaction tx = null;
+        if ((rsNewuserSsh.getCertificat() != null && !rsNewuserSsh.getCertificat().equals("")) ||
+                (rsNewuserSsh.getPassword() != null && !rsNewuserSsh.getPassword().equals(""))) {
+            try {
+                tx = session.beginTransaction();
+                UserSsh u = (UserSsh) session.createQuery("from UserSsh u where u.name = :name")
+                        .setParameter("name", rsNewuserSsh.getName())
+                        .uniqueResult();
+                if (u == null) {
+                    UserSsh newU = new UserSsh();
+                    newU.setName(rsNewuserSsh.getName());
+                    if (rsNewuserSsh.getCertificat() != null && !rsNewuserSsh.getCertificat().equals(""))
+                        newU.setCertificat(rsNewuserSsh.getCertificat());
+                    if (rsNewuserSsh.getPassword() != null && !rsNewuserSsh.getPassword().equals(""))
+                        newU.setPassword(rsNewuserSsh.getPassword());
+                    session.save(newU);
+                    tx.commit();
+                    return newU;
+                } else {
+                    throw new NetshotBadRequestException("This user already exists",
+                            NetshotBadRequestException.NETSHOT_DUPLICATE_DEVICE);
+                }
+            } catch (HibernateException e) {
+                tx.rollback();
+                logger.error("Unable to add this user.", e);
+                throw new NetshotBadRequestException("Unable to add this user",
+                        NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+            } finally {
+                session.close();
+            }
+        } else {
+            throw new NetshotBadRequestException("One password or one certificat must be set",
+                    NetshotBadRequestException.NETSHOT_INCOMPATIBLE_CONFIGS);
+        }
+    }
+
     /**
      * Return the all type.
      *
@@ -4456,6 +4529,35 @@ public class RestService extends Thread {
         } catch (ObjectNotFoundException e) {
             throw new NetshotBadRequestException(
                     "Virtual device not found",
+                    NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
+        } catch (HibernateException e) {
+            tx.rollback();
+            logger.error("Error while getting type.", e);
+            throw new NetshotBadRequestException(
+                    "Error while getting type.",
+                    NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+        } finally {
+            session.close();
+        }
+    }
+
+    @DELETE
+    @Path("users/ssh/{id}")
+    @RolesAllowed("admin")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void deleteUserSSH(@PathParam("id") Integer id) {
+        Session session = Database.getSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            UserSsh vs = (UserSsh) session.get(UserSsh.class, (long) id);
+            if (vs != null) {
+                session.delete(vs);
+                tx.commit();
+            }
+        } catch (ObjectNotFoundException e) {
+            throw new NetshotBadRequestException(
+                    "User SSH not found",
                     NetshotBadRequestException.NETSHOT_INVALID_DEVICE);
         } catch (HibernateException e) {
             tx.rollback();
@@ -8586,6 +8688,50 @@ public class RestService extends Thread {
             this.name = name;
         }
 
+    }
+
+    /**
+     * The Class RsNewuserSsh.
+     */
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.NONE)
+    public static class RsNewuserSsh {
+
+
+        /**
+         * The name.
+         */
+        private String name;
+        private String password;
+        private String certificat;
+
+
+        @XmlElement
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @XmlElement
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        @XmlElement
+        public String getCertificat() {
+            return certificat;
+        }
+
+        public void setCertificat(String certificat) {
+            this.certificat = certificat;
+        }
     }
 
 }
