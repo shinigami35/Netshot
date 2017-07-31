@@ -14,7 +14,7 @@ target/*
 src/main/resources/configs/
 src/main/resources/META-INF/
 
-netshot.conf
+*.conf
 
 # CMake
 cmake-build-debug/
