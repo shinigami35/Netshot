@@ -1,6 +1,6 @@
 var Info = {
-    name: "Palo Alto Panorama PAN-OS",
-    description: "Panorama (PAN-OS)",
+    name: "Palo Alto Panorama",
+    description: "Panorama Palo Alto",
     author: "Adrien GANDARIAS",
     version: "0.3"
 };
