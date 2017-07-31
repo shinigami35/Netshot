@@ -15,8 +15,6 @@ src/main/resources/configs/
 src/main/resources/META-INF/
 
 *.conf
-=======
-src/main/resources/configs/
 
 # CMake
 cmake-build-debug/
