@@ -47,12 +47,6 @@ public class ScpServer {
                 sshd.setPort(Integer.parseInt(DEFAULT_PORT));
                 initCertServer();
 
-                List<NamedFactory<UserAuth>> userAuthFactories = new ArrayList<>();
-                //String sshAuthenticatorsOrderString =  "password,keyboard-interactive,publickey";
-                //userAuthFactories.add(new UserAuthPublicKeyFactory());
-                // -userAuthFactories.add(new UserAuthPasswordFactory());
-                //sshd.setUserAuthFactories(userAuthFactories);
-
                 sshd.setCommandFactory(new ScpCommandFactory());
 
                 initUserHomeFolder();

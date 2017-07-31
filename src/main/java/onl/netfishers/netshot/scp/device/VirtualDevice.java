@@ -72,7 +72,7 @@ public class VirtualDevice implements Serializable {
         else
             tmpPath = firstPath + '/' + DEFAULT_FOLDER + '/' + folder;
         try {
-            tmpPath = tmpPath.replaceAll("\\s","");
+            tmpPath = tmpPath.replaceAll("\\s", "");
             Path tmp = Paths.get(tmpPath);
             if (Files.notExists(tmp))
                 Files.createDirectories(tmp);
@@ -88,14 +88,9 @@ public class VirtualDevice implements Serializable {
     }
 
     public static void setPermFolder(Path p) {
-        String group = Netshot.getConfig("netshot.watch.group");
 
         Set<PosixFilePermission> perms = new HashSet<>();
         try {
-            FileSystem fileSystem = p.getFileSystem();
-            UserPrincipalLookupService lookupService = fileSystem.getUserPrincipalLookupService();
-
-
             //add owners permission
             perms.add(PosixFilePermission.OWNER_READ);
             perms.add(PosixFilePermission.OWNER_WRITE);
@@ -105,12 +100,8 @@ public class VirtualDevice implements Serializable {
             perms.add(PosixFilePermission.GROUP_WRITE);
             perms.add(PosixFilePermission.GROUP_EXECUTE);
 
+            Files.setPosixFilePermissions(p, perms);
 
-            if (group != null && !group.equals("")) {
-                GroupPrincipal groupPrincipal = lookupService.lookupPrincipalByGroupName(group);
-                Files.getFileAttributeView(p, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS).setGroup(groupPrincipal);
-                Files.setPosixFilePermissions(p, perms);
-            }
         } catch (IOException e) {
             logger.error("Could not set perms to : " + p.getFileName().toString(), e);
         }

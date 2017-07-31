@@ -3,6 +3,7 @@ package onl.netfishers.netshot.scp.watcher;
 import onl.netfishers.netshot.Database;
 import onl.netfishers.netshot.Netshot;
 import onl.netfishers.netshot.RestService;
+import onl.netfishers.netshot.http.MappingHttp;
 import onl.netfishers.netshot.scp.device.ScpStepFolder;
 import onl.netfishers.netshot.scp.device.VirtualDevice;
 import org.hibernate.HibernateException;
@@ -157,8 +158,6 @@ public class Watcher extends Thread {
     private void processEvents() {
         String s = Netshot.getConfig("netshot.watch.folderListen");
         Path dirRoot = Paths.get(s + '/' + DEFAULT_FOLDER);
-        String pathTmp = "";
-        int i = 0;
         while (true) {
 
             WatchKey key;
@@ -195,10 +194,6 @@ public class Watcher extends Thread {
                             String sdirRoot = dirRoot.toAbsolutePath().toString();
                             if (parentChild.equals(sdirRoot))
                                 register(child);
-                            else {
-                                pathTmp = parentChild;
-                                i++;
-                            }
                         } else {
                             System.out.println("File is => " + child);
                             while (true) {
@@ -261,9 +256,9 @@ public class Watcher extends Thread {
         } catch (HibernateException e) {
             tx.rollback();
             logger.error("Error while save new Scp Entry.", e);
-            throw new RestService.NetshotBadRequestException(
+            throw new MappingHttp.NetshotBadRequestException(
                     "Error while save new Scp Entry.",
-                    RestService.NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
+                    MappingHttp.NetshotBadRequestException.NETSHOT_DATABASE_ACCESS_ERROR);
         } catch (IOException e) {
             logger.error("Error while open file => " + child, e);
         } finally {

@@ -4,6 +4,8 @@ import onl.netfishers.netshot.Netshot;
 import onl.netfishers.netshot.device.Device;
 import onl.netfishers.netshot.work.Task;
 import onl.netfishers.netshot.work.tasks.TakeSnapshotTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -12,6 +14,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 public class Mail {
+
+    /**
+     * The logger.
+     */
+    private static Logger logger = LoggerFactory
+            .getLogger(Mail.class);
+
 
     private static Mail INSTANCE = null;
 
@@ -91,7 +100,7 @@ public class Mail {
                 }
             }
         } catch (MessagingException mex) {
-            mex.printStackTrace();
+            logger.error("Mail cannot be send : " + mex.getMessage());
         }
     }
 

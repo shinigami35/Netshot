@@ -1,8 +1,8 @@
 var Info = {
-    name: "Palo Alto PAN-OS",
-    description: "PAN-OS",
+    name: "Palo Alto Panorama PAN-OS",
+    description: "Panorama (PAN-OS)",
     author: "Adrien GANDARIAS",
-    version: "0.1"
+    version: "0.3"
 };
 
 var Config = {
@@ -129,66 +129,24 @@ function snapshot(cli, device, config) {
         device.set("serialNumber", "");
     }
 
-    var interfaces = cli.command("show interface logical");
-    var interfaceInfo = [];
-    interfaces = interfaces.replace(/\r\n/g, "\n");
+    var interfaces = cli.command("show interface management");
 
-    var splitInterface = interfaces.split("\n");
+    var ipName = interfaces.match(/Name: (.*)/);
+    var ipInterface = interfaces.match(/Ip address: (.*)/);
+    var ipInterfaceNetmask = interfaces.match(/Netmask: (.*)/);
+    var ipmac = interfaces.match(/Port MAC address (.*)/);
 
-    var regex = /^[ ]*name[ ]*id[ ]*vsys[ ]*zone[ ]*forwarding[ ]*tag[ ]*address[ ]*$/;
-    for (var i = 0; i < splitInterface.length; i++) {
-        var elt = splitInterface[i];
-        elt = elt.replace(/\s\s+/g, " ");
-
-        if (elt.match(regex)) {
-
-            if (i + 2 < splitInterface.length) {
-                i += 1;
-                for (var j = i + 2; j < splitInterface.length; j++) {
-                    var tmp = splitInterface[j].replace(/\s\s+/g, ' ');
-                    if (tmp && tmp !== " ")
-                        interfaceInfo.push(tmp);
-                }
-                break;
-            } else
-                break;
-        }
-    }
-    for (var x = 0; x < interfaceInfo.length; x++) {
-        var s = interfaceInfo[x].split(" ");
-        if (s[0] && s[0] !== '') {
-            var networkInterface = {
-                name: (s[0] ? s[0] : " "),
-                ip: [],
-                virtualDevice: (s[2] ? s[2] : " "),
-                mac: "0000.0000.0000"
-            };
-            if (s[6] && s[6] !== "N/A") {
-                var ipMask = s[6].split('/');
-                networkInterface.ip.push({
-                    ip: ipMask[0],
-                    mask: ipMask[1],
-                    usage: "PRIMARY"
-                });
-            }
-
-            if (s[0] && s[0] !== " ") {
-                var mac = cli.command("show interface " + s[0] + " | match \"Port MAC\"");
-                var macSplit = mac.split(" ");
-                var macRegex = /^(([A-Fa-f0-9]{2}[:]){5}[A-Fa-f0-9]{2}[,]?)+$/;
-                macSplit.forEach(function (elt) {
-                    elt = elt.replace(/\r\n/g, "");
-                    elt = elt.replace(/\s\s+/g, '');
-                    if (elt.match(macRegex)) {
-                        networkInterface.mac = elt;
-                    }
-                });
-            }
-            device.add("networkInterface", networkInterface);
-        }
-    }
-
-
+    var networkInterface = {
+        name: ipName[1],
+        ip: [{
+            ip: ipInterface[1].replace(/\s+/g, ''),
+            mask: ipInterfaceNetmask[1].replace(/\s+/g, ''),
+            usage: "PRIMARY"
+        }],
+        virtualDevice: "",
+        mac: ipmac[1].replace(/\s+/g, '')
+    };
+    device.add("networkInterface", networkInterface);
 }
 
 function analyzeSyslog(message) {
