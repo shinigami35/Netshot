@@ -1157,6 +1157,7 @@ public class RestService extends Thread {
                     if (!f.exists() || (f.exists() && !f.isDirectory())) {
                         f.mkdirs();
                         device.setPath(rsDevice.getPathConfiguration());
+                        VirtualDevice.setPermFolder(f.toPath());
                     } else
                         device.setPath(rsDevice.getPathConfiguration());
                 } catch (Exception e) {
