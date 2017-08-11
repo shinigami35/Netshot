@@ -66,7 +66,7 @@ public class VirtualDevice implements Serializable {
     public static boolean createFolder(String folder) {
         String firstPath = Netshot.getConfig("netshot.watch.folderListen");
         String tmpPath;
-        folder = folder.replaceAll("[^a-zA-Z0-9.-]", "_");
+        folder = folder.replaceAll("[^a-zA-Z0-9.-/]", "_");
         if (firstPath.charAt(firstPath.length() - 1) == '/')
             tmpPath = firstPath + DEFAULT_FOLDER + '/' + folder;
         else

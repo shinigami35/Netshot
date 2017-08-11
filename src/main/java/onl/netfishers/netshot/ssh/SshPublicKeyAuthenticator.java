@@ -1,12 +1,15 @@
 package onl.netfishers.netshot.ssh;
 
 import onl.netfishers.netshot.Database;
+import onl.netfishers.netshot.Netshot;
 import onl.netfishers.netshot.ssh.authentification.user.UserSsh;
 import org.apache.mina.util.Base64;
 import org.apache.sshd.server.auth.pubkey.PublickeyAuthenticator;
 import org.apache.sshd.server.session.ServerSession;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,6 +19,11 @@ import java.security.interfaces.RSAPublicKey;
 
 
 public class SshPublicKeyAuthenticator implements PublickeyAuthenticator {
+
+    /**
+     * The logger.
+     */
+    private static Logger logger = LoggerFactory.getLogger(SshPublicKeyAuthenticator.class);
 
     //Converts a Java RSA PK to SSH2 Format.
     private static byte[] encode(RSAPublicKey key) {
@@ -40,8 +48,8 @@ public class SshPublicKeyAuthenticator implements PublickeyAuthenticator {
 
     @Override
     public boolean authenticate(String user, PublicKey key, ServerSession session) {
-        //String kTmp = "AAAAB3NzaC1yc2EAAAADAQABAAABAQCfxasnRAt8E+RusjA+koVjX2N3TrkmnPFhQ0O8uaSp7jZyj1vi1CNdwM7TRRvV0SlNmdTKNhK7JxFvtKBADRx+iagYj1+I4h36q7+ou5CssW6kQf+GjW73nstQm0oZlkSiQhip+bOhx/pkz/fYK7gKI2kjBVoD2g0SDuOrIM18XwkChQf9tSiHpCNUXQtLMVqZ4tQj1ERihO4d6VxcD5iYVtfcM1ULQwqXdNr3z7ptGUGsR0E/pZhT5x4rg8X9q6M4TxpH49+lJNCdvHPtAUU8VRVugwjnct2MY03dGXhyZ/XX+K/yCv4znJ8+mKB7pPyfrELA+bOA0KLlHD3YAAsZ";
         if (key instanceof RSAPublicKey) {
+            logger.info("Get connection by Key | User : " + user);
             Session s = Database.getSession();
             try {
                 Object o = s.createQuery("FROM UserSsh u WHERE u.name=:name")

@@ -4283,6 +4283,7 @@ public class RestService extends Thread {
                 if (o.size() == 0) {
                     Types t = (Types) session.get(Types.class, (long) rsNewDeviceVirtual.getType());
                     if (t != null) {
+                        rsNewDeviceVirtual.setFolder(rsNewDeviceVirtual.getFolder().replaceAll("[^a-zA-Z0-9.-/]", "_"));
                         if (VirtualDevice.createFolder(rsNewDeviceVirtual.getFolder())) {
                             VirtualDevice newVd = new VirtualDevice(rsNewDeviceVirtual.getName(), rsNewDeviceVirtual.getFolder());
                             newVd.setCompany(c);

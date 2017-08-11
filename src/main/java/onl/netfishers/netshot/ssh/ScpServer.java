@@ -30,8 +30,8 @@ import java.util.*;
 
 
 public class ScpServer {
-    public static final SshPasswordAuthenticator passwordAuth = new SshPasswordAuthenticator();
-    public static final SshPublicKeyAuthenticator publicKeyAuth = new SshPublicKeyAuthenticator();
+    private static final SshPasswordAuthenticator passwordAuth = new SshPasswordAuthenticator();
+    private static final SshPublicKeyAuthenticator publicKeyAuth = new SshPublicKeyAuthenticator();
 
     private static final SshServer sshd = SshServer.setUpDefaultServer();
     private static Status status = Status.STOPPED;
@@ -51,8 +51,8 @@ public class ScpServer {
 
                 initUserHomeFolder();
 
-                sshd.setPasswordAuthenticator(passwordAuth);
                 sshd.setPublickeyAuthenticator(publicKeyAuth);
+                sshd.setPasswordAuthenticator(passwordAuth);
 
                 sshd.setSubsystemFactories(Arrays.<NamedFactory<Command>>asList(new SftpSubsystemFactory()));
 

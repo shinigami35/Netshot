@@ -195,7 +195,7 @@ public class Watcher extends Thread {
                             if (parentChild.equals(sdirRoot))
                                 register(child);
                         } else {
-                            System.out.println("File is => " + child);
+                            logger.info("File is => " + child);
                             while (true) {
                                 if (copyCompleted(child))
                                     break;
@@ -203,7 +203,7 @@ public class Watcher extends Thread {
                             saveEntryScp(child);
                         }
                     } catch (IOException x) {
-                        System.out.println("Cannot open the file => " + x);
+                        logger.error("Cannot open the file => " + x);
                     }
                 }
             }

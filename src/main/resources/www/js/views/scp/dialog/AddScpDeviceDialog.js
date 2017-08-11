@@ -48,7 +48,7 @@ define([
                     if (that.typeSelect && that.companySelect
                         && that.typeSelect !== "nil" && that.typeSelect !== "nil") {
                         that.$('#devicefolder')[0].value = "";
-                        that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/" + name + "/");
+                        that.$('#devicefolder').val("/" + that.companySelect.replace(/\s/g, '') + "/" + that.typeSelect.replace(/\s/g, '') + "/" + name.replace(/\s/g, '') + "/");
                     }
                 }
             }
@@ -67,7 +67,7 @@ define([
                 if (company) {
                     that.companySelect = company.name;
                     that.$('#devicefolder')[0].value = "";
-                    that.$('#devicefolder').val("/" + that.companySelect + "/" + that.typeSelect + "/" + name + "/");
+                    that.$('#devicefolder').val("/" + that.companySelect.replace(/\s/g, '') + "/" + that.typeSelect.replace(/\s/g, '') + "/" + name.replace(/\s/g, '') + "/");
                 }
             }
         },
@@ -97,7 +97,7 @@ define([
                         type: parseInt(that.$('#devicetype').val(), 10),
                         name: that.$('#devicename').val(),
                         company: parseInt(that.$('#devicecompany').val(), 10),
-                        folder: that.$('#devicefolder').val(),
+                        folder: that.$('#devicefolder').val().replace(/\s/g, ''),
                         task: that.$('#devicetask').val(),
                         hour: that.$('#devicehour').val(),
                         date: that.formatDate(that.$('#devicetime').datepicker('getDate'))
